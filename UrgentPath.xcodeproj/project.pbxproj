@@ -15,6 +15,10 @@
 		9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C18403120735AC9003F7325 /* LaunchScreen.storyboard */; };
 		9C18403E20735AC9003F7325 /* UrgentPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18403D20735AC9003F7325 /* UrgentPathTests.swift */; };
 		9C18404920735AC9003F7325 /* UrgentPathUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18404820735AC9003F7325 /* UrgentPathUITests.swift */; };
+		9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */; };
+		9CC73FCD20741045003FBC2C /* dubins.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FCB20741045003FBC2C /* dubins.c */; };
+		9CC73FD320741063003FBC2C /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FCF20741062003FBC2C /* demo.c */; };
+		9CC73FD520741063003FBC2C /* helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FD220741062003FBC2C /* helper.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +53,15 @@
 		9C18404420735AC9003F7325 /* UrgentPathUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UrgentPathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18404820735AC9003F7325 /* UrgentPathUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrgentPathUITests.swift; sourceTree = "<group>"; };
 		9C18404A20735AC9003F7325 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UrgentPath-Bridging-Header.h"; sourceTree = "<group>"; };
+		9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TrajectoryCal.c; sourceTree = "<group>"; };
+		9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrajectoryCal.h; sourceTree = "<group>"; };
+		9CC73FCB20741045003FBC2C /* dubins.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dubins.c; sourceTree = "<group>"; };
+		9CC73FCC20741045003FBC2C /* dubins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dubins.h; sourceTree = "<group>"; };
+		9CC73FCE20741061003FBC2C /* helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helper.h; sourceTree = "<group>"; };
+		9CC73FCF20741062003FBC2C /* demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = demo.c; sourceTree = "<group>"; };
+		9CC73FD120741062003FBC2C /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
+		9CC73FD220741062003FBC2C /* helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helper.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +112,7 @@
 		9C18402520735AC5003F7325 /* UrgentPath */ = {
 			isa = PBXGroup;
 			children = (
+				9CC73FCA20740CA6003FBC2C /* Calculation */,
 				9C18402620735AC5003F7325 /* AppDelegate.swift */,
 				9C18402820735AC5003F7325 /* FirstViewController.swift */,
 				9C18402A20735AC5003F7325 /* SecondViewController.swift */,
@@ -106,6 +120,7 @@
 				9C18402F20735AC9003F7325 /* Assets.xcassets */,
 				9C18403120735AC9003F7325 /* LaunchScreen.storyboard */,
 				9C18403420735AC9003F7325 /* Info.plist */,
+				9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */,
 			);
 			path = UrgentPath;
 			sourceTree = "<group>";
@@ -126,6 +141,21 @@
 				9C18404A20735AC9003F7325 /* Info.plist */,
 			);
 			path = UrgentPathUITests;
+			sourceTree = "<group>";
+		};
+		9CC73FCA20740CA6003FBC2C /* Calculation */ = {
+			isa = PBXGroup;
+			children = (
+				9CC73FCF20741062003FBC2C /* demo.c */,
+				9CC73FD120741062003FBC2C /* demo.h */,
+				9CC73FD220741062003FBC2C /* helper.c */,
+				9CC73FCE20741061003FBC2C /* helper.h */,
+				9CC73FCB20741045003FBC2C /* dubins.c */,
+				9CC73FCC20741045003FBC2C /* dubins.h */,
+				9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */,
+				9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */,
+			);
+			path = Calculation;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,6 +226,7 @@
 				TargetAttributes = {
 					9C18402220735AC5003F7325 = {
 						CreatedOnToolsVersion = 9.3;
+						LastSwiftMigration = 0930;
 					};
 					9C18403820735AC9003F7325 = {
 						CreatedOnToolsVersion = 9.3;
@@ -259,9 +290,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CC73FCD20741045003FBC2C /* dubins.c in Sources */,
+				9CC73FD520741063003FBC2C /* helper.c in Sources */,
 				9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */,
 				9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */,
 				9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */,
+				9CC73FD320741063003FBC2C /* demo.c in Sources */,
+				9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,15 +469,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8533345P3C;
+				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPath/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPath;
+				PRODUCT_BUNDLE_IDENTIFIER = com.UrgentPath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "UrgentPath/UrgentPath-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -452,15 +492,19 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 8533345P3C;
+				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPath/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPath;
+				PRODUCT_BUNDLE_IDENTIFIER = com.UrgentPath;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "UrgentPath/UrgentPath-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
