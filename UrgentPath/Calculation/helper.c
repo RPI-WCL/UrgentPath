@@ -105,7 +105,7 @@ double heading(double x1, double y1, double x2, double y2)
 Seg split(Result dub)
 {
 	Seg segments;
-	int i, j, k, l;
+	int i, j, k;
 	for (i=0;i<dub.len;i++)
 	{
 		if(dub.arr[i][2]!=dub.arr[i+1][2])
@@ -1042,6 +1042,8 @@ Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_hea
 				current_y=new_point.y;
 			} 	
 		}//end of while
+        //TODO delete
+        return path;
 	}//end of if
 	else
 	{

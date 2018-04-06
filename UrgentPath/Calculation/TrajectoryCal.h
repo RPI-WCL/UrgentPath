@@ -22,10 +22,10 @@
 #include <time.h>
 
 
-extern int helloworld2(void);
+//extern int helloworld2(void);
 
 
 Seg basic_path(Packet data);
 Seg2 model_wind(Seg path_with_spiral, Packet data);
 
-externint TrajectoryCal();
+//extern int TrajectoryCal();

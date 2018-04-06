@@ -22,8 +22,8 @@ class FirstViewController: UIViewController {
     }
     
     func hello_first() {
-        let x = helloworld2()
-        print(x)
+        //let x = helloworld2()
+        //print(x)
     }
 
 

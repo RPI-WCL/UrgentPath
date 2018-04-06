@@ -189,46 +189,7 @@ int TrajectoryCal(){
     
     Seg2 wind_1=model_wind(basic_trajectory,dat_30);
     
-    
     double shift= wind_1.total_shift;
-    double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
-    double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
-    
-    
-    if(true) //put false for not running catch runway code
-    {
-        //catch runway code starts here
-        int iter=1;
-        float distance=0.0; //adjuste this depending on shift. BASIS OF OUR HUERISTICS
-        while(shift>0.000137)
-        {
-            distance=distance+shift;
-            double reverse_wind_heading= WIND_HEADING + PI;
-            
-            Pair new_point=along_heading_at_distance(q2[0], q2[1], reverse_wind_heading, (distance));
-            
-            iter=iter+1;
-            Packet dat_temp; //condition specific variables will be initialized now
-            dat_temp=dat;
-            
-            dat_temp.p2[1]=new_point.y;
-            dat_temp.p2[0]=new_point.x;
-            dat_temp.p2[2]=q2[2];
-            
-            dat_temp.angle=30;
-            dat_temp.min_rad=(BEST_GLIDING_AIRSPEED*BEST_GLIDING_AIRSPEED)/(11.29* tan(dat_temp.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
-            
-            Seg basic_temp=basic_path(dat_temp); //get first_dubins
-            
-            Seg2 wind_temp=model_wind(basic_temp,dat_temp);
-            
-            
-            shift= wind_temp.total_shift;
-            wind_alt=wind_temp.end_alt;
-            
-        }
-        
-    }
     
     return 0;
 }
