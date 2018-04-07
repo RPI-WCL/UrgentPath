@@ -1,5 +1,5 @@
 //
-//  dataUser.swift
+//  DataUser.swift
 //  UrgentPath
 //
 //  Created by Jiashun Gou on 4/6/18.

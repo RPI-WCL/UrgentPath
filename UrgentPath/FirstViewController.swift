@@ -11,9 +11,12 @@ import UIKit
 class FirstViewController: UIViewController {
     
     @IBOutlet weak var instructionLabel: UILabel!
-    @IBOutlet weak var planeLocXLabel: UITextField!
-    @IBOutlet weak var planeLocYLabel: UITextField!
-    @IBOutlet weak var planeLocZLabel: UITextField!
+    @IBOutlet weak var planeLocXText: UITextField!
+    @IBOutlet weak var planeLocYText: UITextField!
+    @IBOutlet weak var planeLocZText: UITextField!
+    @IBOutlet weak var planeHeadingText: UITextField!
+    @IBOutlet weak var windSpeedText: UITextField!
+    @IBOutlet weak var windHeadingText: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,9 +36,18 @@ class FirstViewController: UIViewController {
         
         //update geo location
         let (loc_x,loc_y,loc_z) = DataUserManager.shared.getGeoLocation()
-        planeLocXLabel.text = String(loc_x)
-        planeLocYLabel.text = String(loc_y)
-        planeLocZLabel.text = String(loc_z)
+        planeLocXText.text = String(loc_x)
+        planeLocYText.text = String(loc_y)
+        planeLocZText.text = String(loc_z)
+        
+        //update heading
+        let plane_heading = DataUserManager.shared.getHeading()
+        planeHeadingText.text = String(plane_heading)
+        
+        //update wind
+        let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
+        windSpeedText.text = String(wind_speed)
+        windHeadingText.text = String(wind_heading)
     }
 }
 
