@@ -17,26 +17,38 @@ class DataUserManager {
         
     }
     
-    func updateGeoLocation(loc_x:Double,
-                           loc_y:Double,
-                           loc_z:Double){
+    func setGeoLocation(loc_x:Double,
+                        loc_y:Double,
+                        loc_z:Double) {
         data.user_loc_x = loc_x
         data.user_loc_y = loc_y
         data.user_loc_z = loc_z
     }
     
-    func updateHeading(heading:Double){
+    func setHeading(heading:Double) {
         data.user_heading = heading
     }
     
-    func updateWind(wind_speed:Double,
-                    wind_heading:Double){
+    func setWind(wind_speed:Double,
+                    wind_heading:Double) {
         data.wind_speed = wind_speed
         data.wind_heading = wind_heading
     }
     
-    func getInstruction() -> String{
-        return "nothing yet"
+    func getInstruction() -> String {
+        return "not implemented yet"
+    }
+    
+    func getGeoLocation() -> (Double,Double,Double) {
+        return (data.user_loc_x,data.user_loc_y, data.user_loc_z)
+    }
+    
+    func getHeading() -> Double {
+        return data.user_heading
+    }
+    
+    func getWind() -> (Double ,Double) {
+        return (data.wind_speed,data.wind_heading)
     }
     
 }

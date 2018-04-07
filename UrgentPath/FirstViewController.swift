@@ -9,16 +9,15 @@
 import UIKit
 
 class FirstViewController: UIViewController {
+    
+    @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocXLabel: UITextField!
     @IBOutlet weak var planeLocYLabel: UITextField!
     @IBOutlet weak var planeLocZLabel: UITextField!
     
-    private var tmp = 0//TODO delete
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        hello_first()
-        var timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.update), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,17 +25,17 @@ class FirstViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func hello_first() {
-        //let x = helloworld2()
-        //print(x)
+    // update instruction shown on FirstView
+    @objc func updateView() {
+        //update instruction
+        instructionLabel.text = DataUserManager.shared.getInstruction()
+        instructionLabel.lineBreakMode = .byWordWrapping
+        
+        //update geo location
+        let (loc_x,loc_y,loc_z) = DataUserManager.shared.getGeoLocation()
+        planeLocXLabel.text = String(loc_x)
+        planeLocYLabel.text = String(loc_y)
+        planeLocZLabel.text = String(loc_z)
     }
-    
-    // must be internal or public.
-    @objc func update() {
-        planeLocXLabel.text = String(tmp)
-        tmp += 1
-    }
-
-
 }
 
