@@ -13,6 +13,8 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var planeLocYLabel: UITextField!
     @IBOutlet weak var planeLocZLabel: UITextField!
     
+    private var tmp = 0//TODO delete
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         hello_first()
