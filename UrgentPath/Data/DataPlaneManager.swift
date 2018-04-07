@@ -8,15 +8,13 @@
 
 import Foundation
 
-//let sharedDataPlaneManager = DataPlaneManager()
-
 class DataPlaneManager {
     static let shared = DataPlaneManager()//singleton
     
     private var currentPlaneIndex : Int
     private var data = [DataPlane]()
     
-    init() {
+    private init() {
         currentPlaneIndex = -1
         let config_plane_a320 = DataPlane(plane_type: "A320",
                              update_interval: 0.001,
