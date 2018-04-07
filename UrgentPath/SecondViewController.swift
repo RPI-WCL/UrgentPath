@@ -12,17 +12,27 @@ import Darwin
 class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource {
 
     @IBOutlet weak var pickConfig: UIPickerView!
-    @IBOutlet weak var nameLabel: UITextField!
+    @IBOutlet weak var planeTypeLabel: UITextField!
+    @IBOutlet weak var updateIntervalLabel: UITextField!
+    @IBOutlet weak var bestGlidingSpeedLabel: UITextField!
+    @IBOutlet weak var bestGlidingRatioLabel: UITextField!
+    @IBOutlet weak var dirtyGlidingRatioLabel: UITextField!
     
-    var configData: [String] = [String]()
+    var configData: [DataPlane] = [DataPlane]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        //setup PickerView
         self.pickConfig.delegate = self
         self.pickConfig.dataSource = self
-        configData = ["Cessna 172", "Boeing 777"]
-        nameLabel.text = configData[0]
+        
+        configData = DataPlaneManager.shared.getPlaneConfigAll()
+        planeTypeLabel.text = configData[0].plane_type
+        updateIntervalLabel.text = String(configData[0].update_interval)
+        bestGlidingSpeedLabel.text = String(configData[0].best_gliding_airspeed)
+        bestGlidingRatioLabel.text = String(configData[0].best_gliding_ratio)
+        dirtyGlidingRatioLabel.text = String(configData[0].dirty_gliding_ratio)
     }
 
     override func didReceiveMemoryWarning() {
@@ -39,13 +49,16 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         return configData.count
     }
     
-    // The data to return for the row and component (column) that's being passed in
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return configData[row]
+        return configData[row].plane_type
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        nameLabel.text = configData[row]
+        planeTypeLabel.text = configData[row].plane_type
+        updateIntervalLabel.text = String(configData[row].update_interval)
+        bestGlidingSpeedLabel.text = String(configData[row].best_gliding_airspeed)
+        bestGlidingRatioLabel.text = String(configData[row].best_gliding_ratio)
+        dirtyGlidingRatioLabel.text = String(configData[row].dirty_gliding_ratio)
     }
     
 }
