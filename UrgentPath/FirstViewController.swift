@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreLocation
 
-class FirstViewController: UIViewController {
+class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocXText: UITextField!
@@ -18,14 +19,22 @@ class FirstViewController: UIViewController {
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
     
+    let locationManager = CLLocationManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
+        planeLocXText.text = "?"
+        planeLocYText.text = "?"
+        planeLocZText.text = "?"
+        planeHeadingText.text = "?"
+        windSpeedText.text = "?"
+        windHeadingText.text = "?"
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     // update instruction shown on FirstView
@@ -34,20 +43,36 @@ class FirstViewController: UIViewController {
         instructionLabel.text = DataUserManager.shared.getInstruction()
         instructionLabel.lineBreakMode = .byWordWrapping
         
-        //update geo location
-        let (loc_x,loc_y,loc_z) = DataUserManager.shared.getGeoLocation()
-        planeLocXText.text = String(loc_x)
-        planeLocYText.text = String(loc_y)
-        planeLocZText.text = String(loc_z)
-        
-        //update heading
-        let plane_heading = DataUserManager.shared.getHeading()
-        planeHeadingText.text = String(plane_heading)
-        
         //update wind
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
         windSpeedText.text = String(wind_speed)
         windHeadingText.text = String(wind_heading)
+    }
+    
+    func startLocationUpdate() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.requestWhenInUseAuthorization()
+            locationManager.requestAlwaysAuthorization()
+            locationManager.startUpdatingLocation()
+            locationManager.startUpdatingHeading()
+            locationManager.distanceFilter = 10
+            locationManager.headingFilter = 5
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        let userLoc:CLLocation = locations[0] as CLLocation
+        planeLocXText.text = String(userLoc.coordinate.latitude)
+        planeLocYText.text = String(userLoc.coordinate.longitude)
+        planeLocZText.text = String(userLoc.altitude)
+        DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+        planeHeadingText.text = String(newHeading.magneticHeading)
+        DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
     }
 }
 
