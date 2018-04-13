@@ -8,10 +8,6 @@
 
 #include "TrajectoryCal.h"
 
-int helloworld2(void){
-    return 0;
-}
-
 //main EnTRY function
 Seg basic_path(Packet data)
 {
@@ -45,7 +41,7 @@ Seg basic_path(Packet data)
 	Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g);
 
 	path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
-	print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
+	//print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
 	
 //	printf("No wind trajectory generated!\n");
 	return path_with_spiral;
@@ -76,7 +72,7 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 	wind_path.extended=false;
 	wind_path.end_alt=0.0;
 
-        Curve augmented_curve_A= wind_curveA(path_with_spiral,WIND_HEADING, WIND_VELOCITY, OMEGA_30_DEGREE_BANK, min_radius,start_altitude, q1[0], q1[1], angle, baseline_g, data.airspeed); //send first curve to be modified by wind
+    Curve augmented_curve_A= wind_curveA(path_with_spiral,WIND_HEADING, WIND_VELOCITY, OMEGA_30_DEGREE_BANK, min_radius,start_altitude, q1[0], q1[1], angle, baseline_g, data.airspeed); //send first curve to be modified by wind
 	wind_path.aug_C1=augmented_curve_A;
 
 	Curve augmented_SLS= wind_SLS(path_with_spiral,WIND_HEADING, WIND_VELOCITY,augmented_curve_A,baseline_g, data.airspeed, data.dirty_g); //send middle straight line segment to be modified
@@ -101,8 +97,9 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 		wind_path.extended=true;
 
 	}
-	save_wind_in_file(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.file_name, data.alphabet);//saves augmented path in file
-
+	//save_wind_in_file(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.file_name, data.alphabet);//saves augmented path in file
+    get_first_instruction(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.alphabet, wind_path.instructions);//get first instruction
+    
 	//calculate total shift in path
 	if (wind_path.extended)
 	{
@@ -128,13 +125,13 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 	return wind_path;        
 }
 
-int TrajectoryCal(){
+char* TrajectoryCal(){
     
 //---------------------------- SET CONFIGS BELOW -------------------------
 //------------------------------------------------------------------------
 	double q1[] =  {  -73.8767,40.8513,1.5586}; //INITIAL x,y, heading //CONVERT TO 0,0, East-X
 	double q2[] = { -73.8571,40.7721,2.3736}; //aproximate LGA31 LZ x,y heading 
-        double EMERGENCY_ALTITUDE =  10000.0/364173.0;// in feet
+    double EMERGENCY_ALTITUDE =  10000.0/364173.0;// in feet
 
 //----- CHANGE EMERGENCY CONFIG ABOVE ------------------------------------
 
@@ -155,17 +152,16 @@ int TrajectoryCal(){
 //------------------------------------------------------------------------
   
 //        EMERGENCY_ALTITUDE =  EMERGENCY_ALTITUDE /364173.0;// Converting to units
-        int i, filename=0;
-        char alphabet='h';
+    int i, filename=0;
+    char alphabet='h';
 	Packet dat; //creating a packet with constants
 	for(i=0;i<3;i++)
 	{
 		dat.p1[i]=q1[i];
-
 		dat.runway[i]=q2[i];
 	}	
-        dat.interval= INTERVAL;
-        dat.start_altitude=EMERGENCY_ALTITUDE; //initial altitude 	
+    dat.interval= INTERVAL;
+    dat.start_altitude=EMERGENCY_ALTITUDE; //initial altitude 	
 	dat.windspeed=(WIND_SPEED*1.68781/364173.0);
 	dat.wind_heading=WIND_HEADING;
 	dat.airspeed= (BEST_GLIDING_AIRSPEED*1.68781/364173.0);
@@ -202,8 +198,10 @@ int TrajectoryCal(){
 	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
 
-
-	if(true) //put false for not running catch runway code
+    printf("[%s]\n",wind_1.instructions);
+    return wind_1.instructions;
+    
+	if(false) //put false for not running catch runway code
 	{
 		//catch runway code starts here
 		int iter=1;

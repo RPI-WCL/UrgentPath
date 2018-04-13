@@ -65,6 +65,7 @@ typedef struct Seg2
         bool extended;
 	double total_shift;
 	double end_alt;
+    char instructions[1000];
 }Seg2;
 
 //for spiral
@@ -207,6 +208,8 @@ void assign_wind_altitude(Curve augmented_curve_A, Curve augmented_SLS, Curve au
 
 //function that saves augmented path in file
 void save_wind_in_file(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, int filename, char alphabet);
+
+void get_first_instruction(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, char alphabet, char* ret);
 //----------------------------------------------------------------------------------------------------------------------------------
 //Mathematical function that calculates new altitude for straight line motion
 double heightS(double last_height, double distance, double Rg_straight);

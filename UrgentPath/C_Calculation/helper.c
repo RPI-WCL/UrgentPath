@@ -380,8 +380,8 @@ double c1_time(Seg path, double airspeed, double radius)
 Curve wind_curveA(Seg path,double wind_heading,double wind_velocity,double omega, double radius, double start_altitude, double initial_x, double initial_y, int angle, double baseline_g, double airspeed)
 {
 
-	FILE *output_file;
-	output_file = fopen("c1centres.csv", "w"); 
+	//FILE *output_file;
+	//output_file = fopen("c1centres.csv", "w"); 
 
         Pair initial_centre= find_centre(path.C1[0][0], path.C1[0][1], path.C1[path.lenc1/2][0], path.C1[path.lenc1/2][1], path.C1[path.lenc1-2][0], path.C1[path.lenc1-2][1]);
 
@@ -412,7 +412,7 @@ Curve wind_curveA(Seg path,double wind_heading,double wind_velocity,double omega
 			initial_centre.x=current_centre.x;
 			initial_centre.y=current_centre.y;
 		}
-	fprintf(output_file, "%f,%f\n", current_centre.x,current_centre.y);
+	//fprintf(output_file, "%f,%f\n", current_centre.x,current_centre.y);
 
 	//Backcalculating to find the angle inscribed by the original point with initial centre
  		augmented_C1.points[i][0]=current_centre.x + radius*cos(theta_pool.thetas[i]); //x of new point
@@ -425,14 +425,14 @@ Curve wind_curveA(Seg path,double wind_heading,double wind_velocity,double omega
 
 
 	augmented_C1.shift= horizontal(augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.C1[path.lenc1-1][0],path.C1[path.lenc1-1][1]);
-	fclose(output_file);
+	//fclose(output_file);
 
 	//-----------------PILOT INSTRUCTIONS
-	FILE *instructions_file;
-	instructions_file = fopen("pilot_instructions.txt", "a");
-	fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.SLS[path.lensls-1][2], azmth(path.SLS[path.lensls-1][2]),augmented_C1.points[augmented_C1.len_curve-1][4]*364173.0);
-	fclose(instructions_file);
-	sprintf(augmented_C1.instructions,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.SLS[path.lensls-1][2], azmth(path.SLS[path.lensls-1][2]),augmented_C1.points[augmented_C1.len_curve-1][4]*364173.0); 
+	//FILE *instructions_file;
+	//instructions_file = fopen("pilot_instructions.txt", "a");
+	//fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.SLS[path.lensls-1][2], azmth(path.SLS[path.lensls-1][2]),augmented_C1.points[augmented_C1.len_curve-1][4]*364173.0);
+	//fclose(instructions_file);
+	sprintf(augmented_C1.instructions,"30 degree bank for %f seconds",total_time); 
 	//-----------------SAVED INSTRUCTIONS
 	return augmented_C1;
 } 
@@ -488,11 +488,11 @@ Curve wind_SLS(Seg path,double wind_heading,double wind_velocity, Curve augmente
 
 	augmented_SLS.shift= horizontal(augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][0],path.SLS[path.lensls-1][1]) ; //total shift until this point
 	//-----------------PILOT INSTRUCTIONS
-	FILE *instructions_file;
-	instructions_file = fopen("pilot_instructions.txt", "a");
-	fprintf(instructions_file,"Straight line glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][2],azmth(path.SLS[path.lensls-1][2]),augmented_SLS.points[augmented_SLS.len_curve-1][4]*364173.0);
-	fclose(instructions_file);
-	sprintf(augmented_SLS.instructions,"Straight line glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][2],azmth(path.SLS[path.lensls-1][2]),augmented_SLS.points[augmented_SLS.len_curve-1][4]*364173.0);
+	//FILE *instructions_file;
+	//instructions_file = fopen("pilot_instructions.txt", "a");
+	//fprintf(instructions_file,"Straight line glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][2],azmth(path.SLS[path.lensls-1][2]),augmented_SLS.points[augmented_SLS.len_curve-1][4]*364173.0);
+	//fclose(instructions_file);
+	sprintf(augmented_SLS.instructions,"Straight line glide for %f seconds",time_shift);
 
 	//-----------------SAVED INSTRUCTIONS
 
@@ -544,8 +544,8 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 	double delta_heading= path.C2[path.lenc2-1][2]-path.C2[0][2];
 
 
-	FILE *output_file;
-	output_file = fopen("c2centres.csv", "w"); 
+	//FILE *output_file;
+	//output_file = fopen("c2centres.csv", "w"); 
 
 
 	//Find centre of original curve C2
@@ -553,7 +553,7 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 
 	Pair initial_centre= along_heading_at_distance(original_c2_centre.x, original_c2_centre.y, wind_heading, augmented_SLS.shift);
 
-	fprintf(output_file, "%f,%f\n", original_c2_centre.x,original_c2_centre.y);
+	//fprintf(output_file, "%f,%f\n", original_c2_centre.x,original_c2_centre.y);
 
 	Curve augmented_C2; // to store augmented first curve
 	augmented_C2.len_curve=0;
@@ -581,7 +581,7 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 			initial_centre.y=current_centre.y;
 		}
 
-	fprintf(output_file, "%f,%f\n", current_centre.x,current_centre.y);
+        //fprintf(output_file, "%f,%f\n", current_centre.x,current_centre.y);
 		
  		augmented_C2.points[i][0]=current_centre.x+ radius*cos(theta_pool.thetas[i]); //x of new point
  		augmented_C2.points[i][1]=current_centre.y+ radius*sin(theta_pool.thetas[i]); //y of new point
@@ -590,14 +590,14 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 
 		augmented_C2.points[i][4]=path.C2[i][4];
 	}	
-	fclose(output_file);
+	//fclose(output_file);
 	augmented_C2.centre=initial_centre;
 	//-----------------PILOT INSTRUCTIONS
-	FILE *instructions_file;
-	instructions_file = fopen("pilot_instructions.txt", "a");
-	fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C2.points[augmented_C2.len_curve-1][0],augmented_C2.points[augmented_C2.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_C2.points[augmented_C2.len_curve-1][4]*364173.0);
-	fclose(instructions_file);
-	sprintf(augmented_C2.instructions,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C2.points[augmented_C2.len_curve-1][0],augmented_C2.points[augmented_C2.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_C2.points[augmented_C2.len_curve-1][4]*364173.0);
+	//FILE *instructions_file;
+	//instructions_file = fopen("pilot_instructions.txt", "a");
+	//fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C2.points[augmented_C2.len_curve-1][0],augmented_C2.points[augmented_C2.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_C2.points[augmented_C2.len_curve-1][4]*364173.0);
+	//fclose(instructions_file);
+	sprintf(augmented_C2.instructions,"30 degree bank for %f seconds",total_time);
 
 	//-----------------SAVED INSTRUCTIONS
 
@@ -609,7 +609,6 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 //Function to mdel effect of wind on spiral
 Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double omega, double radius, Curve augmented_curve_B, int angle, double baseline_g, double airspeed, double rnwy_heading)
 {
-	
 	Curve augmented_Spiral;
 	augmented_Spiral.len_curve=0; //initializing the container
 
@@ -644,11 +643,11 @@ Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double om
 		
 	}
 	//-----------------PILOT INSTRUCTIONS
-	FILE *instructions_file;
-	instructions_file = fopen("pilot_instructions.txt", "a");
-	fprintf(instructions_file,"30 degree bank spiral for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_Spiral.points[augmented_Spiral.len_curve-1][0],augmented_Spiral.points[augmented_Spiral.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_Spiral.points[augmented_Spiral.len_curve-1][4]*364173.0);
-	fclose(instructions_file);
-	sprintf(augmented_Spiral.instructions,"30 degree bank spiral for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_Spiral.points[augmented_Spiral.len_curve-1][0],augmented_Spiral.points[augmented_Spiral.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_Spiral.points[augmented_Spiral.len_curve-1][4]*364173.0);
+	//FILE *instructions_file;
+	//instructions_file = fopen("pilot_instructions.txt", "a");
+	//fprintf(instructions_file,"30 degree bank spiral for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_Spiral.points[augmented_Spiral.len_curve-1][0],augmented_Spiral.points[augmented_Spiral.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_Spiral.points[augmented_Spiral.len_curve-1][4]*364173.0);
+	//fclose(instructions_file);
+	sprintf(augmented_Spiral.instructions,"30 degree bank spiral for %f seconds",total_time);
 	//-----------------SAVED INSTRUCTIONS
 	if(augmented_Spiral.len_curve>0)
 	{
@@ -713,11 +712,11 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
 		//-----------------PILOT INSTRUCTIONS
-		FILE *instructions_file;
-		instructions_file = fopen("pilot_instructions.txt", "a");
-		fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
-		fclose(instructions_file);
-		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		//FILE *instructions_file;
+		//instructions_file = fopen("pilot_instructions.txt", "a");
+		//fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		//fclose(instructions_file);
+		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds",time_shift);
 
 		//-----------------SAVED INSTRUCTIONS
 
@@ -769,11 +768,11 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		augmented_extended.points[1][4]=0.0;
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
 		//-----------------PILOT INSTRUCTIONS
-		FILE *instructions_file;
-		instructions_file = fopen("pilot_instructions.txt", "a");
-		fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
-		fclose(instructions_file);
-		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		//FILE *instructions_file;
+		//instructions_file = fopen("pilot_instructions.txt", "a");
+		//fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		//fclose(instructions_file);
+		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds",time_shift);
 		//-----------------SAVED INSTRUCTIONS
 	}
 
@@ -836,6 +835,33 @@ void save_wind_in_file(Curve augmented_curve_A, Curve augmented_SLS, Curve augme
 	fclose(end_point_file);
 	fclose(output_file);
 }
+
+void get_first_instruction(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, char alphabet, char* ret){
+    if(augmented_curve_A.len_curve > 0){
+        printf("1\n");
+        strcpy(ret,augmented_curve_A.instructions);
+    }
+    else if (augmented_SLS.len_curve > 0){
+        printf("2\n");
+        strcpy(ret,augmented_SLS.instructions);
+    }
+    else if (augmented_curve_B.len_curve > 0){
+        printf("3\n");
+        strcpy(ret,augmented_curve_B.instructions);
+    }
+	else if(augmented_spiral.spiral){
+        printf("4\n");
+        strcpy(ret,augmented_spiral.instructions);
+	}
+    else if(augmented_extended.extended){
+        printf("5\n");
+        strcpy(ret,augmented_extended.instructions);
+	}
+    else{
+        printf("error\n");
+    }
+}
+
 //========================END OF WIND MODELLING FUNCTIONS=================================================
 //Mathematical function that calculates new altitude
 double heightS(double last_height, double distance, double Rg_straight)
