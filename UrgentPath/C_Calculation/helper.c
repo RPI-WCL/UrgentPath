@@ -105,7 +105,7 @@ double heading(double x1, double y1, double x2, double y2)
 Seg split(Result dub)
 {
 	Seg segments;
-	int i, j, k;
+	int i, j, k, l;
 	for (i=0;i<dub.len;i++)
 	{
 		if(dub.arr[i][2]!=dub.arr[i+1][2])
@@ -171,6 +171,22 @@ double distance_3d(double x1, double y1, double z1, double x2, double y2, double
 	return sqrt((x1-x2)*(x1-x2)+(y1-y2)*(y1-y2)+(z1-z2)*(z1-z2));
 }
 
+//Mathematical function that takes in heading WRT E=0 in radian and returns heading WRT N=0 in degrees
+double azmth(double E_rad)
+{
+	double E_deg = E_rad * (180.0/PI);
+        double h = 450.0 - E_deg;
+        double N_deg=0.0;
+        if(h>=360.0)
+	{
+		N_deg = h - 360.0;
+	}
+	else
+	{
+		N_deg = h;
+	}
+	return N_deg;
+}
 
 //######################################## WIND MODELLING HELPER FUNCTIONS #####################################################
 //Function that finds centre of an arc given three points on that arc
@@ -219,7 +235,6 @@ double curve_altitude(double last_height, double distance, int angle, double air
 {	
 	// alpha is the angle between the airspeed heading and wind heading
 	//theta is the angle between the actual direction of movement and airspeed
-	//double airspeed= 405.074/364173.0; //240 knts expressed in units/second
  	double alpha= fabs(airspeed_heading-wind_heading);
 	double ground_speed= airspeed + ((wind_velocity) * cos(alpha)); //actual distance wrt ground 
 	double Rg;
@@ -240,7 +255,6 @@ double line_altitude(double last_height, double distance, double airspeed_headin
 {
 	// alpha is the angle between the airspeed heading and wind heading
 	//theta is the angle between the actual direction of movement and airspeed
-	//double airspeed= 405.074/364173.0; //240 knts expressed in units/second
  	double alpha= fabs(airspeed_heading-wind_heading);
 	double ground_speed= airspeed + ((wind_velocity) * cos(alpha)); //actual distance wrt ground 
 	double Rg;
@@ -293,15 +307,12 @@ Thetas generate_thetasA(Seg path, Pair initial_centre)
 	int sign; //determines increasing or decreasing
 
 //detect angle shift in c1
-	//atan2(y - cy, x - cx)
 
 	double theta_first= atan2(path.C1[0][1] - initial_centre.y, path.C1[0][0] - initial_centre.x);
 	double theta_last= atan2(path.C1[path.lenc1-1][1] - initial_centre.y, path.C1[path.lenc1-1][0] - initial_centre.x);
 
 	sign= orientation(path.C1[0][0], path.C1[0][1], path.C1[path.lenc1/2][0], path.C1[path.lenc1/2][1],path.C1[path.lenc1-1][0], path.C1[path.lenc1-1][1]); //Orientation returns -1 for clockwise turns and 1 for anticlockwise turns	
 
-//	sign=-1; //decreasing -- clockwise turn
-	//sign=1; //increasing -- anticlockwise turn
 
 	int i;
 	double step = fabs(theta_first-theta_last)/(path.lenc1-1);
@@ -320,16 +331,12 @@ Thetas generate_thetasB(Seg path, Pair initial_centre)
 	int sign; //determines increasing or decreasing
 
 	//detect angle shift in c1
-	//atan2(y - cy, x - cx)
 
 	double theta_first= atan2(path.C2[0][1] - initial_centre.y, path.C2[0][0] - initial_centre.x);
 	double theta_last= atan2(path.C2[path.lenc2-1][1] - initial_centre.y, path.C2[path.lenc2-1][0] - initial_centre.x);
 
 	sign= orientation(path.C2[0][0], path.C2[0][1], path.C2[path.lenc2/2][0], path.C2[path.lenc2/2][1],path.C2[path.lenc2-1][0], path.C2[path.lenc2-1][1]); //Orientation returns -1 for clockwise turns and 1 for anticlockwise turns	
 
-
-	//	sign=-1; //decreasing -- clockwise turn         
-	//sign=1; //increasing -- anticlockwise turn
 
 	int i;
 	double step = fabs(theta_first-theta_last)/(path.lenc2-1);
@@ -382,14 +389,6 @@ Curve wind_curveA(Seg path,double wind_heading,double wind_velocity,double omega
 	augmented_C1.len_curve=0;    
 
 	double total_time=c1_time(path,airspeed,radius);
-	/*
-	//-----------------saving time to file
-		FILE *output_file, *end_point_file;
-		output_file = fopen("pilot_instructions.txt", "a");
-		fprintf(output_file,"bank 30 degree for %f seconds\n",total_time);
-		fclose(output_file);
-	//-----------------saved time to file
-	 */
 
 	Pair last_point;
 	last_point.x=path.C1[path.lenc1-1][0];
@@ -427,6 +426,14 @@ Curve wind_curveA(Seg path,double wind_heading,double wind_velocity,double omega
 
 	augmented_C1.shift= horizontal(augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.C1[path.lenc1-1][0],path.C1[path.lenc1-1][1]);
 	fclose(output_file);
+
+	//-----------------PILOT INSTRUCTIONS
+	FILE *instructions_file;
+	instructions_file = fopen("pilot_instructions.txt", "a");
+	fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.SLS[path.lensls-1][2], azmth(path.SLS[path.lensls-1][2]),augmented_C1.points[augmented_C1.len_curve-1][4]*364173.0);
+	fclose(instructions_file);
+	sprintf(augmented_C1.instructions,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C1.points[augmented_C1.len_curve-1][0],augmented_C1.points[augmented_C1.len_curve-1][1],path.SLS[path.lensls-1][2], azmth(path.SLS[path.lensls-1][2]),augmented_C1.points[augmented_C1.len_curve-1][4]*364173.0); 
+	//-----------------SAVED INSTRUCTIONS
 	return augmented_C1;
 } 
 
@@ -461,15 +468,6 @@ Curve wind_SLS(Seg path,double wind_heading,double wind_velocity, Curve augmente
 
 	double original_distance= horizontal(path.SLS[0][0], path.SLS[0][1], path.SLS[path.lensls-1][0], path.SLS[path.lensls-1][1]); //original distance travelled wrt windmass, length of original SLS
 
-	//**************************************************************************************FIX. WRONG TIME OUTPUT****************
-	double time=original_distance/(airspeed); //time taken to travel original distance
-	//-----------------saving time to file
-	FILE *output_file, *end_point_file;
-	output_file = fopen("pilot_instructions.txt", "a");
-	fprintf(output_file,"straight line glide for %f seconds\n",time);
-	fclose(output_file);
-	//-----------------saved time to file
-	//**************************************************************************************FIX. WRONG TIME OUTPUT ABOVE****************
     //finding end of augmented SLS
     Pair parallel_end= along_heading_at_distance(augmented_SLS.points[0][0], augmented_SLS.points[0][1], airspeed_heading, original_distance); //end of parallel line to original SLS
 
@@ -489,6 +487,15 @@ Curve wind_SLS(Seg path,double wind_heading,double wind_velocity, Curve augmente
 	augmented_SLS.len_curve=augmented_SLS.len_curve+1;	
 
 	augmented_SLS.shift= horizontal(augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][0],path.SLS[path.lensls-1][1]) ; //total shift until this point
+	//-----------------PILOT INSTRUCTIONS
+	FILE *instructions_file;
+	instructions_file = fopen("pilot_instructions.txt", "a");
+	fprintf(instructions_file,"Straight line glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][2],azmth(path.SLS[path.lensls-1][2]),augmented_SLS.points[augmented_SLS.len_curve-1][4]*364173.0);
+	fclose(instructions_file);
+	sprintf(augmented_SLS.instructions,"Straight line glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_SLS.points[augmented_SLS.len_curve-1][0],augmented_SLS.points[augmented_SLS.len_curve-1][1],path.SLS[path.lensls-1][2],azmth(path.SLS[path.lensls-1][2]),augmented_SLS.points[augmented_SLS.len_curve-1][4]*364173.0);
+
+	//-----------------SAVED INSTRUCTIONS
+
 	return augmented_SLS; //CONTAINS ONLY TWO POINTS
 }
 
@@ -530,7 +537,7 @@ double c2_time(Seg path, double airspeed, double radius)
 }
 
 //Function that augments second 2d curve of Dubins for wind and returns a modified 2d curve
-Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double omega, double radius, Curve augmented_SLS, int angle, double baseline_g, double airspeed)
+Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double omega, double radius, Curve augmented_SLS, int angle, double baseline_g, double airspeed, double rnwy_heading)
 {
 
 	//change of heading in original curve 2
@@ -552,14 +559,6 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 	augmented_C2.len_curve=0;
 
 	double total_time=c2_time(path,airspeed,radius);
-	/*
-	//-----------------saving time to file
-		FILE *output_file, *end_point_file;
-		output_file = fopen("pilot_instructions.txt", "a");
-		fprintf(output_file,"bank %d degrees for %f seconds\n",angle,total_time);
-		fclose(output_file);
-	//-----------------saved time to file
-	*/
 
 	Pair first_point;
 	first_point.x=path.C2[0][0];
@@ -593,16 +592,26 @@ Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double om
 	}	
 	fclose(output_file);
 	augmented_C2.centre=initial_centre;
+	//-----------------PILOT INSTRUCTIONS
+	FILE *instructions_file;
+	instructions_file = fopen("pilot_instructions.txt", "a");
+	fprintf(instructions_file,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C2.points[augmented_C2.len_curve-1][0],augmented_C2.points[augmented_C2.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_C2.points[augmented_C2.len_curve-1][4]*364173.0);
+	fclose(instructions_file);
+	sprintf(augmented_C2.instructions,"30 degree bank for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_C2.points[augmented_C2.len_curve-1][0],augmented_C2.points[augmented_C2.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_C2.points[augmented_C2.len_curve-1][4]*364173.0);
+
+	//-----------------SAVED INSTRUCTIONS
+
+
 	return augmented_C2;
 
 }
 
 //Function to mdel effect of wind on spiral
-Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double omega, double radius, Curve augmented_curve_B, int angle, double baseline_g, double airspeed)
+Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double omega, double radius, Curve augmented_curve_B, int angle, double baseline_g, double airspeed, double rnwy_heading)
 {
 	
-	Curve Spiral;
-	Spiral.len_curve=0; //initializing the container
+	Curve augmented_Spiral;
+	augmented_Spiral.len_curve=0; //initializing the container
 
 	double step= 2*PI/50; //100 points per spiral circle
 	Pair initial_centre= augmented_curve_B.centre;//centre of turn
@@ -618,7 +627,6 @@ Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double om
 	double time_step=((2*PI*radius)/airspeed)/50; //50 points per spiral
 
 	double total_time=0;
-
 	for(i=0;i<path.lenspiral;i++)
 	{
 		double time= time_step*i; //total time from beginnig
@@ -626,26 +634,27 @@ Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double om
 		double centre_shift= time*wind_velocity;
 		Pair current_centre=along_heading_at_distance(initial_centre.x, initial_centre.y, wind_heading, centre_shift);		
 
-		Spiral.points[i][0]=current_centre.x+(radius*cos((i*step)-start_theta)); //check - start or + start
-		Spiral.points[i][1]=current_centre.y+(radius*sin((i*step)-start_theta));	
-		Spiral.points[i][2]=path.Spiral[i][2]; //MIGHT NEED TO CHANGE> ROUGH CALCULATION 
+		augmented_Spiral.points[i][0]=current_centre.x+(radius*cos((i*step)-start_theta)); //check - start or + start
+		augmented_Spiral.points[i][1]=current_centre.y+(radius*sin((i*step)-start_theta));	
+		augmented_Spiral.points[i][2]=path.Spiral[i][2]; //MIGHT NEED TO CHANGE> ROUGH CALCULATION 
 
-		Spiral.points[i][4]=path.Spiral[i][4];
+		augmented_Spiral.points[i][4]=path.Spiral[i][4];
 
-		Spiral.len_curve=Spiral.len_curve+1;
+		augmented_Spiral.len_curve=augmented_Spiral.len_curve+1;
 		
 	}
-	//-----------------saving time to file
-	FILE *output_file, *end_point_file;
-	output_file = fopen("pilot_instructions.txt", "a");
-	fprintf(output_file,"spiral %d degrees for %f seconds\n",angle,total_time);
-	fclose(output_file);
-	//-----------------saved time to file
-	if(Spiral.len_curve>0)
+	//-----------------PILOT INSTRUCTIONS
+	FILE *instructions_file;
+	instructions_file = fopen("pilot_instructions.txt", "a");
+	fprintf(instructions_file,"30 degree bank spiral for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_Spiral.points[augmented_Spiral.len_curve-1][0],augmented_Spiral.points[augmented_Spiral.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_Spiral.points[augmented_Spiral.len_curve-1][4]*364173.0);
+	fclose(instructions_file);
+	sprintf(augmented_Spiral.instructions,"30 degree bank spiral for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",total_time,augmented_Spiral.points[augmented_Spiral.len_curve-1][0],augmented_Spiral.points[augmented_Spiral.len_curve-1][1],rnwy_heading,azmth(rnwy_heading),augmented_Spiral.points[augmented_Spiral.len_curve-1][4]*364173.0);
+	//-----------------SAVED INSTRUCTIONS
+	if(augmented_Spiral.len_curve>0)
 	{
-		Spiral.spiral=true;
+		augmented_Spiral.spiral=true;
 	}
-	return Spiral;
+	return augmented_Spiral;
 }
 
 
@@ -681,17 +690,11 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		double movement_heading=airspeed_heading-theta; //actual direction of motion wrt ground
 
 		double original_distance= horizontal(rnwy_x, rnwy_y, original_start_x, original_start_y); //original distance travelled wrt windmass, length of original SLS
-		double time=original_distance/(airspeed); //time taken to travel original distance
-	//-----------------saving time to file
-	FILE *output_file, *end_point_file;
-	output_file = fopen("pilot_instructions.txt", "a");
-	fprintf(output_file,"fly straight with dirty configuration for %f seconds\n",time);
-	fclose(output_file);
-	//-----------------saved time to file
+
 		//first point from the last point of augmented_C1= last point in augmented_c1:
 		augmented_extended.points[0][0]=augmented_spiral.points[augmented_spiral.len_curve-1][0];
 		augmented_extended.points[0][1]=augmented_spiral.points[augmented_spiral.len_curve-1][1];
-		augmented_extended.points[0][2]=path.C2[0][2]; //heading of aircraft in original SLS
+		augmented_extended.points[0][2]=rnwy_heading; //heading of aircraft in original SLS
 		augmented_extended.points[0][4]=augmented_spiral.points[augmented_spiral.len_curve-1][4];
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
 
@@ -704,11 +707,20 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		//last point in augmented SLS
 		augmented_extended.points[1][0]=end_aug_extended.x;
 		augmented_extended.points[1][1]=end_aug_extended.y;
-		augmented_extended.points[1][2]=path.C2[0][2]; //heading of aircraft in original SLS
+		augmented_extended.points[1][2]=rnwy_heading; //heading of aircraft in original SLS
 
 		augmented_extended.points[1][4]=0.0;		
 		
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
+		//-----------------PILOT INSTRUCTIONS
+		FILE *instructions_file;
+		instructions_file = fopen("pilot_instructions.txt", "a");
+		fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		fclose(instructions_file);
+		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+
+		//-----------------SAVED INSTRUCTIONS
+
 	}
 	else //no spiral, starts from C2
 	{
@@ -735,19 +747,11 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		double movement_heading=airspeed_heading-theta; //actual direction of motion wrt ground
 
 		double original_distance= horizontal(rnwy_x, rnwy_y, original_start_x, original_start_y); //original distance travelled wrt windmass, length of original SLS
-		double time=original_distance/(airspeed); //time taken to travel original distance
-
-	//-----------------saving time to file
-	FILE *output_file, *end_point_file;
-	output_file = fopen("pilot_instructions.txt", "a");
-	fprintf(output_file,"fly straight with dirty configuration for %f seconds\n",time);
-	fclose(output_file);
-	//-----------------saved time to file
 
 		//first point from the last point of augmented_C1= last point in augmented_c1:
 		augmented_extended.points[0][0]=augmented_C2.points[augmented_C2.len_curve-1][0];
 		augmented_extended.points[0][1]=augmented_C2.points[augmented_C2.len_curve-1][1];
-		augmented_extended.points[0][2]=path.C2[0][2]; //heading of aircraft in original SLS
+		augmented_extended.points[0][2]=rnwy_heading; //heading of aircraft in original SLS
 		augmented_extended.points[0][4]=augmented_C2.points[augmented_C2.len_curve-1][4];
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
 
@@ -760,12 +764,18 @@ Curve wind_extended(Seg path,double wind_heading,double wind_velocity,Curve augm
 		//last point in augmented SLS
 		augmented_extended.points[1][0]=end_aug_extended.x;
 		augmented_extended.points[1][1]=end_aug_extended.y;
-		augmented_extended.points[1][2]=path.C2[0][2]; //heading of aircraft in original SLS
+		augmented_extended.points[1][2]=rnwy_heading; //heading of aircraft in original SLS
 
 		augmented_extended.points[1][4]=0.0;
 		augmented_extended.len_curve=augmented_extended.len_curve+1;	
+		//-----------------PILOT INSTRUCTIONS
+		FILE *instructions_file;
+		instructions_file = fopen("pilot_instructions.txt", "a");
+		fprintf(instructions_file,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		fclose(instructions_file);
+		sprintf(augmented_extended.instructions,"Dirty configuration straight glide for %f seconds. Should reach --> {%f,%f,(%f->Rad wrt E=0, %f->Deg wrt N=0),%f}\n",time_shift,augmented_extended.points[1][0],augmented_extended.points[1][1],augmented_extended.points[1][2],azmth(augmented_extended.points[1][2]),augmented_extended.points[1][4]*364173.0);
+		//-----------------SAVED INSTRUCTIONS
 	}
-
 
 	augmented_extended.extended=true;
 	return augmented_extended; //CONTAINS ONLY TWO POINTS
@@ -938,7 +948,7 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight)
 	path.lenspiral=0;// initializing
 	//printf("initialized\n");
 
-	double step= 2*PI/50; //100 points per spiral circle
+	double step= 2*PI/50; //50 points per spiral circle
 	//get starting theta from last point of dubins
 	double last_x= path.C2[path.lenc2-1][0];
 	double last_y= path.C2[path.lenc2-1][1];
@@ -1042,8 +1052,6 @@ Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_hea
 				current_y=new_point.y;
 			} 	
 		}//end of while
-        //TODO delete
-        return path;
 	}//end of if
 	else
 	{

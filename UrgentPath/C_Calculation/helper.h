@@ -50,6 +50,7 @@ typedef struct Curve
 	Pair centre;
 
 	double shift; //stores the shift of end where needed
+	char instructions[1000];
 }Curve;
 
 //collection of curves
@@ -157,6 +158,8 @@ double horizontal(double x1, double y1, double x2, double y2);
 //Mathematical function that calculates Horizontal Distance between two points in 3D
 double distance_3d(double x1, double y1, double z1, double x2, double y2, double z2);
 
+//Mathematical function that takes in heading WRT E=0 in radian and returns heading WRT N=0 in degrees
+double azmth(double E_rad);
 //---------------------------------------------------------------------------------------------------------------------------------
 
 //Function that finds centre of an arc given three points on that arc
@@ -185,10 +188,10 @@ Curve wind_SLS(Seg path,double wind_heading,double wind_velocity, Curve augmente
 Pair find_clockwise_centre(double x0, double y0, double heading, double radius);
 
 //Function that augments second 2d curve of Dubins for wind and returns a modified 2d curve
-Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double omega, double radius, Curve augmented_SLS, int angle, double baseline_g, double airspeed);
+Curve wind_curveB(Seg path, double wind_heading, double wind_velocity, double omega, double radius, Curve augmented_SLS, int angle, double baseline_g, double airspeed, double rnwy_heading);
 
 //Function to mdel effect of wind on spiral
-Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double omega, double radius, Curve augmented_curve_B, int angle, double baseline_g, double airspeed);
+Curve wind_spiral(Seg path,double wind_heading, double  wind_velocity, double omega, double radius, Curve augmented_curve_B, int angle, double baseline_g, double airspeed, double rnwy_heading);
 
 //Function to model effect of wind on extended segment
 Curve wind_extended(Seg path_with_spiral,double wind_heading,double wind_velocity,Curve augmented_spiral,Curve augmented_C2,double rnwy_x,double rnwy_y,double rnwy_heading, double baseline_g, double airspeed,double Rg_dirty);
