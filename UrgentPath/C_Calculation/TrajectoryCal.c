@@ -180,15 +180,10 @@ char* TrajectoryCal(){
 	dat_30.angle=30;
 	dat_30.min_rad=(BEST_GLIDING_AIRSPEED*BEST_GLIDING_AIRSPEED)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
 
-	if(true) //resetting pilot instructions
-	{
-		if (remove("pilot_instructions.txt") != 0)
-		{
 	Seg basic_trajectory=basic_path(dat_30); //get first_dubins
 
 	Seg2 wind_1=model_wind(basic_trajectory,dat_30);
-
-			
+    
 	double shift= wind_1.total_shift;
 	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
