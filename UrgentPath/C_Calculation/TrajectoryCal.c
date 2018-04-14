@@ -16,7 +16,7 @@ Seg basic_path(Packet data)
         int i, limit,j,k;
         
 //unpacking packet
-        double q1[3];
+    double q1[3];
 	double q2[3];
 	double min_radius=data.min_rad;
 	double start_altitude=data.start_altitude;
@@ -24,7 +24,7 @@ Seg basic_path(Packet data)
 	double WIND_VELOCITY=data.windspeed;
 	double baseline_g=data.baseline_g;
 
-        for(i=0;i<3;i++)
+    for(i=0;i<3;i++)
 	{
 		q1[i]=data.p1[i];
 		q2[i]=data.p2[i];
@@ -125,48 +125,47 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 	return wind_path;        
 }
 
-char* TrajectoryCal(){
+char* TrajectoryCal(double user_x,
+                    double user_y,
+                    double user_z,
+                    double user_heading,
+                    double runway_x,
+                    double runway_y,
+                    double runway_z,
+                    double runway_heading,
+                    double interval,
+                    double best_gliding_speed,
+                    double best_gliding_ratio,
+                    double dirty_gliding_ratio,
+                    double wind_speed,
+                    double wind_heading
+                    ){
     
 //---------------------------- SET CONFIGS BELOW -------------------------
 //------------------------------------------------------------------------
 	double q1[] =  {  -73.8767,40.8513,1.5586}; //INITIAL x,y, heading //CONVERT TO 0,0, East-X
-	double q2[] = { -73.8571,40.7721,2.3736}; //aproximate LGA31 LZ x,y heading 
-    double EMERGENCY_ALTITUDE =  10000.0/364173.0;// in feet
+	double q2[] = { -73.8571,40.7721,2.3736}; //aproximate LGA31 LZ x,y heading
 
-//----- CHANGE EMERGENCY CONFIG ABOVE ------------------------------------
-
-	double INTERVAL =0.001; //use 0.001 for A320 and 0.0001 for c172. NEED TO CHANGE ARRAY SIZES in helper.h STRUCTS!!!!!!!!!
-//------//INTERVAL= interval between points in DUBINS generator. sent to demo()
-	double BEST_GLIDING_AIRSPEED= 240.00; //in knots
-	double WIND_SPEED =40.0; //in knots
-	double BEST_GLIDE_RATIO=17.25; 
-	double DIRTY_CONFIG_GLIDE_RATIO=9;
-
-	//--WIND_HEADING in radians wrt EAST--
-//	double WIND_HEADING = 3.14159265;            //W --> E 
-	double WIND_HEADING = 0.0;                   //E --> W
-//	double WIND_HEADING = 3.14159265/2.0;        //S --> N
-//	double WIND_HEADING = (3.14159265/2.0)*3.0;  //N --> S
-
-//----- CHANGE AIRPLANE and WIND CONSTANTS ABOVE ------------------------- 
-//------------------------------------------------------------------------
-  
-//        EMERGENCY_ALTITUDE =  EMERGENCY_ALTITUDE /364173.0;// Converting to units
+    
     int i, filename=0;
     char alphabet='h';
 	Packet dat; //creating a packet with constants
-	for(i=0;i<3;i++)
-	{
-		dat.p1[i]=q1[i];
-		dat.runway[i]=q2[i];
-	}	
-    dat.interval= INTERVAL;
-    dat.start_altitude=EMERGENCY_ALTITUDE; //initial altitude 	
-	dat.windspeed=(WIND_SPEED*1.68781/364173.0);
-	dat.wind_heading=WIND_HEADING;
-	dat.airspeed= (BEST_GLIDING_AIRSPEED*1.68781/364173.0);
-	dat.baseline_g=BEST_GLIDE_RATIO;
-	dat.dirty_g=DIRTY_CONFIG_GLIDE_RATIO;
+	
+    dat.p1[0] = user_x;
+    dat.p1[1] = user_y;
+    dat.p1[2] = user_heading;
+    
+    dat.runway[0] = runway_x;
+    dat.runway[1] = runway_y;
+    dat.runway[2] = runway_heading;
+    
+    dat.interval= interval;
+    dat.start_altitude=user_z; //initial altitude 	
+	dat.windspeed=(wind_speed*1.68781/364173.0);
+	dat.wind_heading=wind_heading;
+	dat.airspeed= (best_gliding_speed*1.68781/364173.0);
+	dat.baseline_g=best_gliding_ratio;
+	dat.dirty_g=dirty_gliding_ratio;
 	dat.file_name=filename;
 	dat.alphabet=alphabet;
 
@@ -178,7 +177,7 @@ char* TrajectoryCal(){
 		dat_30.p2[i]=q2[i];
 	}
 	dat_30.angle=30;
-	dat_30.min_rad=(BEST_GLIDING_AIRSPEED*BEST_GLIDING_AIRSPEED)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
+	dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
 
 	Seg basic_trajectory=basic_path(dat_30); //get first_dubins
 
@@ -201,7 +200,7 @@ char* TrajectoryCal(){
 		while(shift>0.000137)
 		{
 			distance=distance+shift;
-			double reverse_wind_heading= WIND_HEADING + PI; 
+			double reverse_wind_heading= wind_heading + PI; 
 
 			Pair new_point=along_heading_at_distance(q2[0], q2[1], reverse_wind_heading, (distance));
 
@@ -214,7 +213,7 @@ char* TrajectoryCal(){
 			dat_temp.p2[2]=q2[2];
 	
 			dat_temp.angle=30;
-			dat_temp.min_rad=(BEST_GLIDING_AIRSPEED*BEST_GLIDING_AIRSPEED)/(11.29* tan(dat_temp.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
+			dat_temp.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_temp.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
 
 			Seg basic_temp=basic_path(dat_temp); //get first_dubins
 

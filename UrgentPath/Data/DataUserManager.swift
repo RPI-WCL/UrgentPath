@@ -36,7 +36,21 @@ class DataUserManager {
     }
     
     func getInstruction() -> String {
-        var c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal()
+        var c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( -73.8767,
+                                                                40.8513,
+                                                                0.02745947667,
+                                                                1.5586,
+                                                                -73.8571,
+                                                                40.7721,
+                                                                0,
+                                                                2.3736,
+                                                                0.001,
+                                                                240.0,
+                                                                17.25,
+                                                                9.0,
+                                                                40.0,
+                                                                0.0
+        )
         if(c_str == nil) {
                 NSLog("calculation in c failed\n")
                 return "calculation in c failed"
