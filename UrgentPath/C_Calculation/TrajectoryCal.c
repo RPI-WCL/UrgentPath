@@ -184,11 +184,6 @@ char* TrajectoryCal(){
 	{
 		if (remove("pilot_instructions.txt") != 0)
 		{
-			printf("Unable to delete Instructions file");
-			return 0;
-		}
-	}
-
 	Seg basic_trajectory=basic_path(dat_30); //get first_dubins
 
 	Seg2 wind_1=model_wind(basic_trajectory,dat_30);
@@ -199,7 +194,9 @@ char* TrajectoryCal(){
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
 
     printf("[%s]\n",wind_1.instructions);
-    return wind_1.instructions;
+    static char ret[1000];
+    strcpy(ret,wind_1.instructions);
+    return ret;
     
 	if(false) //put false for not running catch runway code
 	{
@@ -208,15 +205,6 @@ char* TrajectoryCal(){
 		float distance=0.0; //adjuste this depending on shift. BASIS OF OUR HUERISTICS
 		while(shift>0.000137)
 		{
-			if(true) //resetting pilot instructions
-			{
-				if (remove("pilot_instructions.txt") != 0)
-				{
-					printf("Unable to delete Instructions file");
-					return 0;
-				}
-			}
-
 			distance=distance+shift;
 			double reverse_wind_heading= WIND_HEADING + PI; 
 
@@ -244,6 +232,4 @@ char* TrajectoryCal(){
 		} 
 
 	}
-
-	return 0;
 }

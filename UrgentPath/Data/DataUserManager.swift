@@ -36,7 +36,13 @@ class DataUserManager {
     }
     
     func getInstruction() -> String {
-        return "not implemented yet"
+        var c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal()
+        if(c_str == nil) {
+                NSLog("calculation in c failed\n")
+                return "calculation in c failed"
+        }
+        let str = String(cString: c_str!)
+        return str
     }
     
     func getGeoLocation() -> (Double,Double,Double) {
