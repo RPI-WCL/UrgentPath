@@ -11,7 +11,7 @@
 //main EnTRY function
 Seg basic_path(Packet data)
 {
-    int i, limit,k;
+    int i;
     
 //unpacking packet
     double q1[3];
@@ -19,8 +19,6 @@ Seg basic_path(Packet data)
 	double min_radius=data.min_rad;
 	double start_altitude=data.start_altitude;
 	int angle=data.angle;
-	double WIND_VELOCITY=data.windspeed;
-	double baseline_g=data.baseline_g;
 
     for(i=0;i<3;i++)
 	{
