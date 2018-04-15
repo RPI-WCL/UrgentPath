@@ -18,6 +18,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var planeHeadingText: UITextField!
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
+    //let queue = DispatchQueue(label: "get_instruction", qos: .utility)
+    //let semaphore = DispatchSemaphore(value: 1)
     
     let locationManager = CLLocationManager()
     
@@ -25,6 +27,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
         super.viewDidLoad()
         startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
+        
         planeLocXText.text = "?"
         planeLocYText.text = "?"
         planeLocZText.text = "?"
@@ -39,14 +42,16 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     
     // update instruction shown on FirstView
     @objc func updateView() {
+        print("run instruction()")
         //update instruction
-        instructionLabel.text = DataUserManager.shared.getInstruction()
-        instructionLabel.lineBreakMode = .byWordWrapping
+        self.instructionLabel.text = DataUserManager.shared.getInstruction()
+        self.instructionLabel.lineBreakMode = .byWordWrapping
         
         //update wind
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
-        windSpeedText.text = String(wind_speed)
-        windHeadingText.text = String(wind_heading)
+        self.windSpeedText.text = String(wind_speed)
+        self.windHeadingText.text = String(wind_heading)
+        print("finish instruction()")
     }
     
     func startLocationUpdate() {

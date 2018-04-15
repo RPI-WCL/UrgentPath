@@ -11,10 +11,8 @@
 //main EnTRY function
 Seg basic_path(Packet data)
 {
-	Packet pack; //for storing complete path
- 
-        int i, limit,j,k;
-        
+    int i, limit,k;
+    
 //unpacking packet
     double q1[3];
 	double q2[3];
@@ -49,19 +47,19 @@ Seg basic_path(Packet data)
 
 Seg2 model_wind(Seg path_with_spiral, Packet data)
 {
-        int i, limit,j,k;
+        int i;
         
 //unpacking packet
-        double q1[3];
+    double q1[3];
 	double q2[3];
 	double min_radius=data.min_rad;
 	double start_altitude=data.start_altitude;
 	int angle=data.angle;
-	double WIND_VELOCITY = data.windspeed;
+	double WIND_VELOCITY = data.windspeed;	
 	double WIND_HEADING =  data.wind_heading;
 	double baseline_g=data.baseline_g;
 
-        for(i=0;i<3;i++)
+    for(i=0;i<3;i++)
 	{
 		q1[i]=data.p1[i];
 		q2[i]=data.p2[i];
@@ -120,7 +118,6 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 	
 		}
 	}
-
 //	printf("Wind modelled! \n");
 	return wind_path;        
 }
@@ -140,14 +137,7 @@ char* TrajectoryCal(double user_x,
                     double wind_speed,
                     double wind_heading
                     ){
-    
-//---------------------------- SET CONFIGS BELOW -------------------------
-//------------------------------------------------------------------------
-	double q1[] =  {  -73.8767,40.8513,1.5586}; //INITIAL x,y, heading //CONVERT TO 0,0, East-X
-	double q2[] = { -73.8571,40.7721,2.3736}; //aproximate LGA31 LZ x,y heading
-
-    
-    int i, filename=0;
+    int filename=0;
     char alphabet='h';
 	Packet dat; //creating a packet with constants
 	
@@ -171,11 +161,11 @@ char* TrajectoryCal(double user_x,
 
 	
 	Packet dat_30; //condition specific variables will be initialized in this packet
-	dat_30=dat;
-	for(i=0;i<3;i++)
-	{
-		dat_30.p2[i]=q2[i];
-	}
+	dat_30 = dat;
+    dat_30.p2[0] = runway_x;
+    dat_30.p2[1] = runway_y;
+    dat_30.p2[2] = runway_heading;
+    
 	dat_30.angle=30;
 	dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
 
@@ -202,7 +192,7 @@ char* TrajectoryCal(double user_x,
 			distance=distance+shift;
 			double reverse_wind_heading= wind_heading + PI; 
 
-			Pair new_point=along_heading_at_distance(q2[0], q2[1], reverse_wind_heading, (distance));
+			Pair new_point=along_heading_at_distance(runway_x, runway_y, reverse_wind_heading, (distance));
 
 			iter=iter+1;
 			Packet dat_temp; //condition specific variables will be initialized now
@@ -210,7 +200,7 @@ char* TrajectoryCal(double user_x,
 
 			dat_temp.p2[1]=new_point.y;
 			dat_temp.p2[0]=new_point.x;
-			dat_temp.p2[2]=q2[2];
+			dat_temp.p2[2]=runway_heading;
 	
 			dat_temp.angle=30;
 			dat_temp.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_temp.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
@@ -222,7 +212,6 @@ char* TrajectoryCal(double user_x,
 
 			shift= wind_temp.total_shift;
 			wind_alt=wind_temp.end_alt;
-
 		} 
 
 	}

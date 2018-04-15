@@ -16,6 +16,13 @@ struct DataUser {
     var wind_speed : Double
     var wind_heading : Double
     
+    enum Connection: Equatable {
+        case Phone
+        case XPlane
+    }
+    
+    var connectionType : Connection
+    
     init(user_loc_x : Double = 0,
          user_loc_y : Double = 0,
          user_loc_z : Double = 0,
@@ -28,5 +35,6 @@ struct DataUser {
         self.user_heading = user_heading
         self.wind_speed = wind_speed
         self.wind_heading = wind_heading
+        connectionType = Connection.Phone
     }
 }
