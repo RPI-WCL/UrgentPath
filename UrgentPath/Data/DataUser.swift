@@ -35,6 +35,6 @@ struct DataUser {
         self.user_heading = user_heading
         self.wind_speed = wind_speed
         self.wind_heading = wind_heading
-        connectionType = Connection.Phone
+        connectionType = Connection.XPlane
     }
 }

@@ -25,6 +25,10 @@ class DataUserManager {
         data.user_loc_z = loc_z
     }
     
+    func setFromJson(str:String) {
+        
+    }
+    
     func setHeading(heading:Double) {
         data.user_heading = heading
     }
@@ -33,6 +37,10 @@ class DataUserManager {
                     wind_heading:Double) {
         data.wind_speed = wind_speed
         data.wind_heading = wind_heading
+    }
+
+    func setConnectionType(type:DataUser.Connection) {
+        data.connectionType = type
     }
     
     func getInstruction() -> String {
@@ -68,6 +76,10 @@ class DataUserManager {
     
     func getWind() -> (Double ,Double) {
         return (data.wind_speed,data.wind_heading)
+    }
+    
+    func getConnectionType() -> DataUser.Connection {
+        return data.connectionType
     }
     
 }

@@ -8,8 +8,11 @@
 
 import UIKit
 import CoreLocation
+import SwiftSocket
 
-class FirstViewController: UIViewController, CLLocationManagerDelegate  {
+let MAX_UDP_PACKET_SIZE : Int = 1024
+
+class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocXText: UITextField!
@@ -18,7 +21,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     @IBOutlet weak var planeHeadingText: UITextField!
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
-    //let queue = DispatchQueue(label: "get_instruction", qos: .utility)
+    let udpQueue = DispatchQueue(label: "udp", qos: .utility)
     //let semaphore = DispatchSemaphore(value: 1)
     
     let locationManager = CLLocationManager()
@@ -42,16 +45,19 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     
     // update instruction shown on FirstView
     @objc func updateView() {
-        print("run instruction()")
+        //print("run instruction()")
         //update instruction
-        self.instructionLabel.text = DataUserManager.shared.getInstruction()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .medium
+        self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
         self.instructionLabel.lineBreakMode = .byWordWrapping
         
         //update wind
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
         self.windSpeedText.text = String(wind_speed)
         self.windHeadingText.text = String(wind_heading)
-        print("finish instruction()")
+        //print("finish instruction()")
     }
     
     func startLocationUpdate() {
@@ -68,11 +74,29 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate  {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        let userLoc:CLLocation = locations[0] as CLLocation
-        planeLocXText.text = String(userLoc.coordinate.latitude)
-        planeLocYText.text = String(userLoc.coordinate.longitude)
-        planeLocZText.text = String(userLoc.altitude)
-        DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
+        if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
+            print("phone GPS")
+            let userLoc:CLLocation = locations[0] as CLLocation
+            planeLocXText.text = String(userLoc.coordinate.latitude)
+            planeLocYText.text = String(userLoc.coordinate.longitude)
+            planeLocZText.text = String(userLoc.altitude)
+            DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
+        }
+        else if (DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
+            udpQueue.async {
+                let server = UDPServer(address: "127.0.0.1", port:60000)
+                let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
+                if let byteArray = byteArray,
+                    let jsonStr = String(data: Data(byteArray), encoding: .utf8) {
+                    DataUserManager.shared.setFromJson(str: jsonStr)
+                    //print("received[\(jsonStr)]\n")
+                }
+                server.close()
+            }
+        }
+        else{
+            print("Error: invalid connection type")
+        }
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {

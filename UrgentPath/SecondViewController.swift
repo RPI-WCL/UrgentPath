@@ -61,4 +61,13 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         dirtyGlidingRatioLabel.text = String(configData[row].dirty_gliding_ratio)
     }
     
+    @IBAction func connectionTypeSwitchChanged(switchConnection : UISwitch!) {
+        if switchConnection.isOn {
+            DataUserManager.shared.setConnectionType(type: DataUser.Connection.Phone)
+        }
+        else {
+            DataUserManager.shared.setConnectionType(type: DataUser.Connection.XPlane)
+        }
+    }
+    
 }

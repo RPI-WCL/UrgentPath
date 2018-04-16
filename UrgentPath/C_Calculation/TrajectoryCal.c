@@ -175,7 +175,7 @@ char* TrajectoryCal(double user_x,
 	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
 
-    printf("[%s]\n",wind_1.instructions);
+    //printf("[%s]\n",wind_1.instructions);
     static char ret[1000];
     strcpy(ret,wind_1.instructions);
     return ret;
