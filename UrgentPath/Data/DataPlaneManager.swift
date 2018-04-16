@@ -12,10 +12,11 @@ class DataPlaneManager {
     static let shared = DataPlaneManager()//singleton
     
     private var currentPlaneIndex : Int
-    private var data = [DataPlane]()
+    private var data : [DataPlane]
     
     private init() {
         currentPlaneIndex = -1
+        data = [DataPlane]()
         let config_plane_a320 = DataPlane(plane_type: "A320",
                              update_interval: 0.001,
                              best_gliding_airspeed: 240.0,

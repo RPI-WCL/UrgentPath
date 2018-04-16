@@ -224,7 +224,7 @@
                                 <rect key="frame" x="26" y="917" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="connectionTypeSwitchChangedWithSender:" destination="8rJ-Kc-sve" eventType="valueChanged" id="cVT-UG-Idg"/>
+                                    <action selector="connectionTypeSwitchChangedWithSwitchConnection:" destination="8rJ-Kc-sve" eventType="valueChanged" id="wAE-yi-FIS"/>
                                 </connections>
                             </switch>
                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Using GPS on phone" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="2ae-kF-Zqs">
@@ -246,6 +246,7 @@
                     <connections>
                         <outlet property="bestGlidingRatioLabel" destination="c6p-gI-rOx" id="0bk-Jg-qhP"/>
                         <outlet property="bestGlidingSpeedLabel" destination="FiK-7U-a3R" id="OQs-GC-hxj"/>
+                        <outlet property="connectionTypeSwitch" destination="vFA-vC-EXd" id="y5c-Ck-5pj"/>
                         <outlet property="dirtyGlidingRatioLabel" destination="Lhb-B4-LQZ" id="qVt-DH-dPh"/>
                         <outlet property="pickConfig" destination="26E-hr-wzB" id="KRT-nl-P7P"/>
                         <outlet property="planeTypeLabel" destination="P0G-Yv-NdD" id="UKv-BL-NyV"/>

@@ -26,17 +26,14 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
     
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        initText()
+        
         startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
-        
-        planeLocXText.text = "?"
-        planeLocYText.text = "?"
-        planeLocZText.text = "?"
-        planeHeadingText.text = "?"
-        windSpeedText.text = "?"
-        windHeadingText.text = "?"
     }
 
     override func didReceiveMemoryWarning() {
@@ -75,11 +72,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
-            print("phone GPS")
             let userLoc:CLLocation = locations[0] as CLLocation
-            planeLocXText.text = String(userLoc.coordinate.latitude)
-            planeLocYText.text = String(userLoc.coordinate.longitude)
-            planeLocZText.text = String(userLoc.altitude)
             DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
         }
         else if (DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
@@ -97,11 +90,24 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         else{
             print("Error: invalid connection type")
         }
+        let (x,y,z) = DataUserManager.shared.getGeoLocation()
+        planeLocXText.text = String(x)
+        planeLocYText.text = String(y)
+        planeLocZText.text = String(z)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         planeHeadingText.text = String(newHeading.magneticHeading)
         DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
+    }
+    
+    func initText() {
+        planeLocXText.text = "0"
+        planeLocYText.text = "0"
+        planeLocZText.text = "0"
+        planeHeadingText.text = "0"
+        windSpeedText.text = "0"
+        windHeadingText.text = "0"
     }
 }
 

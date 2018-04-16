@@ -17,6 +17,7 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     @IBOutlet weak var bestGlidingSpeedLabel: UITextField!
     @IBOutlet weak var bestGlidingRatioLabel: UITextField!
     @IBOutlet weak var dirtyGlidingRatioLabel: UITextField!
+    @IBOutlet weak var connectionTypeSwitch: UISwitch!
     
     var configData: [DataPlane] = [DataPlane]()
     
@@ -62,6 +63,9 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     }
     
     @IBAction func connectionTypeSwitchChanged(switchConnection : UISwitch!) {
+        DataUserManager.shared.setGeoLocation(loc_x: 0, loc_y: 0, loc_z: 0)
+        DataUserManager.shared.setHeading(heading: 0)
+        DataUserManager.shared.setWind(wind_speed: 0, wind_heading: 0)
         if switchConnection.isOn {
             DataUserManager.shared.setConnectionType(type: DataUser.Connection.Phone)
         }

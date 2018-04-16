@@ -12,9 +12,10 @@ import CoreLocation
 class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
-    private var data = [DataRunway]()
+    private var data : [DataRunway]
     
     private init() {
+        data = [DataRunway]()
         let runway_LGA31 = DataRunway(runway_name: "LGA31",
                                       runway_loc_x: -73.8571,
                                       runway_loc_y: 40.7721,

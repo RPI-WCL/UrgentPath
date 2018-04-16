@@ -11,10 +11,10 @@ import Foundation
 class DataUserManager {
     static let shared = DataUserManager()//singleton
     
-    private var data = DataUser()
+    private var data : DataUser
     
     private init() {
-        
+        data = DataUser()
     }
     
     func setGeoLocation(loc_x:Double,
