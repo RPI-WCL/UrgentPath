@@ -3,10 +3,10 @@
 "KQZ-1w-vlD.text" = "Guidance";
 
 /* Class = "UITabBarItem"; title = "First"; ObjectID = "acW-dT-cKf"; */
-"acW-dT-cKf.title" = "First";
+"acW-dT-cKf.title" = "Guidance";
 
 /* Class = "UITabBarItem"; title = "Second"; ObjectID = "cPa-gy-q4n"; */
-"cPa-gy-q4n.title" = "Second";
+"cPa-gy-q4n.title" = "Settings";
 
 /* Class = "UILabel"; text = "Plane Name"; ObjectID = "w2B-ml-Tpp"; */
 "w2B-ml-Tpp.text" = "Plane Name";
