@@ -47,7 +47,11 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .medium
+//        let startTime = Date()
         self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
+//        let endTime = Date()
+//        let elapsed = endTime.timeIntervalSince(startTime)
+//        print("Time elapsed:[\(elapsed)]")
         self.instructionLabel.lineBreakMode = .byWordWrapping
         
         //update wind

@@ -175,18 +175,13 @@ char* TrajectoryCal(double user_x,
 	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
 
-    //printf("[%s]\n",wind_1.instructions);
-    static char ret[1000];
-    strcpy(ret,wind_1.instructions);
-    return ret;
-    
-	if(false) //put false for not running catch runway code
-	{
+    if(true) {  //put false for not running catch runway code
+        Seg2 wind_temp;
 		//catch runway code starts here
-		int iter=1;
+		int iter = 1;
 		float distance=0.0; //adjuste this depending on shift. BASIS OF OUR HUERISTICS
-		while(shift>0.000137)
-		{
+        while(shift>0.000137) {
+            //printf("%d\n",iter);
 			distance=distance+shift;
 			double reverse_wind_heading= wind_heading + PI; 
 
@@ -205,12 +200,19 @@ char* TrajectoryCal(double user_x,
 
 			Seg basic_temp=basic_path(dat_temp); //get first_dubins
 
-			Seg2 wind_temp=model_wind(basic_temp,dat_temp);
+			wind_temp=model_wind(basic_temp,dat_temp);
 	
 
 			shift= wind_temp.total_shift;
 			wind_alt=wind_temp.end_alt;
-		} 
-
+		}
+        static char ret[1000];
+        strcpy(ret,wind_temp.instructions);
+        return ret;
 	}
+    else{
+        static char ret[1000];
+        strcpy(ret,wind_1.instructions);
+        return ret;
+    }
 }

@@ -838,23 +838,23 @@ void save_wind_in_file(Curve augmented_curve_A, Curve augmented_SLS, Curve augme
 
 void get_first_instruction(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, char alphabet, char* ret){
     if(augmented_curve_A.len_curve > 0){
-        printf("1\n");
+        //printf("1\n");
         strcpy(ret,augmented_curve_A.instructions);
     }
     else if (augmented_SLS.len_curve > 0){
-        printf("2\n");
+        //printf("2\n");
         strcpy(ret,augmented_SLS.instructions);
     }
     else if (augmented_curve_B.len_curve > 0){
-        printf("3\n");
+        //printf("3\n");
         strcpy(ret,augmented_curve_B.instructions);
     }
 	else if(augmented_spiral.spiral){
-        printf("4\n");
+        //printf("4\n");
         strcpy(ret,augmented_spiral.instructions);
 	}
     else if(augmented_extended.extended){
-        printf("5\n");
+        //printf("5\n");
         strcpy(ret,augmented_extended.instructions);
 	}
     else{
