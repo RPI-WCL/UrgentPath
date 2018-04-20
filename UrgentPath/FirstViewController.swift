@@ -11,6 +11,7 @@ import CoreLocation
 import SwiftSocket
 
 let MAX_UDP_PACKET_SIZE : Int = 1024
+let UDP_PORT_LISTENING : Int = 60000
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -22,7 +23,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
     let udpQueue = DispatchQueue(label: "udp", qos: .utility)
-    //let semaphore = DispatchSemaphore(value: 1)
     
     let locationManager = CLLocationManager()
     
@@ -81,14 +81,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         }
         else if (DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             udpQueue.async {
-                let server = UDPServer(address: "127.0.0.1", port:60000)
-                let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
-                if let byteArray = byteArray,
-                    let jsonStr = String(data: Data(byteArray), encoding: .utf8) {
-                    DataUserManager.shared.setFromJson(str: jsonStr)
-                    //print("received[\(jsonStr)]\n")
-                }
-                server.close()
+                handleXPlane()
             }
         }
         else{
@@ -112,6 +105,16 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeHeadingText.text = "0"
         windSpeedText.text = "0"
         windHeadingText.text = "0"
+    }
+    
+    func handleXPlane() {
+        let server = UDPServer(address: "127.0.0.1", port:UDP_PORT_LISTENING)
+        let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
+        if let byteArray = byteArray,
+        let tmpStr = String(data: Data(byteArray), encoding: .utf8) {
+            DataUserManager.shared.setFromXPlaneString(str: tmpStr)
+        }
+        server.close()
     }
 }
 
