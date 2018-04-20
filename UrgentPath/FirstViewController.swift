@@ -11,7 +11,7 @@ import CoreLocation
 import SwiftSocket
 
 let MAX_UDP_PACKET_SIZE : Int = 1024
-let UDP_PORT_LISTENING : Int = 60000
+let UDP_PORT_LISTENING : Int32 = 60000
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -81,7 +81,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         }
         else if (DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             udpQueue.async {
-                handleXPlane()
+                self.handleXPlane()
             }
         }
         else{
@@ -108,7 +108,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func handleXPlane() {
-        let server = UDPServer(address: "127.0.0.1", port:UDP_PORT_LISTENING)
+        let server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
         let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
         if let byteArray = byteArray,
         let tmpStr = String(data: Data(byteArray), encoding: .utf8) {

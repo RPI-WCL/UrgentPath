@@ -34,9 +34,9 @@ class DataUserManager {
             print("Error: input from XPlane is invalid")
             return
         }
-        setGeoLocation( Double(parts[0]),
-                        Double(parts[1]),
-                        Double(parts[2]))
+        setGeoLocation(loc_x: Double(parts[0])!,
+                       loc_y: Double(parts[1])!,
+                       loc_z: Double(parts[2])!)
     }
     
     //set plane heading with given input data
