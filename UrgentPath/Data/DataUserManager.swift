@@ -26,19 +26,6 @@ class DataUserManager {
         data.user_loc_z = loc_z
     }
     
-    //set plane location from modified XPlane input
-    func setFromXPlaneString(str:String) {
-        //print("[\(str)]\n")
-        let parts = str.components(separatedBy: ",")
-        if(parts.count != 3) {
-            print("Error: input from XPlane is invalid")
-            return
-        }
-        setGeoLocation(loc_x: Double(parts[0])!,
-                       loc_y: Double(parts[1])!,
-                       loc_z: Double(parts[2])!)
-    }
-    
     //set plane heading with given input data
     func setHeading(heading:Double) {
         data.user_heading = heading
@@ -46,14 +33,33 @@ class DataUserManager {
     
     //set wind speed/heading with given input data
     func setWind(wind_speed:Double,
-                    wind_heading:Double) {
+                 wind_heading:Double) {
         data.wind_speed = wind_speed
         data.wind_heading = wind_heading
     }
-
+    
     //set type of data use for guidance
     func setConnectionType(type:DataUser.Connection) {
         data.connectionType = type
+    }
+    
+    //set plane location from modified XPlane input
+    func setFromXPlaneString(str:String) {
+        //print("[\(str)]\n")
+        let parts = str.components(separatedBy: ",")
+        if(Double(parts[0]) == 18 && parts.count == 2){
+            //18 is heading
+            setHeading(heading: Double(parts[1])!)
+        }
+        else if(Double(parts[0]) == 20 && parts.count == 4){
+            //20 is geo location
+            setGeoLocation(loc_x: Double(parts[1])!,
+                           loc_y: Double(parts[2])!,
+                           loc_z: Double(parts[3])!)
+        }
+        else{
+            print("Error: unknown input from XPlane")
+        }
     }
     
     //generate guidance to pilots
@@ -73,8 +79,8 @@ class DataUserManager {
                                                                 40.0,
                                                                 0.0)
         if(c_str == nil) {
-                NSLog("calculation in c failed\n")
-                return "calculation in c failed"
+            NSLog("calculation in c failed\n")
+            return "calculation in c failed"
         }
         let str = String(cString: c_str!)
         return str
@@ -99,5 +105,4 @@ class DataUserManager {
     func getConnectionType() -> DataUser.Connection {
         return data.connectionType
     }
-    
 }
