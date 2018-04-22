@@ -21,6 +21,8 @@
 #include <unistd.h>
 #include <time.h>
 
+#define TRUE  (1==1)
+#define FALSE (!TRUE)
 
 //extern int helloworld2(void);
 
@@ -41,5 +43,5 @@ extern char* TrajectoryCal(double user_x,
                            double best_gliding_ratio,
                            double dirty_gliding_ratio,
                            double wind_speed,
-                           double wind_heading
-                           );
+                           double wind_heading,
+                           int catch_runway);

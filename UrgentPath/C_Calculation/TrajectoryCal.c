@@ -94,7 +94,7 @@ Seg2 model_wind(Seg path_with_spiral, Packet data)
 
 	}
 	//save_wind_in_file(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.file_name, data.alphabet);//saves augmented path in file
-    get_first_instruction(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.alphabet, wind_path.instructions);//get first instruction
+    get_instructions(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.alphabet, &wind_path);//get first instruction
     
 	//calculate total shift in path
 	if (wind_path.extended)
@@ -133,8 +133,8 @@ char* TrajectoryCal(double user_x,
                     double best_gliding_ratio,
                     double dirty_gliding_ratio,
                     double wind_speed,
-                    double wind_heading
-                    ){
+                    double wind_heading,
+                    int catch_runway){
     int filename=0;
     char alphabet='h';
 	Packet dat; //creating a packet with constants
@@ -175,7 +175,7 @@ char* TrajectoryCal(double user_x,
 	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
 	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
 
-    if(true) {  //put false for not running catch runway code
+    if(catch_runway == TRUE) {  //put false for not running catch runway code
         Seg2 wind_temp;
 		//catch runway code starts here
 		int iter = 1;
@@ -206,13 +206,29 @@ char* TrajectoryCal(double user_x,
 			shift= wind_temp.total_shift;
 			wind_alt=wind_temp.end_alt;
 		}
-        static char ret[1000];
-        strcpy(ret,wind_temp.instructions);
+        static char ret[1000*5];
+        strcpy(ret,wind_temp.instruction1);
+        strcat(ret,"\n");
+        strcat(ret,wind_temp.instruction2);
+        strcat(ret,"\n");
+        strcat(ret,wind_temp.instruction3);
+        strcat(ret,"\n");
+        strcat(ret,wind_temp.instruction4);
+        strcat(ret,"\n");
+        strcat(ret,wind_temp.instruction5);
         return ret;
 	}
     else{
-        static char ret[1000];
-        strcpy(ret,wind_1.instructions);
+        static char ret[1000*5];
+        strcpy(ret,wind_1.instruction1);
+        strcat(ret,"\n");
+        strcat(ret,wind_1.instruction2);
+        strcat(ret,"\n");
+        strcat(ret,wind_1.instruction3);
+        strcat(ret,"\n");
+        strcat(ret,wind_1.instruction4);
+        strcat(ret,"\n");
+        strcat(ret,wind_1.instruction5);
         return ret;
     }
 }

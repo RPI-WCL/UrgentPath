@@ -836,30 +836,27 @@ void save_wind_in_file(Curve augmented_curve_A, Curve augmented_SLS, Curve augme
 	fclose(output_file);
 }
 
-void get_first_instruction(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, char alphabet, char* ret){
+void get_instructions(Curve augmented_curve_A, Curve augmented_SLS, Curve augmented_curve_B, Curve augmented_spiral, Curve augmented_extended, char alphabet, Seg2* ret){
     if(augmented_curve_A.len_curve > 0){
         //printf("1\n");
-        strcpy(ret,augmented_curve_A.instructions);
+        strcpy(ret->instruction1,augmented_curve_A.instructions);
     }
-    else if (augmented_SLS.len_curve > 0){
+    if (augmented_SLS.len_curve > 0){
         //printf("2\n");
-        strcpy(ret,augmented_SLS.instructions);
+        strcpy(ret->instruction2,augmented_SLS.instructions);
     }
-    else if (augmented_curve_B.len_curve > 0){
+    if (augmented_curve_B.len_curve > 0){
         //printf("3\n");
-        strcpy(ret,augmented_curve_B.instructions);
+        strcpy(ret->instruction3,augmented_curve_B.instructions);
     }
-	else if(augmented_spiral.spiral){
+	if(augmented_spiral.spiral){
         //printf("4\n");
-        strcpy(ret,augmented_spiral.instructions);
+        strcpy(ret->instruction4,augmented_spiral.instructions);
 	}
-    else if(augmented_extended.extended){
+    if(augmented_extended.extended){
         //printf("5\n");
-        strcpy(ret,augmented_extended.instructions);
+        strcpy(ret->instruction5,augmented_extended.instructions);
 	}
-    else{
-        printf("error\n");
-    }
 }
 
 //========================END OF WIND MODELLING FUNCTIONS=================================================

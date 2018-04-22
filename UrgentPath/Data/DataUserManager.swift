@@ -77,7 +77,8 @@ class DataUserManager {
                                                                 17.25,
                                                                 9.0,
                                                                 40.0,
-                                                                0.0)
+                                                                0.0,
+                                                                1)
         if(c_str == nil) {
             NSLog("calculation in c failed\n")
             return "calculation in c failed"
