@@ -64,21 +64,21 @@ class DataUserManager {
     
     //generate guidance to pilots
     func getInstruction() -> String {
-        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( -73.8767,
-                                                                40.8513,
-                                                                0.02745947667,
-                                                                1.5586,
-                                                                -73.8571,
-                                                                40.7721,
-                                                                0,
-                                                                2.3736,
-                                                                0.001,
-                                                                240.0,
-                                                                17.25,
-                                                                9.0,
-                                                                40.0,
-                                                                0.0,
-                                                                1)
+        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( -73.8767,//user_x
+                                                                40.8513,//user_y
+                                                                0.02745947667,//user_z
+                                                                1.5586,//user_heading
+                                                                -73.8571,//runway_x
+                                                                40.7721,//runway_y
+                                                                0,//runway_z
+                                                                2.3736,//runway_heading
+                                                                0.001,//interval
+                                                                240.0,//best_gliding_speed
+                                                                17.25,//best_gliding_ratio
+                                                                9.0,//dirty_gliding_ratio
+                                                                40.0,//wind_speed
+                                                                0.0,//wind_heading
+                                                                1)//catch_runway
         if(c_str == nil) {
             NSLog("calculation in c failed\n")
             return "calculation in c failed"
