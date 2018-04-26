@@ -15,10 +15,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        //init singletons
-        DataPlaneManager.shared
-        DataUserManager.shared
-        DataRunwayManager.shared
         return true
     }
 

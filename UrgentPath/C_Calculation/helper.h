@@ -50,7 +50,6 @@ typedef struct Curve
 	Pair centre;
 
 	double shift; //stores the shift of end where needed
-	char instructions[1000];
 }Curve;
 
 //collection of curves
@@ -65,11 +64,6 @@ typedef struct Seg2
         bool extended;
 	double total_shift;
 	double end_alt;
-    char instruction1[1000];
-    char instruction2[1000];
-    char instruction3[1000];
-    char instruction4[1000];
-    char instruction5[1000];
 }Seg2;
 
 //for spiral
@@ -181,6 +175,9 @@ Thetas generate_thetasA(Seg path, Pair initial_centre);
 
 //Function to generate 100 discrete theta's for the first curve
 Thetas generate_thetasB(Seg path, Pair initial_centre);
+
+double c1_time(Seg path, double airspeed, double radius);
+double c2_time(Seg path, double airspeed, double radius);
 
 //Function that augments first 2d curve of Dubins for wind and returns a modified 2d curve
 //omega= rate of change of heading in standard rate turn

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C03C81120922ACE00967F6A /* dubins.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80A20922ACB00967F6A /* dubins.c */; };
+		9C03C81220922ACE00967F6A /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80B20922ACC00967F6A /* demo.c */; };
+		9C03C81320922ACE00967F6A /* helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80C20922ACC00967F6A /* helper.c */; };
 		9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402620735AC5003F7325 /* AppDelegate.swift */; };
 		9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402820735AC5003F7325 /* FirstViewController.swift */; };
 		9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402A20735AC5003F7325 /* SecondViewController.swift */; };
@@ -21,9 +24,6 @@
 		9CB83F2C20785DA400C372CD /* DataUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F2B20785DA400C372CD /* DataUserManager.swift */; };
 		9CB83F2E20786F4D00C372CD /* DataRunway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F2D20786F4D00C372CD /* DataRunway.swift */; };
 		9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */; };
-		9CC73FCD20741045003FBC2C /* dubins.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FCB20741045003FBC2C /* dubins.c */; };
-		9CC73FD320741063003FBC2C /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FCF20741062003FBC2C /* demo.c */; };
-		9CC73FD520741063003FBC2C /* helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FD220741062003FBC2C /* helper.c */; };
 		9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CECAAB820788370005E225E /* DataRunwayManager.swift */; };
 		B64E5B81D5CFBAE561287150 /* Pods_UrgentPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 368457D5E1DC5130F8D550CE /* Pods_UrgentPath.framework */; };
 /* End PBXBuildFile section */
@@ -49,6 +49,12 @@
 		368457D5E1DC5130F8D550CE /* Pods_UrgentPath.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UrgentPath.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		731D48A5D28D3C36FDC244D6 /* Pods-UrgentPath.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UrgentPath.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UrgentPath/Pods-UrgentPath.debug.xcconfig"; sourceTree = "<group>"; };
 		803DEDC73A6C61C271F3C486 /* Pods-UrgentPath.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UrgentPath.release.xcconfig"; path = "Pods/Target Support Files/Pods-UrgentPath/Pods-UrgentPath.release.xcconfig"; sourceTree = "<group>"; };
+		9C03C80A20922ACB00967F6A /* dubins.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dubins.c; sourceTree = "<group>"; };
+		9C03C80B20922ACC00967F6A /* demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = demo.c; sourceTree = "<group>"; };
+		9C03C80C20922ACC00967F6A /* helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helper.c; sourceTree = "<group>"; };
+		9C03C80D20922ACD00967F6A /* helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helper.h; sourceTree = "<group>"; };
+		9C03C80E20922ACE00967F6A /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
+		9C03C80F20922ACE00967F6A /* dubins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dubins.h; sourceTree = "<group>"; };
 		9C18402320735AC5003F7325 /* UrgentPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrgentPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18402620735AC5003F7325 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C18402820735AC5003F7325 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -72,12 +78,6 @@
 		9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UrgentPath-Bridging-Header.h"; sourceTree = "<group>"; };
 		9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TrajectoryCal.c; sourceTree = "<group>"; };
 		9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrajectoryCal.h; sourceTree = "<group>"; };
-		9CC73FCB20741045003FBC2C /* dubins.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = dubins.c; sourceTree = "<group>"; };
-		9CC73FCC20741045003FBC2C /* dubins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dubins.h; sourceTree = "<group>"; };
-		9CC73FCE20741061003FBC2C /* helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helper.h; sourceTree = "<group>"; };
-		9CC73FCF20741062003FBC2C /* demo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = demo.c; sourceTree = "<group>"; };
-		9CC73FD120741062003FBC2C /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
-		9CC73FD220741062003FBC2C /* helper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = helper.c; sourceTree = "<group>"; };
 		9CECAAB820788370005E225E /* DataRunwayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRunwayManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -205,12 +205,12 @@
 		9CC73FCA20740CA6003FBC2C /* C_Calculation */ = {
 			isa = PBXGroup;
 			children = (
-				9CC73FCF20741062003FBC2C /* demo.c */,
-				9CC73FD120741062003FBC2C /* demo.h */,
-				9CC73FD220741062003FBC2C /* helper.c */,
-				9CC73FCE20741061003FBC2C /* helper.h */,
-				9CC73FCB20741045003FBC2C /* dubins.c */,
-				9CC73FCC20741045003FBC2C /* dubins.h */,
+				9C03C80B20922ACC00967F6A /* demo.c */,
+				9C03C80E20922ACE00967F6A /* demo.h */,
+				9C03C80A20922ACB00967F6A /* dubins.c */,
+				9C03C80F20922ACE00967F6A /* dubins.h */,
+				9C03C80C20922ACC00967F6A /* helper.c */,
+				9C03C80D20922ACD00967F6A /* helper.h */,
 				9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */,
 				9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */,
 			);
@@ -390,19 +390,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C03C81220922ACE00967F6A /* demo.c in Sources */,
 				9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */,
-				9CC73FCD20741045003FBC2C /* dubins.c in Sources */,
-				9CC73FD520741063003FBC2C /* helper.c in Sources */,
 				9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */,
 				9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */,
 				9CB83F242077FDE600C372CD /* DataPlane.swift in Sources */,
 				9CB83F2C20785DA400C372CD /* DataUserManager.swift in Sources */,
+				9C03C81120922ACE00967F6A /* dubins.c in Sources */,
 				9CB83F2E20786F4D00C372CD /* DataRunway.swift in Sources */,
 				9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */,
 				9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */,
-				9CC73FD320741063003FBC2C /* demo.c in Sources */,
 				9CB83F262077FE0400C372CD /* DataUser.swift in Sources */,
 				9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */,
+				9C03C81320922ACE00967F6A /* helper.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

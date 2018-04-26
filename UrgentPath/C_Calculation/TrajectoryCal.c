@@ -11,113 +11,39 @@
 //main EnTRY function
 Seg basic_path(Packet data)
 {
-    int i;
+    Packet pack; //for storing complete path
     
-//unpacking packet
-    double q1[3];
-	double q2[3];
-	double min_radius=data.min_rad;
-	double start_altitude=data.start_altitude;
-	int angle=data.angle;
-
-    for(i=0;i<3;i++)
-	{
-		q1[i]=data.p1[i];
-		q2[i]=data.p2[i];
-	}
-	
-	Result dubins=demo(q1,q2,min_radius, data.interval); //sending configs to demo to generate DP
-        //dubins.arr =[long, lat, heading, ?unknown]
-
-	Seg dubin_parts=split(dubins); //sending DP to split into segmentss
-
-	dubin_parts=assign_altitude(dubin_parts, start_altitude, q1[0], q1[1], angle, data.baseline_g);//Send dubin_parts to assign_altitude() to get alti for each point
-
-	//generates possible spiral segment with altitude
-	Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g);
-
-	path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
-	//print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
-	
-//	printf("No wind trajectory generated!\n");
-	return path_with_spiral;
-}
-
-Seg2 model_wind(Seg path_with_spiral, Packet data)
-{
-        int i;
-        
-//unpacking packet
-    double q1[3];
-	double q2[3];
-	double min_radius=data.min_rad;
-	double start_altitude=data.start_altitude;
-	int angle=data.angle;
-	double WIND_VELOCITY = data.windspeed;	
-	double WIND_HEADING =  data.wind_heading;
-	double baseline_g=data.baseline_g;
-
-    for(i=0;i<3;i++)
-	{
-		q1[i]=data.p1[i];
-		q2[i]=data.p2[i];
-	}
-	
-	Seg2 wind_path;	
-	wind_path.spiral=false;
-	wind_path.extended=false;
-	wind_path.end_alt=0.0;
-
-    Curve augmented_curve_A= wind_curveA(path_with_spiral,WIND_HEADING, WIND_VELOCITY, OMEGA_30_DEGREE_BANK, min_radius,start_altitude, q1[0], q1[1], angle, baseline_g, data.airspeed); //send first curve to be modified by wind
-	wind_path.aug_C1=augmented_curve_A;
-
-	Curve augmented_SLS= wind_SLS(path_with_spiral,WIND_HEADING, WIND_VELOCITY,augmented_curve_A,baseline_g, data.airspeed, data.dirty_g); //send middle straight line segment to be modified
-	wind_path.aug_SLS=augmented_SLS;	
-	Curve augmented_curve_B= wind_curveB(path_with_spiral,WIND_HEADING, WIND_VELOCITY,OMEGA_30_DEGREE_BANK, min_radius, augmented_SLS, angle,baseline_g, data.airspeed,q2[2]); //send second curve to be modified
-	wind_path.aug_C2=augmented_curve_B;
-	Curve augmented_spiral;
-	augmented_spiral.spiral=false;
-	Curve augmented_extended;
-	augmented_extended.extended=false;
-
-	if(path_with_spiral.lenspiral>0) //augmenting spiral
-	{
-		augmented_spiral= wind_spiral(path_with_spiral,WIND_HEADING, WIND_VELOCITY,OMEGA_30_DEGREE_BANK, min_radius, augmented_curve_B, angle,baseline_g, data.airspeed,q2[2]);
-		wind_path.aug_SPIRAL=augmented_spiral;
-		wind_path.spiral=true;
-	}
-	if(path_with_spiral.extended) //augmenting extended runway
-	{
-		augmented_extended= wind_extended(path_with_spiral,WIND_HEADING, WIND_VELOCITY, augmented_spiral, augmented_curve_B, q2[0],q2[1],q2[2],baseline_g, data.airspeed, data.dirty_g);
-		wind_path.aug_EXTENDED=augmented_extended;
-		wind_path.extended=true;
-
-	}
-	//save_wind_in_file(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.file_name, data.alphabet);//saves augmented path in file
-    get_instructions(augmented_curve_A,  augmented_SLS, augmented_curve_B, augmented_spiral, augmented_extended, data.alphabet, &wind_path);//get first instruction
+    int i, limit,j,k;
     
-	//calculate total shift in path
-	if (wind_path.extended)
-	{
-		wind_path.total_shift= horizontal(data.runway[0], data.runway[1], wind_path.aug_EXTENDED.points[wind_path.aug_EXTENDED.len_curve-1][0], wind_path.aug_EXTENDED.points[wind_path.aug_EXTENDED.len_curve-1][1]);	
-		wind_path.end_alt=wind_path.aug_EXTENDED.points[wind_path.aug_EXTENDED.len_curve-1][4];
-	}
-	else
-	{
-		if(wind_path.spiral)
-		{
-			wind_path.total_shift= horizontal(data.runway[0], data.runway[1], wind_path.aug_SPIRAL.points[wind_path.aug_SPIRAL.len_curve-1][0], wind_path.aug_SPIRAL.points[wind_path.aug_SPIRAL.len_curve-1][1]);
-			wind_path.end_alt=wind_path.aug_SPIRAL.points[wind_path.aug_SPIRAL.len_curve-1][4];		
-		}
-		else
-		{
-			wind_path.total_shift= horizontal(data.runway[0], data.runway[1], wind_path.aug_C2.points[wind_path.aug_C2.len_curve-1][0], wind_path.aug_C2.points[wind_path.aug_C2.len_curve-1][1]);
-			wind_path.end_alt=wind_path.aug_C2.points[wind_path.aug_C2.len_curve-1][4];		
-	
-		}
-	}
-//	printf("Wind modelled! \n");
-	return wind_path;        
+    //unpacking packet
+    double q1[3];
+    double q2[3];
+    double min_radius=data.min_rad;
+    double start_altitude=data.start_altitude;
+    int angle=data.angle;
+    double WIND_VELOCITY=data.windspeed;
+    double baseline_g=data.baseline_g;
+    
+    for(i=0;i<3;i++)
+    {
+        q1[i]=data.p1[i];
+        q2[i]=data.p2[i];
+    }
+    
+    Result dubins=demo(q1,q2,min_radius, data.interval); //sending configs to demo to generate DP
+    //dubins.arr =[long, lat, heading, ?unknown]
+    
+    Seg dubin_parts=split(dubins); //sending DP to split into segmentss
+    
+    dubin_parts=assign_altitude(dubin_parts, start_altitude, q1[0], q1[1], angle, data.baseline_g);//Send dubin_parts to assign_altitude() to get alti for each point
+    
+    //generates possible spiral segment with altitude
+    Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g);
+    
+    path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
+//    print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
+    
+    return path_with_spiral;
 }
 
 char* TrajectoryCal(double user_x,
@@ -168,67 +94,55 @@ char* TrajectoryCal(double user_x,
 	dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
 
 	Seg basic_trajectory=basic_path(dat_30); //get first_dubins
-
-	Seg2 wind_1=model_wind(basic_trajectory,dat_30);
     
-	double shift= wind_1.total_shift;
-	double init_shift=shift; //used to stop loop if somehow exceeds instead of decreasing
-	double wind_alt=wind_1.end_alt ;//altitude of last point of wind augmented
-
-    if(catch_runway == TRUE) {  //put false for not running catch runway code
-        Seg2 wind_temp;
-		//catch runway code starts here
-		int iter = 1;
-		float distance=0.0; //adjuste this depending on shift. BASIS OF OUR HUERISTICS
-        while(shift>0.000137) {
-            //printf("%d\n",iter);
-			distance=distance+shift;
-			double reverse_wind_heading= wind_heading + PI; 
-
-			Pair new_point=along_heading_at_distance(runway_x, runway_y, reverse_wind_heading, (distance));
-
-			iter=iter+1;
-			Packet dat_temp; //condition specific variables will be initialized now
-			dat_temp=dat;
-
-			dat_temp.p2[1]=new_point.y;
-			dat_temp.p2[0]=new_point.x;
-			dat_temp.p2[2]=runway_heading;
+    char inst1[1000];
+    char inst2[1000];
+    char inst3[1000];
+    char inst4[1000];
+    char inst5[1000];
+    
+    
+    double total_time=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
+    sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time+0.5));
+    
+    double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
+    double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
+    double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
+    sprintf(inst2,"Straight line glide for %d seconds",(int)(time_shift2+0.5));
 	
-			dat_temp.angle=30;
-			dat_temp.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_temp.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
-
-			Seg basic_temp=basic_path(dat_temp); //get first_dubins
-
-			wind_temp=model_wind(basic_temp,dat_temp);
-	
-
-			shift= wind_temp.total_shift;
-			wind_alt=wind_temp.end_alt;
-		}
-        static char ret[1000*5];
-        strcpy(ret,wind_temp.instruction1);
-        strcat(ret,"\n");
-        strcat(ret,wind_temp.instruction2);
-        strcat(ret,"\n");
-        strcat(ret,wind_temp.instruction3);
-        strcat(ret,"\n");
-        strcat(ret,wind_temp.instruction4);
-        strcat(ret,"\n");
-        strcat(ret,wind_temp.instruction5);
-        return ret;
-	}
-    else{
-        static char ret[1000*5];
-        strcpy(ret,wind_1.instruction1);
-        strcat(ret,"\n");
-        strcat(ret,wind_1.instruction2);
-        strcat(ret,"\n");
-        strcat(ret,wind_1.instruction3);
-        strcat(ret,"\n");
-        strcat(ret,wind_1.instruction4);
-        strcat(ret,"\n");
-        strcat(ret,wind_1.instruction5);
-        return ret;
+    double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
+    sprintf(inst3,"30 degree bank for %d seconds",(int)(total_time3+0.5));
+    
+    if(basic_trajectory.lenspiral>0) { //augmenting spiral
+        double total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
+        sprintf(inst4,"30 degree bank spiral for %d seconds",(int)(total_time4+0.5));
     }
+    
+    if(basic_trajectory.extended) { //augmenting extended runway
+        double original_start_x,original_start_y;
+        if(basic_trajectory.lenspiral>0){
+            original_start_x= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
+            original_start_y= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][1];
+        }
+        else{
+            original_start_x= basic_trajectory.C2[basic_trajectory.lenc2-1][0];
+            original_start_y= basic_trajectory.C2[basic_trajectory.lenc2-1][1];
+        }
+        double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
+        double original_distance= horizontal(dat_30.p2[0], dat_30.p2[1], original_start_x, original_start_y);
+        double time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
+        sprintf(inst5,"Dirty configuration straight glide for %d seconds",(int)(time_shift5+0.5));
+    }
+    
+    static char ret[1000*5];
+    strcpy(ret,inst1);
+    strcat(ret,"\n");
+    strcat(ret,inst2);
+    strcat(ret,"\n");
+    strcat(ret,inst3);
+    strcat(ret,"\n");
+    strcat(ret,inst4);
+    strcat(ret,"\n");
+    strcat(ret,inst5);
+    return ret;
 }

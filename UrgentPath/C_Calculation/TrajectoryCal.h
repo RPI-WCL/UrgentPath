@@ -26,7 +26,6 @@
 
 //extern int helloworld2(void);
 
-
 Seg basic_path(Packet data);
 Seg2 model_wind(Seg path_with_spiral, Packet data);
 
