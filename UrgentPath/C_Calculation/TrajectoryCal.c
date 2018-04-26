@@ -41,7 +41,7 @@ Seg basic_path(Packet data)
     Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g);
     
     path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
-//    print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
+    //    print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
     
     return path_with_spiral;
 }
@@ -63,8 +63,8 @@ char* TrajectoryCal(double user_x,
                     int catch_runway){
     int filename=0;
     char alphabet='h';
-	Packet dat; //creating a packet with constants
-	
+    Packet dat; //creating a packet with constants
+    
     dat.p1[0] = user_x;
     dat.p1[1] = user_y;
     dat.p1[2] = user_heading;
@@ -74,33 +74,64 @@ char* TrajectoryCal(double user_x,
     dat.runway[2] = runway_heading;
     
     dat.interval= interval;
-    dat.start_altitude=user_z; //initial altitude 	
-	dat.windspeed=(wind_speed*1.68781/364173.0);
-	dat.wind_heading=wind_heading;
-	dat.airspeed= (best_gliding_speed*1.68781/364173.0);
-	dat.baseline_g=best_gliding_ratio;
-	dat.dirty_g=dirty_gliding_ratio;
-	dat.file_name=filename;
-	dat.alphabet=alphabet;
-
-	
-	Packet dat_30; //condition specific variables will be initialized in this packet
-	dat_30 = dat;
+    dat.start_altitude=user_z; //initial altitude
+    dat.windspeed=(wind_speed*1.68781/364173.0);
+    dat.wind_heading=wind_heading;
+    dat.airspeed= (best_gliding_speed*1.68781/364173.0);
+    dat.baseline_g=best_gliding_ratio;
+    dat.dirty_g=dirty_gliding_ratio;
+    dat.file_name=filename;
+    dat.alphabet=alphabet;
+    
+    
+    Packet dat_30; //condition specific variables will be initialized in this packet
+    dat_30 = dat;
     dat_30.p2[0] = runway_x;
     dat_30.p2[1] = runway_y;
     dat_30.p2[2] = runway_heading;
     
-	dat_30.angle=30;
-	dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
-
-	Seg basic_trajectory=basic_path(dat_30); //get first_dubins
+    dat_30.angle=30;
+    dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
+    
+    Seg basic_trajectory;
+    memset(&basic_trajectory, 0, sizeof(Seg));
+    basic_trajectory = basic_path(dat_30); //get first_dubins
+    
+    static char ret[1000*5];
+    
+    for(int i = 0; i < basic_trajectory.lenc1; ++i){
+        if(basic_trajectory.C1[i][4] < 0){
+            strcpy(ret,"No route can be found");
+            return ret;
+        }
+    }
+    
+    for(int i = 0; i < basic_trajectory.lenc2; ++i){
+        if(basic_trajectory.C2[i][4] < 0){
+            strcpy(ret,"No route can be found");
+            return ret;
+        }
+    }
+    
+    for(int i = 0; i < basic_trajectory.lensls; ++i){
+        if(basic_trajectory.SLS[i][4] < 0){
+            strcpy(ret,"No route can be found");
+            return ret;
+        }
+    }
+    
+    for(int i = 0; i < basic_trajectory.lenspiral; ++i){
+        if(basic_trajectory.Spiral[i][4] < 0){
+            strcpy(ret,"No route can be found");
+            return ret;
+        }
+    }
     
     char inst1[1000];
     char inst2[1000];
     char inst3[1000];
     char inst4[1000];
     char inst5[1000];
-    
     
     double total_time=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
     sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time+0.5));
@@ -109,7 +140,7 @@ char* TrajectoryCal(double user_x,
     double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
     double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
     sprintf(inst2,"Straight line glide for %d seconds",(int)(time_shift2+0.5));
-	
+    
     double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
     sprintf(inst3,"30 degree bank for %d seconds",(int)(total_time3+0.5));
     
@@ -134,7 +165,6 @@ char* TrajectoryCal(double user_x,
         sprintf(inst5,"Dirty configuration straight glide for %d seconds",(int)(time_shift5+0.5));
     }
     
-    static char ret[1000*5];
     strcpy(ret,inst1);
     strcat(ret,"\n");
     strcat(ret,inst2);
