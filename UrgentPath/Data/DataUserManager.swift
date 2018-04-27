@@ -64,20 +64,23 @@ class DataUserManager {
     
     //generate guidance to pilots
     func getInstruction() -> String {
-        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( -73.8767,//user_x
-                                                                40.8513,//user_y
-                                                                0.02745947667,//user_z
-                                                                1.5586,//user_heading
-                                                                -73.8571,//runway_x
-                                                                40.7721,//runway_y
-                                                                0,//runway_z
-                                                                2.3736,//runway_heading
-                                                                0.001,//interval
-                                                                240.0,//best_gliding_speed
-                                                                17.25,//best_gliding_ratio
-                                                                9.0,//dirty_gliding_ratio
-                                                                40.0,//wind_speed
-                                                                0.0,//wind_heading
+        let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
+        let runwayData = DataRunwayManager.shared.getCloestRunway(loc_x_1: data.user_loc_x, loc_y_1: data.user_loc_y)
+        
+        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_x,//user_x
+                                                                data.user_loc_y,//user_y
+                                                                data.user_loc_z,//user_z
+                                                                data.user_heading,//user_heading
+                                                                runwayData.runway_loc_x,//runway_x
+                                                                runwayData.runway_loc_y,//runway_y
+                                                                runwayData.runway_loc_z,//runway_z
+                                                                runwayData.runway_heading,//runway_heading
+                                                                planeData.update_interval,//interval
+                                                                planeData.best_gliding_airspeed,//best_gliding_speed
+                                                                planeData.best_gliding_ratio,//best_gliding_ratio
+                                                                planeData.dirty_gliding_ratio,//dirty_gliding_ratio
+                                                                data.wind_speed,//wind_speed
+                                                                data.wind_heading,//wind_heading
                                                                 1)//catch_runway
         if(c_str == nil) {
             NSLog("calculation in c failed\n")

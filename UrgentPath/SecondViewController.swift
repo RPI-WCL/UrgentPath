@@ -18,9 +18,7 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     @IBOutlet weak var bestGlidingRatioLabel: UITextField!
     @IBOutlet weak var dirtyGlidingRatioLabel: UITextField!
     @IBOutlet weak var connectionTypeSwitch: UISwitch!
-    
-    var configData: [DataPlane] = [DataPlane]()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -28,12 +26,12 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         self.pickConfig.delegate = self
         self.pickConfig.dataSource = self
         
-        configData = DataPlaneManager.shared.getPlaneConfigAll()
-        planeTypeLabel.text = configData[0].plane_type
-        updateIntervalLabel.text = String(configData[0].update_interval)
-        bestGlidingSpeedLabel.text = String(configData[0].best_gliding_airspeed)
-        bestGlidingRatioLabel.text = String(configData[0].best_gliding_ratio)
-        dirtyGlidingRatioLabel.text = String(configData[0].dirty_gliding_ratio)
+        let planeConfig = DataPlaneManager.shared.getChosenPlaneConfig()
+        planeTypeLabel.text = planeConfig.plane_type
+        updateIntervalLabel.text = String(planeConfig.update_interval)
+        bestGlidingSpeedLabel.text = String(planeConfig.best_gliding_airspeed)
+        bestGlidingRatioLabel.text = String(planeConfig.best_gliding_ratio)
+        dirtyGlidingRatioLabel.text = String(planeConfig.dirty_gliding_ratio)
     }
 
     override func didReceiveMemoryWarning() {
@@ -47,19 +45,23 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     // The number of rows of data
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return configData.count
+        return DataPlaneManager.shared.getConfigAmount()
     }
     
+    //shown title on the picker view
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return configData[row].plane_type
+        return DataPlaneManager.shared.getChosenPlaneConfig().plane_type
     }
     
+    //update info when select new row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        planeTypeLabel.text = configData[row].plane_type
-        updateIntervalLabel.text = String(configData[row].update_interval)
-        bestGlidingSpeedLabel.text = String(configData[row].best_gliding_airspeed)
-        bestGlidingRatioLabel.text = String(configData[row].best_gliding_ratio)
-        dirtyGlidingRatioLabel.text = String(configData[row].dirty_gliding_ratio)
+        DataPlaneManager.shared.setCurrentIndex(index: row)
+        let planeConfig = DataPlaneManager.shared.getChosenPlaneConfig()
+        planeTypeLabel.text = planeConfig.plane_type
+        updateIntervalLabel.text = String(planeConfig.update_interval)
+        bestGlidingSpeedLabel.text = String(planeConfig.best_gliding_airspeed)
+        bestGlidingRatioLabel.text = String(planeConfig.best_gliding_ratio)
+        dirtyGlidingRatioLabel.text = String(planeConfig.dirty_gliding_ratio)
     }
     
     @IBAction func connectionTypeSwitchChanged(switchConnection : UISwitch!) {
