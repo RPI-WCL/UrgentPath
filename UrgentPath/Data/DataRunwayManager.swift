@@ -24,7 +24,8 @@ class DataRunwayManager {
         data.append(runway_LGA31)
     }
     
-    func getCloestRunway(loc_x_1:Double, loc_y_1:Double) -> DataRunway {
+    //sort runway from close to far by current location
+    func sortRunway(loc_x_1:Double, loc_y_1:Double) {
         data = data.sorted(by: { getGeoDistance(loc_x_1,
                                                 loc_y_1,
                                                 $0.runway_loc_x,
@@ -33,6 +34,9 @@ class DataRunwayManager {
                                                  loc_y_1,
                                                  $1.runway_loc_x,
                                                  $1.runway_loc_y) })
+    }
+    
+    func getCloestRunway() -> DataRunway {
         return data[0]
     }
     

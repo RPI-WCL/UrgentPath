@@ -22,6 +22,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var planeHeadingText: UITextField!
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
+    @IBOutlet weak var runwayText: UITextField!
     let udpQueue = DispatchQueue(label: "udp", qos: .utility)
     
     let locationManager = CLLocationManager()
@@ -31,7 +32,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         initText()
-        
         startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
     }
@@ -42,7 +42,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     // update instruction shown on FirstView
     @objc func updateView() {
-        //print("run instruction()")
         //update instruction
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
@@ -58,7 +57,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
         self.windSpeedText.text = String(wind_speed)
         self.windHeadingText.text = String(wind_heading)
-        //print("finish instruction()")
+        
+        //update current target runway
+        self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
     }
     
     func startLocationUpdate() {

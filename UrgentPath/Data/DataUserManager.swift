@@ -65,7 +65,8 @@ class DataUserManager {
     //generate guidance to pilots
     func getInstruction() -> String {
         let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
-        let runwayData = DataRunwayManager.shared.getCloestRunway(loc_x_1: data.user_loc_x, loc_y_1: data.user_loc_y)
+        DataRunwayManager.shared.sortRunway(loc_x_1: data.user_loc_x, loc_y_1: data.user_loc_y)
+        let runwayData = DataRunwayManager.shared.getCloestRunway()
         
         let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_x,//user_x
                                                                 data.user_loc_y,//user_y
