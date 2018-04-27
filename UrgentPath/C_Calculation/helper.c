@@ -966,7 +966,7 @@ void print_trajectory(Seg path, int angle, double rnwy_x, double rnwy_y, double 
 
 
 //generates circles for spiral
-Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight)
+Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, double runway_altitude)
 {
 	path.lenspiral=0;// initializing
 	//printf("initialized\n");
@@ -995,7 +995,7 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight)
 		path.Spiral[i][4]=heightBC(last_altitude, distance, angle, Rg_straight);
 
 		//DELETING NOT INTEGRAL PART		
-		if(path.Spiral[i][4]<=0)
+		if(path.Spiral[i][4]<=runway_altitude)
 		{
 			path.lenspiral=last_integral_i;
 			break;
@@ -1019,7 +1019,7 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight)
 }
 
 //Function to find extended runway segment //MIGHT NEED FIXING
-Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_heading , double init_x, double init_y, double init_heading, double start_altitude, int angle, double min_radius, double interval, double Rg_straight, double Rg_dirty)
+Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_heading , double init_x, double init_y, double init_heading, double start_altitude, double runway_altitude, int angle, double min_radius, double interval, double Rg_straight, double Rg_dirty)
 {
 	double end_altitude;
 	if(path.lenspiral>0)
@@ -1032,13 +1032,13 @@ Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_hea
 	}
 	double q2[]={rnwy_x,rnwy_y,rnwy_heading};	
 	double q1[]={init_x,init_y,init_heading};
-	if(end_altitude>0.000137) //50 feet
+	if(end_altitude>0.000137+runway_altitude) //50 feet
 	{
 		double current_x=rnwy_x;
 		double current_y=rnwy_y;
 		double heading=rnwy_heading;
 		double heading_opp= heading+PI;
-		while(end_altitude>0.000137) //more than 50 feet
+		while(end_altitude>0.000137+runway_altitude) //more than 50 feet
 		{
 
 	//finding new point at d feet away (using d=50 to find discrete points 50 feet apart)
@@ -1052,7 +1052,7 @@ Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_hea
 			Seg dubin_parts=split(dubins);//sending DP to split into segments
 			//return dubin_parts;
 			dubin_parts=assign_altitude(dubin_parts, start_altitude, init_x, init_y, angle, Rg_straight);//Send parts to assign_altitude() to get alti for each point
-			Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle, Rg_straight);
+			Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle, Rg_straight, runway_altitude);
 
 			int flag=0;
 			if(path_with_spiral.lenspiral>0)
@@ -1064,7 +1064,7 @@ Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_hea
 				end_altitude= path_with_spiral.C2[path_with_spiral.lenc2-1][4];				
 			}
 
-			if((end_altitude-loss)<0.000137)
+			if((end_altitude-loss)<0.000137+runway_altitude)
 			{
 				path_with_spiral.extended=true;
 				return path_with_spiral;

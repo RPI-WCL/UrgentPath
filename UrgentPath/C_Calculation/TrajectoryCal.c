@@ -20,6 +20,7 @@ Seg basic_path(Packet data)
     double q2[3];
     double min_radius=data.min_rad;
     double start_altitude=data.start_altitude;
+    double runway_altitude=data.runway_altitude;
     int angle=data.angle;
     double WIND_VELOCITY=data.windspeed;
     double baseline_g=data.baseline_g;
@@ -38,9 +39,9 @@ Seg basic_path(Packet data)
     dubin_parts=assign_altitude(dubin_parts, start_altitude, q1[0], q1[1], angle, data.baseline_g);//Send dubin_parts to assign_altitude() to get alti for each point
     
     //generates possible spiral segment with altitude
-    Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g);
+    Seg path_with_spiral= generate_spiral(dubin_parts,min_radius,angle,data.baseline_g,runway_altitude);
     
-    path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
+    path_with_spiral= find_extended_runway(path_with_spiral,q2[0],q2[1],q2[2],q1[0],q1[1],q1[2],start_altitude, runway_altitude, angle, min_radius, data.interval, data.baseline_g, data.dirty_g); //finds extended runway
     //    print_trajectory(path_with_spiral, angle, q2[0],q2[1],q2[2]); //saving to file
     
     return path_with_spiral;
@@ -75,6 +76,7 @@ char* TrajectoryCal(double user_x,
     
     dat.interval= interval;
     dat.start_altitude=user_z; //initial altitude
+    dat.runway_altitude=runway_z;
     dat.windspeed=(wind_speed*1.68781/364173.0);
     dat.wind_heading=wind_heading;
     dat.airspeed= (best_gliding_speed*1.68781/364173.0);

@@ -9,7 +9,7 @@
 #define FILL(arr, val) \
 for(int i_##arr = 0; i_##arr < sizeof arr / sizeof *arr; ++i_##arr) \
 { \
-    arr[i_##arr][3] = val;\
+arr[i_##arr][3] = val;\
 }
 
 //-----------------------Mathematical constants
@@ -18,7 +18,7 @@ for(int i_##arr = 0; i_##arr < sizeof arr / sizeof *arr; ++i_##arr) \
 //-----------------------Sensor data that can be computed by the DDDAS approach 
 //#define Rg_straight 17.25 //Best Glide ratio in straight line motion
 //#define Rg_dirty 9
-                                        // cvarela: using g' = g_0*cos(bank_angle) glide ratio
+// cvarela: using g' = g_0*cos(bank_angle) glide ratio
 //#define Rg_20 Rg_straight*cos(20*PI/180) //Best Glide ratio for 20 degree banked turns
 //#define Rg_30 Rg_straight*cos(30*PI/180) //Best Glide ratio for 30 degree banked turns
 //#define Rg_45 Rg_straight*cos(45*PI/180) //Best Glide ratio for 45 degree banked turns
@@ -33,95 +33,96 @@ for(int i_##arr = 0; i_##arr < sizeof arr / sizeof *arr; ++i_##arr) \
 
 typedef struct Pair //used to hold new points along heading
 {
-	double x;
- 	double y;
-	double heading;
+    double x;
+    double y;
+    double heading;
 }Pair;
 
 //for any curve
 typedef struct Curve 
 {
-	double points[1000][5]; //x,y,heading,radius,altitude
-	int len_curve; 
-	int turns;
-
-	bool spiral;
-	bool extended;
-	Pair centre;
-
-	double shift; //stores the shift of end where needed
+    double points[1000][5]; //x,y,heading,radius,altitude
+    int len_curve;
+    int turns;
+    
+    bool spiral;
+    bool extended;
+    Pair centre;
+    
+    double shift; //stores the shift of end where needed
 }Curve;
 
 //collection of curves
 typedef struct Seg2 
 {
-	Curve aug_C1;
-        Curve aug_SLS;
-        Curve aug_C2;
-	Curve aug_SPIRAL;
-	Curve aug_EXTENDED;
-        bool spiral;
-        bool extended;
-	double total_shift;
-	double end_alt;
+    Curve aug_C1;
+    Curve aug_SLS;
+    Curve aug_C2;
+    Curve aug_SPIRAL;
+    Curve aug_EXTENDED;
+    bool spiral;
+    bool extended;
+    double total_shift;
+    double end_alt;
 }Seg2;
 
 //for spiral
 typedef struct Circle 
 {
-	double circum[1000][5]; //x,y,heading,radius,altitude
-	int len_c; 
-	int turns;
+    double circum[1000][5]; //x,y,heading,radius,altitude
+    int len_c;
+    int turns;
 }Circle;
 
 //for discrete thetas
 typedef struct Thetas 
 {
-	double thetas[500]; //an angle
+    double thetas[500]; //an angle
 }Thetas;
 
 
 typedef struct Packet //used to send initial and start points to new thread and to store a path
 {	
-	double interval; //interval of points in Dubins Path. SENT TO demo()!!
-	double p1[3]; //x,y,heading initial config
-	double p2[3]; //final config for each call
-	double runway[3]; //config of runway
-	double current_path[8000][5]; //x,y,heading,radius,altitude
-	int len_cp; 
-
-	//emergency variables
-	int angle;
-	double min_rad;
-	double start_altitude;     
-	double airspeed;
-	double windspeed;
-	double wind_heading;
-	double baseline_g;
-	double dirty_g;
-
-	//misc
-	int file_name;
-        char alphabet;
-
+    double interval; //interval of points in Dubins Path. SENT TO demo()!!
+    double p1[3]; //x,y,heading initial config
+    double p2[3]; //final config for each call
+    double runway[3]; //config of runway
+    double current_path[8000][5]; //x,y,heading,radius,altitude
+    int len_cp;
+    
+    //emergency variables
+    int angle;
+    double min_rad;
+    double start_altitude;
+    double runway_altitude;
+    double airspeed;
+    double windspeed;
+    double wind_heading;
+    double baseline_g;
+    double dirty_g;
+    
+    //misc
+    int file_name;
+    char alphabet;
+    
 }Packet;
 
 
 
 typedef struct Seg //to store segments of a dubins path
 {
-	double C1[1000][5]; //x,y,heading,radius,altitude
-	int lenc1;
-	double SLS[1000][5];
-	int lensls;
-	double C2[1000][5];
-	int lenc2;	
-	double Spiral[1000][5];
-	int lenspiral;
-	Pair spiral_centre;
-	double spiral_start_angle;
-
-	bool extended;
+    double C1[1000][5]; //x,y,heading,radius,altitude
+    int lenc1;
+    double SLS[1000][5];
+    int lensls;
+    double C2[1000][5];
+    int lenc2;
+    double Spiral[1000][5];
+    int lenspiral;
+    Pair spiral_centre;
+    double spiral_start_angle;
+    
+    bool extended;
 }Seg;
 
 
@@ -228,9 +229,9 @@ void print_trajectory(Seg path, int angle, double rnwy_x, double rnwy_y, double 
 Seg fix_difference(Seg parts, double diff);
 
 //generates circles for spiral
-Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight);
+Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, double runway_altitude);
 
 //Function to find extended runway segment
-Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_heading, double init_x, double init_y, double init_heading, double init_altitude , int angle, double min_radius, double interval, double Rg_straight,double Rg_dirty);
+Seg find_extended_runway(Seg path, double rnwy_x, double rnwy_y, double rnwy_heading, double init_x, double init_y, double init_heading, double init_altitude, double runway_altitude, int angle, double min_radius, double interval, double Rg_straight,double Rg_dirty);
 
 #endif
