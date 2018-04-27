@@ -124,6 +124,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		9C03C8142093AEC900967F6A /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				9CB83F272078076700C372CD /* DataPlaneManager.swift */,
+				9CB83F2B20785DA400C372CD /* DataUserManager.swift */,
+				9CECAAB820788370005E225E /* DataRunwayManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		9C18401A20735AC4003F7325 = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +161,7 @@
 			children = (
 				9C1BA7D52083D37F0068E469 /* Helpers */,
 				9CB83F222077FD9200C372CD /* Data */,
+				9C03C8142093AEC900967F6A /* Managers */,
 				9CC73FCA20740CA6003FBC2C /* C_Calculation */,
 				9C18402620735AC5003F7325 /* AppDelegate.swift */,
 				9C18402820735AC5003F7325 /* FirstViewController.swift */,
@@ -195,9 +206,6 @@
 				9CB83F232077FDE600C372CD /* DataPlane.swift */,
 				9CB83F252077FE0400C372CD /* DataUser.swift */,
 				9CB83F2D20786F4D00C372CD /* DataRunway.swift */,
-				9CB83F272078076700C372CD /* DataPlaneManager.swift */,
-				9CB83F2B20785DA400C372CD /* DataUserManager.swift */,
-				9CECAAB820788370005E225E /* DataRunwayManager.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
