@@ -10,6 +10,7 @@
 		9C03C81120922ACE00967F6A /* dubins.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80A20922ACB00967F6A /* dubins.c */; };
 		9C03C81220922ACE00967F6A /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80B20922ACC00967F6A /* demo.c */; };
 		9C03C81320922ACE00967F6A /* helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80C20922ACC00967F6A /* helper.c */; };
+		9C03C8162093B00D00967F6A /* runways.csv in Resources */ = {isa = PBXBuildFile; fileRef = 9C03C8152093B00D00967F6A /* runways.csv */; };
 		9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402620735AC5003F7325 /* AppDelegate.swift */; };
 		9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402820735AC5003F7325 /* FirstViewController.swift */; };
 		9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402A20735AC5003F7325 /* SecondViewController.swift */; };
@@ -55,6 +56,7 @@
 		9C03C80D20922ACD00967F6A /* helper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = helper.h; sourceTree = "<group>"; };
 		9C03C80E20922ACE00967F6A /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
 		9C03C80F20922ACE00967F6A /* dubins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dubins.h; sourceTree = "<group>"; };
+		9C03C8152093B00D00967F6A /* runways.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runways.csv; path = Data/runways.csv; sourceTree = SOURCE_ROOT; };
 		9C18402320735AC5003F7325 /* UrgentPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrgentPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18402620735AC5003F7325 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C18402820735AC5003F7325 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -169,8 +171,9 @@
 				9C18402C20735AC5003F7325 /* Main.storyboard */,
 				9C18402F20735AC9003F7325 /* Assets.xcassets */,
 				9C18403120735AC9003F7325 /* LaunchScreen.storyboard */,
-				9C18403420735AC9003F7325 /* Info.plist */,
 				9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */,
+				9C18403420735AC9003F7325 /* Info.plist */,
+				9C03C8152093B00D00967F6A /* runways.csv */,
 			);
 			path = UrgentPath;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 			files = (
 				9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */,
 				9C18403020735AC9003F7325 /* Assets.xcassets in Resources */,
+				9C03C8162093B00D00967F6A /* runways.csv in Resources */,
 				9C18402E20735AC5003F7325 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

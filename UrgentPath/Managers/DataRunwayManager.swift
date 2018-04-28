@@ -16,12 +16,44 @@ class DataRunwayManager {
     
     private init() {
         data = [DataRunway]()
-        let runway_LGA31 = DataRunway(runway_name: "LGA31",
-                                      runway_loc_x: -73.8571,
-                                      runway_loc_y: 40.7721,
-                                      runway_loc_z: 0,
-                                      runway_heading: 2.3736)
-        data.append(runway_LGA31)
+        readRunwayCSV()
+    }
+    
+    private func readRunwayCSV() {
+        let path = Bundle.main.path(forResource: "runways", ofType: "csv")
+        if(path == nil){
+            return
+        }
+        let url = URL(fileURLWithPath: path!)
+        let content = try! NSString(contentsOf: url, encoding: String.Encoding.utf8.rawValue)
+        
+        let rows = content.components(separatedBy: "\n")
+        for row in rows {
+            let columns = row.components(separatedBy: ",")
+            if(columns.count < 17){
+                continue
+            }
+            let airportStr = columns[2].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
+            if(columns[9] != "" && columns[10] != "" && columns[11] != "" && columns[12] != ""){
+                let runwayNumStr = columns[12].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
+                let runway1 = DataRunway(runway_name: airportStr + runwayNumStr,
+                                         runway_loc_x: Double(columns[9])!,
+                                         runway_loc_y: Double(columns[10])!,
+                                         runway_loc_z: Double(columns[11])!/364173.0,//TODO
+                                         runway_heading: Double(0))//TODO
+                data.append(runway1)
+            }
+            if(columns[14] != "" && columns[15] != "" && columns[16] != "" && columns[17] != ""){
+                let runwayNumStr = columns[14].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
+                let runway2 = DataRunway(runway_name: airportStr + runwayNumStr,
+                                         runway_loc_x: Double(columns[15])!,
+                                         runway_loc_y: Double(columns[16])!,
+                                         runway_loc_z: Double(columns[17])!/364173.0,//TODO
+                                         runway_heading: Double(0))//TODO
+                data.append(runway2)
+            }
+        }
+        print("Amount of runway read from csv file: " + String(data.count))
     }
     
     //sort runway from close to far by current location

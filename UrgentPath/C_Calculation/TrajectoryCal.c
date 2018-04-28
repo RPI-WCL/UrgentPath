@@ -49,17 +49,17 @@ Seg basic_path(Packet data)
 
 char* TrajectoryCal(double user_x,
                     double user_y,
-                    double user_z,
+                    double user_z, //feet?
                     double user_heading,
                     double runway_x,
                     double runway_y,
-                    double runway_z,
+                    double runway_z, //feet?
                     double runway_heading,
                     double interval,
-                    double best_gliding_speed,
+                    double best_gliding_speed, // in knots
                     double best_gliding_ratio,
                     double dirty_gliding_ratio,
-                    double wind_speed,
+                    double wind_speed, // in knots?
                     double wind_heading,
                     int catch_runway){
     int filename=0;
