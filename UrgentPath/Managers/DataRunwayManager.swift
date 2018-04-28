@@ -13,9 +13,11 @@ class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
     private var data : [DataRunway]
+    private var lastSortTime : Date
     
     private init() {
         data = [DataRunway]()
+        lastSortTime = Date(timeIntervalSince1970: 0)
         readRunwayCSV()
     }
     
@@ -58,6 +60,10 @@ class DataRunwayManager {
     
     //sort runway from close to far by current location
     func sortRunway(loc_x_1:Double, loc_y_1:Double) {
+        let elapsed = Date().timeIntervalSince(lastSortTime)
+        if(elapsed < 120){ //update target airport every 120 seconds
+            return
+        }
         data = data.sorted(by: { getGeoDistance(loc_x_1,
                                                 loc_y_1,
                                                 $0.runway_loc_x,
@@ -66,6 +72,7 @@ class DataRunwayManager {
                                                  loc_y_1,
                                                  $1.runway_loc_x,
                                                  $1.runway_loc_y) })
+        lastSortTime = Date()
     }
     
     func getCloestRunway() -> DataRunway {
