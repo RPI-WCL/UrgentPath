@@ -21,8 +21,8 @@ class DataUserManager {
     func setGeoLocation(loc_x:Double,
                         loc_y:Double,
                         loc_z:Double) {
-        data.user_loc_x = loc_x
-        data.user_loc_y = loc_y
+        data.user_loc_lat = loc_x
+        data.user_loc_lon = loc_y
         data.user_loc_z = loc_z
     }
     
@@ -65,16 +65,16 @@ class DataUserManager {
     //generate guidance to pilots
     func getInstruction() -> String {
         let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
-        DataRunwayManager.shared.sortRunway(loc_x_1: data.user_loc_x, loc_y_1: data.user_loc_y)
+        DataRunwayManager.shared.sortRunway(loc_lat_1: -1*data.user_loc_lat, loc_lon_1: data.user_loc_lon+180)
         let runwayData = DataRunwayManager.shared.getCloestRunway()
         
-        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( -73.8767,//user_x
-                                                                40.8513,//user_y
+        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_lat,//-73.8767,//user_x
+                                                                data.user_loc_lon,//40.8513,//user_y
                                                                 0.02745947667,//user_z
                                                                 1.5586,//user_heading
-                                                                -73.8571,//runway_x
-                                                                40.7721,//runway_y
-                                                                0,//runway_z
+                                                                runwayData.runway_loc_lat,//-73.8571,//runway_x
+                                                                runwayData.runway_loc_lon,//40.7721,//runway_y
+                                                                runwayData.runway_loc_z,//0,//runway_z
                                                                 2.3736,//runway_heading
                                                                 0.001,//interval
                                                                 240.0,//best_gliding_speed
@@ -93,7 +93,7 @@ class DataUserManager {
     
     //return plane location
     func getGeoLocation() -> (Double,Double,Double) {
-        return (data.user_loc_x,data.user_loc_y, data.user_loc_z)
+        return (data.user_loc_lat,data.user_loc_lon, data.user_loc_z)
     }
     
     //return plane heading

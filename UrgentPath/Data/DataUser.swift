@@ -9,8 +9,8 @@
 import Foundation
 
 struct DataUser {
-    var user_loc_x : Double
-    var user_loc_y : Double
+    var user_loc_lat : Double
+    var user_loc_lon : Double
     var user_loc_z : Double
     var user_heading : Double
     var wind_speed : Double
@@ -29,8 +29,8 @@ struct DataUser {
          user_heading : Double = 0,
          wind_speed : Double = 0,
          wind_heading : Double = 0) {
-        self.user_loc_x = user_loc_x
-        self.user_loc_y = user_loc_y
+        self.user_loc_lat = user_loc_x
+        self.user_loc_lon = user_loc_y
         self.user_loc_z = user_loc_z
         self.user_heading = user_heading
         self.wind_speed = wind_speed

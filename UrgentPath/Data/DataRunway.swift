@@ -10,8 +10,8 @@ import Foundation
 
 struct DataRunway {
     var runway_name : String
-    var runway_loc_x : Double
-    var runway_loc_y : Double
+    var runway_loc_lat : Double
+    var runway_loc_lon : Double
     var runway_loc_z : Double
     var runway_heading : Double
     var runway_rank : Int = 0
@@ -23,8 +23,8 @@ struct DataRunway {
          runway_heading : Double,
          runway_rank : Int = 0) {
         self.runway_name = runway_name
-        self.runway_loc_x = runway_loc_x
-        self.runway_loc_y = runway_loc_y
+        self.runway_loc_lat = runway_loc_x
+        self.runway_loc_lon = runway_loc_y
         self.runway_loc_z = runway_loc_z
         self.runway_heading = runway_heading
         self.runway_rank = runway_rank

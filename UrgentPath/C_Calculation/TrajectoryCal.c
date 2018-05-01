@@ -47,13 +47,13 @@ Seg basic_path(Packet data)
     return path_with_spiral;
 }
 
-char* TrajectoryCal(double user_x,
-                    double user_y,
-                    double user_z, //feet?
+char* TrajectoryCal(double user_lat,
+                    double user_lon,
+                    double user_z, //feet
                     double user_heading,
-                    double runway_x,
-                    double runway_y,
-                    double runway_z, //feet?
+                    double runway_lat,
+                    double runway_lon,
+                    double runway_z, //feet
                     double runway_heading,
                     double interval,
                     double best_gliding_speed, // in knots
@@ -66,12 +66,12 @@ char* TrajectoryCal(double user_x,
     char alphabet='h';
     Packet dat; //creating a packet with constants
     
-    dat.p1[0] = user_x;
-    dat.p1[1] = user_y;
+    dat.p1[0] = user_lon;
+    dat.p1[1] = user_lat;
     dat.p1[2] = user_heading;
     
-    dat.runway[0] = runway_x;
-    dat.runway[1] = runway_y;
+    dat.runway[0] = runway_lon;
+    dat.runway[1] = runway_lat;
     dat.runway[2] = runway_heading;
     
     dat.interval= interval;
@@ -88,8 +88,8 @@ char* TrajectoryCal(double user_x,
     
     Packet dat_30; //condition specific variables will be initialized in this packet
     dat_30 = dat;
-    dat_30.p2[0] = runway_x;
-    dat_30.p2[1] = runway_y;
+    dat_30.p2[0] = runway_lon;
+    dat_30.p2[1] = runway_lat;
     dat_30.p2[2] = runway_heading;
     
     dat_30.angle=30;
@@ -129,11 +129,11 @@ char* TrajectoryCal(double user_x,
         }
     }
     
-    char inst1[1000];
-    char inst2[1000];
-    char inst3[1000];
-    char inst4[1000];
-    char inst5[1000];
+    char inst1[1000] = {};
+    char inst2[1000] = {};
+    char inst3[1000] = {};
+    char inst4[1000] = {};
+    char inst5[1000] = {};
     
     double total_time=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
     sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time+0.5));
@@ -176,5 +176,8 @@ char* TrajectoryCal(double user_x,
     strcat(ret,inst4);
     strcat(ret,"\n");
     strcat(ret,inst5);
+    printf("%s\n",inst4);
+    printf("%s\n",inst5);
+    printf("===============================\n");
     return ret;
 }

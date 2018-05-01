@@ -41,7 +41,7 @@ class DataRunwayManager {
                 let runway1 = DataRunway(runway_name: airportStr + runwayNumStr,
                                          runway_loc_x: Double(columns[9])!,
                                          runway_loc_y: Double(columns[10])!,
-                                         runway_loc_z: Double(columns[11])!/364173.0,//TODO
+                                         runway_loc_z: Double(columns[11])!,
                                          runway_heading: Double(0))//TODO
                 data.append(runway1)
             }
@@ -50,7 +50,7 @@ class DataRunwayManager {
                 let runway2 = DataRunway(runway_name: airportStr + runwayNumStr,
                                          runway_loc_x: Double(columns[15])!,
                                          runway_loc_y: Double(columns[16])!,
-                                         runway_loc_z: Double(columns[17])!/364173.0,//TODO
+                                         runway_loc_z: Double(columns[17])!,
                                          runway_heading: Double(0))//TODO
                 data.append(runway2)
             }
@@ -59,19 +59,19 @@ class DataRunwayManager {
     }
     
     //sort runway from close to far by current location
-    func sortRunway(loc_x_1:Double, loc_y_1:Double) {
+    func sortRunway(loc_lat_1:Double, loc_lon_1:Double) {
         let elapsed = Date().timeIntervalSince(lastSortTime)
         if(elapsed < 120){ //update target airport every 120 seconds
             return
         }
-        data = data.sorted(by: { getGeoDistance(loc_x_1,
-                                                loc_y_1,
-                                                $0.runway_loc_x,
-                                                $0.runway_loc_y)
-                                > getGeoDistance(loc_x_1,
-                                                 loc_y_1,
-                                                 $1.runway_loc_x,
-                                                 $1.runway_loc_y) })
+        data = data.sorted(by: { getGeoDistance(loc_lat_1,
+                                                loc_lon_1,
+                                                $0.runway_loc_lat,
+                                                $0.runway_loc_lon)
+                                > getGeoDistance(loc_lat_1,
+                                                 loc_lon_1,
+                                                 $1.runway_loc_lat,
+                                                 $1.runway_loc_lon) })
         lastSortTime = Date()
     }
     
@@ -80,12 +80,12 @@ class DataRunwayManager {
     }
     
     //return distance between given 2 points in [meters]
-    private func getGeoDistance(_ loc_x_1:Double,
-                                _ loc_y_1:Double,
-                                _ loc_x_2:Double,
-                                _ loc_y_2:Double) -> Double {
-        let loc1 = CLLocation(latitude: loc_x_1, longitude: loc_y_1)
-        let loc2 = CLLocation(latitude: loc_x_2, longitude: loc_y_2)
+    private func getGeoDistance(_ loc_lat_1:Double,
+                                _ loc_lon_1:Double,
+                                _ loc_lat_2:Double,
+                                _ loc_lon_2:Double) -> Double {
+        let loc1 = CLLocation(latitude: loc_lat_1, longitude: loc_lon_1)
+        let loc2 = CLLocation(latitude: loc_lat_2, longitude: loc_lon_2)
         return loc1.distance(from: loc2)
     }
 }
