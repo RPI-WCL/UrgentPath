@@ -24,7 +24,12 @@
 #define TRUE  (1==1)
 #define FALSE (!TRUE)
 
-//extern int helloworld2(void);
+//degrees to radians
+double degToRad(double deg);
+
+//north 0 to east 0
+//clokwise to counterclockwise
+double CompassRadToMathRad(double rad);
 
 Seg basic_path(Packet data);
 Seg2 model_wind(Seg path_with_spiral, Packet data);

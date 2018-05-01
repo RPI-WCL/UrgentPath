@@ -8,6 +8,24 @@
 
 #include "TrajectoryCal.h"
 
+//degrees to radians
+double degToRad(double deg){
+    while(deg > 360){
+        deg -= 360;
+    }
+    return deg * PI / 180;
+}
+
+//north 0 to east 0
+//clokwise to counterclockwise
+double CompassRadToMathRad(double rad){
+    double newRad = -1*rad + PI/2;
+    if(newRad < 0){
+        newRad += 2*PI;
+    }
+    return newRad;
+}
+
 //main EnTRY function
 Seg basic_path(Packet data)
 {
@@ -49,18 +67,18 @@ Seg basic_path(Packet data)
 
 char* TrajectoryCal(double user_lat,
                     double user_lon,
-                    double user_z, //feet
-                    double user_heading,
+                    double user_z, // in feet
+                    double user_heading,// in degree
                     double runway_lat,
                     double runway_lon,
-                    double runway_z, //feet
-                    double runway_heading,
+                    double runway_z, // in feet
+                    double runway_heading,// in degree
                     double interval,
                     double best_gliding_speed, // in knots
                     double best_gliding_ratio,
                     double dirty_gliding_ratio,
-                    double wind_speed, // in knots?
-                    double wind_heading,
+                    double wind_speed, // in knots
+                    double wind_heading, // in degree
                     int catch_runway){
     int filename=0;
     char alphabet='h';
@@ -68,17 +86,17 @@ char* TrajectoryCal(double user_lat,
     
     dat.p1[0] = user_lon;
     dat.p1[1] = user_lat;
-    dat.p1[2] = user_heading;
+    dat.p1[2] = CompassRadToMathRad(degToRad(user_heading));
     
     dat.runway[0] = runway_lon;
     dat.runway[1] = runway_lat;
-    dat.runway[2] = runway_heading;
+    dat.runway[2] = CompassRadToMathRad(degToRad(runway_heading));
     
     dat.interval= interval;
     dat.start_altitude=user_z; //initial altitude
     dat.runway_altitude=runway_z;
     dat.windspeed=(wind_speed*1.68781/364173.0);
-    dat.wind_heading=wind_heading;
+    dat.wind_heading=CompassRadToMathRad(degToRad(wind_heading));
     dat.airspeed= (best_gliding_speed*1.68781/364173.0);
     dat.baseline_g=best_gliding_ratio;
     dat.dirty_g=dirty_gliding_ratio;
@@ -90,7 +108,7 @@ char* TrajectoryCal(double user_lat,
     dat_30 = dat;
     dat_30.p2[0] = runway_lon;
     dat_30.p2[1] = runway_lat;
-    dat_30.p2[2] = runway_heading;
+    dat_30.p2[2] = CompassRadToMathRad(degToRad(runway_heading));
     
     dat_30.angle=30;
     dat_30.min_rad=(best_gliding_speed*best_gliding_speed)/(11.29* tan(dat_30.angle*PI/180))/364173.0; //v^2/(G x tan(bank_angle))
@@ -135,22 +153,29 @@ char* TrajectoryCal(double user_lat,
     char inst4[1000] = {};
     char inst5[1000] = {};
     
-    double total_time=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time+0.5));
+    //first curve
+    double total_time1=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
+    sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time1+0.5));
     
+    //straight line
     double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
     double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
     double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
     sprintf(inst2,"Straight line glide for %d seconds",(int)(time_shift2+0.5));
     
+    //second curve
     double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
     sprintf(inst3,"30 degree bank for %d seconds",(int)(total_time3+0.5));
     
+    //spiral for runway
+    double total_time4 = 0;
     if(basic_trajectory.lenspiral>0) { //augmenting spiral
-        double total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
+        total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
         sprintf(inst4,"30 degree bank spiral for %d seconds",(int)(total_time4+0.5));
     }
     
+    //runway
+    double time_shift5 = 0;
     if(basic_trajectory.extended) { //augmenting extended runway
         double original_start_x,original_start_y;
         if(basic_trajectory.lenspiral>0){
@@ -163,8 +188,13 @@ char* TrajectoryCal(double user_lat,
         }
         double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
         double original_distance= horizontal(dat_30.p2[0], dat_30.p2[1], original_start_x, original_start_y);
-        double time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
+        time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
         sprintf(inst5,"Dirty configuration straight glide for %d seconds",(int)(time_shift5+0.5));
+    }
+    
+    if(total_time1 < 0 || time_shift2 < 0 || total_time3 < 0 || total_time4 < 0 || time_shift5 < 0){
+        strcpy(ret,"Calculation failure");
+        return ret;
     }
     
     strcpy(ret,inst1);
@@ -176,8 +206,13 @@ char* TrajectoryCal(double user_lat,
     strcat(ret,inst4);
     strcat(ret,"\n");
     strcat(ret,inst5);
-    printf("%s\n",inst4);
-    printf("%s\n",inst5);
-    printf("===============================\n");
+    
+//    printf("===============================\n");
+//    printf("%s\n",inst1);
+//    printf("%s\n",inst2);
+//    printf("%s\n",inst3);
+//    printf("%s\n",inst4);
+//    printf("%s\n",inst5);
+//    printf("===============================\n");
     return ret;
 }
