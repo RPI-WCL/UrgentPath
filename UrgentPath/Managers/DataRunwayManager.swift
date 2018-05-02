@@ -22,7 +22,7 @@ class DataRunwayManager {
     }
     
     private func readRunwayCSV() {
-        let path = Bundle.main.path(forResource: "runways", ofType: "csv")
+        let path = Bundle.main.path(forResource: "runways_with_mag_heading", ofType: "csv")
         if(path == nil){
             return
         }
@@ -36,22 +36,22 @@ class DataRunwayManager {
                 continue
             }
             let airportStr = columns[2].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
-            if(columns[9] != "" && columns[10] != "" && columns[11] != "" && columns[12] != ""){
-                let runwayNumStr = columns[12].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
+            if(columns[8] != "" && columns[9] != "" && columns[10] != "" && columns[11] != "" && columns[13] != ""){
+                let runwayNumStr = columns[8].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
                 let runway1 = DataRunway(runway_name: airportStr + runwayNumStr,
                                          runway_loc_x: Double(columns[9])!,
                                          runway_loc_y: Double(columns[10])!,
                                          runway_loc_z: Double(columns[11])!,
-                                         runway_heading: Double(0))//TODO
+                                         runway_heading: Double(columns[13])!)
                 data.append(runway1)
             }
-            if(columns[14] != "" && columns[15] != "" && columns[16] != "" && columns[17] != ""){
-                let runwayNumStr = columns[14].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
+            if(columns[15] != "" && columns[16] != "" && columns[17] != "" && columns[18] != "" && columns[20] != ""){
+                let runwayNumStr = columns[15].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
                 let runway2 = DataRunway(runway_name: airportStr + runwayNumStr,
-                                         runway_loc_x: Double(columns[15])!,
-                                         runway_loc_y: Double(columns[16])!,
-                                         runway_loc_z: Double(columns[17])!,
-                                         runway_heading: Double(0))//TODO
+                                         runway_loc_x: Double(columns[16])!,
+                                         runway_loc_y: Double(columns[17])!,
+                                         runway_loc_z: Double(columns[18])!,
+                                         runway_heading: Double(columns[20])!)
                 data.append(runway2)
             }
         }

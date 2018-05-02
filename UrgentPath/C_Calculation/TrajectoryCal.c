@@ -93,8 +93,8 @@ char* TrajectoryCal(double user_lat,
     dat.runway[2] = CompassRadToMathRad(degToRad(runway_heading));
     
     dat.interval= interval;
-    dat.start_altitude=user_z; //initial altitude
-    dat.runway_altitude=runway_z;
+    dat.start_altitude=user_z/364173.0;
+    dat.runway_altitude=runway_z/364173.0;
     dat.windspeed=(wind_speed*1.68781/364173.0);
     dat.wind_heading=CompassRadToMathRad(degToRad(wind_heading));
     dat.airspeed= (best_gliding_speed*1.68781/364173.0);
@@ -118,31 +118,36 @@ char* TrajectoryCal(double user_lat,
     basic_trajectory = basic_path(dat_30); //get first_dubins
     
     static char ret[1000*5];
+    memset(ret, 0, 1000*5);
     
     for(int i = 0; i < basic_trajectory.lenc1; ++i){
         if(basic_trajectory.C1[i][4] < 0){
-            strcpy(ret,"No route can be found");
+            strcpy(ret,"No route can be found - calculation");
+            printf("No route: C1\n");
             return ret;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lenc2; ++i){
         if(basic_trajectory.C2[i][4] < 0){
-            strcpy(ret,"No route can be found");
+            strcpy(ret,"No route can be found - calculation");
+            printf("No route: C2\n");
             return ret;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lensls; ++i){
         if(basic_trajectory.SLS[i][4] < 0){
-            strcpy(ret,"No route can be found");
+            strcpy(ret,"No route can be found - calculation");
+            printf("No route: SLS\n");
             return ret;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lenspiral; ++i){
         if(basic_trajectory.Spiral[i][4] < 0){
-            strcpy(ret,"No route can be found");
+            strcpy(ret,"No route can be found - calculation");
+            printf("No route: Spiral\n");
             return ret;
         }
     }
@@ -194,18 +199,29 @@ char* TrajectoryCal(double user_lat,
     
     if(total_time1 < 0 || time_shift2 < 0 || total_time3 < 0 || total_time4 < 0 || time_shift5 < 0){
         strcpy(ret,"Calculation failure");
+        printf("Calculation failure\n");
         return ret;
     }
     
-    strcpy(ret,inst1);
-    strcat(ret,"\n");
-    strcat(ret,inst2);
-    strcat(ret,"\n");
-    strcat(ret,inst3);
-    strcat(ret,"\n");
-    strcat(ret,inst4);
-    strcat(ret,"\n");
-    strcat(ret,inst5);
+    if(total_time1 == total_time1 && total_time1 != 0 ){
+        strcat(ret,inst1);
+        strcat(ret,"\n");
+    }
+    if(time_shift2 == time_shift2 && time_shift2 != 0 ){
+        strcat(ret,inst2);
+        strcat(ret,"\n");
+    }
+    if(total_time3 == total_time3 && total_time3 != 0 ){
+        strcat(ret,inst3);
+        strcat(ret,"\n");
+    }
+    if(total_time4 == total_time4 && total_time4 != 0 ){
+        strcat(ret,inst4);
+        strcat(ret,"\n");
+    }
+    if(time_shift5 == time_shift5 && time_shift5 != 0 ){
+        strcat(ret,inst5);
+    }
     
 //    printf("===============================\n");
 //    printf("%s\n",inst1);

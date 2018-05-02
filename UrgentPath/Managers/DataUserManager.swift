@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class DataUserManager {
     static let shared = DataUserManager()//singleton
@@ -64,24 +65,37 @@ class DataUserManager {
     
     //generate guidance to pilots
     func getInstruction() -> String {
+        print("======================================================")
         let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
         DataRunwayManager.shared.sortRunway(loc_lat_1: -1*data.user_loc_lat, loc_lon_1: data.user_loc_lon+180)
         let runwayData = DataRunwayManager.shared.getCloestRunway()
+        print("Target runway: " + runwayData.runway_name)
         
-        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_lat,//-73.8767,//user_x
-                                                                data.user_loc_lon,//40.8513,//user_y
-                                                                0.02745947667,//user_z
-                                                                1.5586,//user_heading
-                                                                runwayData.runway_loc_lat,//-73.8571,//runway_x
-                                                                runwayData.runway_loc_lon,//40.7721,//runway_y
-                                                                runwayData.runway_loc_z,//0,//runway_z
-                                                                2.3736,//runway_heading
-                                                                0.001,//interval
-                                                                240.0,//best_gliding_speed
-                                                                17.25,//best_gliding_ratio
-                                                                9.0,//dirty_gliding_ratio
-                                                                40.0,//wind_speed
-                                                                0.0,//wind_heading
+        let loc1 = CLLocation(latitude: data.user_loc_lat, longitude: data.user_loc_lon)
+        let loc2 = CLLocation(latitude: runwayData.runway_loc_lat, longitude: runwayData.runway_loc_lon)
+        let estimateDistance = loc1.distance(from: loc2)
+        print("Estimate distance: " + String(estimateDistance/1000))
+        
+        // if the distance between plane and airport is larger than 100km, plane is not likely to reach runway
+        // prevent runtime error in Trajectory generation code
+        if(estimateDistance/1000 > 100){
+            return "No route found - distance"
+        }
+        
+        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_lat,//user_x
+                                                                data.user_loc_lon,//user_y
+                                                                data.user_loc_z,//user_z
+                                                                data.user_heading,//user_heading
+                                                                runwayData.runway_loc_lat,//runway_x
+                                                                runwayData.runway_loc_lon,//runway_y
+                                                                runwayData.runway_loc_z,//runway_z
+                                                                runwayData.runway_heading,//runway_heading
+                                                                planeData.update_interval,//interval
+                                                                planeData.best_gliding_airspeed,//best_gliding_speed
+                                                                planeData.best_gliding_ratio,//best_gliding_ratio
+                                                                planeData.dirty_gliding_ratio,//dirty_gliding_ratio
+                                                                data.wind_speed,//wind_speed
+                                                                data.wind_heading,//wind_heading
                                                                 1)//catch_runway
         if(c_str == nil) {
             NSLog("calculation in c failed\n")
