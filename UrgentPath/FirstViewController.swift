@@ -24,20 +24,34 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var windHeadingText: UITextField!
     @IBOutlet weak var runwayText: UITextField!
     let udpQueue = DispatchQueue(label: "udp", qos: .utility)
+    let runwayQueue = DispatchQueue(label: "runway", qos: .utility)
     
     let locationManager = CLLocationManager()
     
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        let loc = DataUserManager.shared.getGeoLocation()
+        DataRunwayManager.shared.sortRunway(lat_N: loc.0, lon_E: loc.1)//change direction of location,NE -> SW
+        
         initText()
         startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunway), userInfo: nil, repeats: true)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    @objc func updateRunway(){
+        runwayQueue.async {
+            let data = DataUserManager.shared.getGeoLocation()
+            let startTime = Date()
+            DataRunwayManager.shared.sortRunway(lat_N: data.0, lon_E: data.1)//change direction of location,NE -> SW
+            let endTime = Date()
+            let elapsed = endTime.timeIntervalSince(startTime)
+            print("Time elapsed for sorting:[\(elapsed)]")
+        }
     }
     
     // update instruction shown on FirstView
@@ -50,7 +64,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
 //        let endTime = Date()
 //        let elapsed = endTime.timeIntervalSince(startTime)
-//        print("Time elapsed:[\(elapsed)]")
+//        print("Time elapsed for generating instruction:[\(elapsed)]")
         self.instructionLabel.lineBreakMode = .byWordWrapping
         
         //update wind

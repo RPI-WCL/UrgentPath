@@ -12,12 +12,13 @@ import CoreLocation
 class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
-    private var data : [DataRunway]
-    private var lastSortTime : Date
+    //private var data : [DataRunway]
+    private var data : DataRunwayGlobal
+    private var sortedRunways : [DataRunway]
     
     private init() {
-        data = [DataRunway]()
-        lastSortTime = Date(timeIntervalSince1970: 0)
+        data = DataRunwayGlobal()
+        sortedRunways = [DataRunway]()
         readRunwayCSV()
     }
     
@@ -38,45 +39,43 @@ class DataRunwayManager {
             let airportStr = columns[2].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
             if(columns[8] != "" && columns[9] != "" && columns[10] != "" && columns[11] != "" && columns[13] != ""){
                 let runwayNumStr = columns[8].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
-                let runway1 = DataRunway(runway_name: airportStr + runwayNumStr,
-                                         runway_loc_x: Double(columns[9])!,
-                                         runway_loc_y: Double(columns[10])!,
-                                         runway_loc_z: Double(columns[11])!,
-                                         runway_heading: Double(columns[13])!)
-                data.append(runway1)
+                data.addRunway(runway_name: airportStr + runwayNumStr, loc_lat: Double(columns[9])!, loc_lon: Double(columns[10])!, loc_z: Double(columns[11])!, heading: Double(columns[13])!)
             }
             if(columns[15] != "" && columns[16] != "" && columns[17] != "" && columns[18] != "" && columns[20] != ""){
                 let runwayNumStr = columns[15].replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
-                let runway2 = DataRunway(runway_name: airportStr + runwayNumStr,
-                                         runway_loc_x: Double(columns[16])!,
-                                         runway_loc_y: Double(columns[17])!,
-                                         runway_loc_z: Double(columns[18])!,
-                                         runway_heading: Double(columns[20])!)
-                data.append(runway2)
+                data.addRunway(runway_name: airportStr + runwayNumStr, loc_lat: Double(columns[16])!, loc_lon: Double(columns[17])!, loc_z: Double(columns[18])!, heading: Double(columns[20])!)
             }
         }
-        print("Amount of runway read from csv file: " + String(data.count))
+        print("Amount of runway read from csv file: " + String(data.size()))
     }
     
+    //loc_lat_S range: -90->90
+    //loc_lon_W range: -180->180
     //sort runway from close to far by current location
-    func sortRunway(loc_lat_1:Double, loc_lon_1:Double) {
-        let elapsed = Date().timeIntervalSince(lastSortTime)
-        if(elapsed < 120){ //update target airport every 120 seconds
-            return
+    func sortRunway(lat_N loc_lat_S:Double, lon_E loc_lon_W:Double) {
+        let loc_lat_N = loc_lat_S*(-1)
+        let loc_lon_E = (loc_lon_W+180).truncatingRemainder(dividingBy: 180)
+        var aroundList = data.listRunwaysAround(lat: Int(loc_lat_S), lon: Int(loc_lon_W))
+        if(aroundList.count == 0) {
+            aroundList = data.listRunwaysAll()
+            print("sort ALL runways")
         }
-        data = data.sorted(by: { getGeoDistance(loc_lat_1,
-                                                loc_lon_1,
-                                                $0.runway_loc_lat,
-                                                $0.runway_loc_lon)
-                                > getGeoDistance(loc_lat_1,
-                                                 loc_lon_1,
-                                                 $1.runway_loc_lat,
-                                                 $1.runway_loc_lon) })
-        lastSortTime = Date()
+        else{
+            print("sort partial runways")
+        }
+        sortedRunways = aroundList.sorted(by: { getGeoDistance(loc_lat_N,
+                                                               loc_lon_E,
+                                                               $0.runway_loc_lat,
+                                                               $0.runway_loc_lon)
+                                            > getGeoDistance(loc_lat_N,
+                                                             loc_lon_E,
+                                                             $1.runway_loc_lat,
+                                                             $1.runway_loc_lon) })
+        
     }
     
     func getCloestRunway() -> DataRunway {
-        return data[0]
+        return sortedRunways[0]
     }
     
     //return distance between given 2 points in [meters]

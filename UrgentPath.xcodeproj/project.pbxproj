@@ -26,6 +26,7 @@
 		9CB83F2E20786F4D00C372CD /* DataRunway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F2D20786F4D00C372CD /* DataRunway.swift */; };
 		9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */; };
 		9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CECAAB820788370005E225E /* DataRunwayManager.swift */; };
+		9CF1DCBE20A7627E00660D6E /* DataRunwayGlobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */; };
 		B64E5B81D5CFBAE561287150 /* Pods_UrgentPath.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 368457D5E1DC5130F8D550CE /* Pods_UrgentPath.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TrajectoryCal.c; sourceTree = "<group>"; };
 		9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrajectoryCal.h; sourceTree = "<group>"; };
 		9CECAAB820788370005E225E /* DataRunwayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRunwayManager.swift; sourceTree = "<group>"; };
+		9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRunwayGlobal.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -209,6 +211,7 @@
 				9CB83F232077FDE600C372CD /* DataPlane.swift */,
 				9CB83F252077FE0400C372CD /* DataUser.swift */,
 				9CB83F2D20786F4D00C372CD /* DataRunway.swift */,
+				9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -402,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CF1DCBE20A7627E00660D6E /* DataRunwayGlobal.swift in Sources */,
 				9C03C81220922ACE00967F6A /* demo.c in Sources */,
 				9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */,
 				9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */,

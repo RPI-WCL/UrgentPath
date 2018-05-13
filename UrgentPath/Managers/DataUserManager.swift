@@ -67,7 +67,6 @@ class DataUserManager {
     func getInstruction() -> String {
         print("======================================================")
         let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
-        DataRunwayManager.shared.sortRunway(loc_lat_1: -1*data.user_loc_lat, loc_lon_1: data.user_loc_lon+180)
         let runwayData = DataRunwayManager.shared.getCloestRunway()
         print("Target runway: " + runwayData.runway_name)
         
@@ -79,7 +78,7 @@ class DataUserManager {
         // if the distance between plane and airport is larger than 100km, plane is not likely to reach runway
         // prevent runtime error in Trajectory generation code
         if(estimateDistance/1000 > 100){
-            return "No route found - distance"
+            return "No route found - pre-calculation (>100km)"
         }
         
         let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_lat,//user_x
@@ -98,8 +97,8 @@ class DataUserManager {
                                                                 data.wind_heading,//wind_heading
                                                                 1)//catch_runway
         if(c_str == nil) {
-            NSLog("calculation in c failed\n")
-            return "calculation in c failed"
+            NSLog("calculation failed\n")
+            return "calculation failed"
         }
         let str = String(cString: c_str!)
         return str
