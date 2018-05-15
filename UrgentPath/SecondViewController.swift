@@ -39,6 +39,7 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         // Dispose of any resources that can be recreated.
     }
 
+    //number of components/columns picker view should display
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
@@ -50,7 +51,7 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     
     //shown title on the picker view
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return DataPlaneManager.shared.getChosenPlaneConfig().plane_type
+        return DataPlaneManager.shared.getPlaneConfigWithIndex(index:row).plane_type
     }
     
     //update info when select new row

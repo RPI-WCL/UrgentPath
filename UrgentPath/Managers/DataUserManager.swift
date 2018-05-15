@@ -45,18 +45,12 @@ class DataUserManager {
     }
     
     //set plane location from modified XPlane input
-    func setFromXPlaneString(str:String) {
-        //print("[\(str)]\n")
-        let parts = str.components(separatedBy: ",")
-        if(Double(parts[0]) == 18 && parts.count == 2){
-            //18 is heading
-            setHeading(heading: Double(parts[1])!)
-        }
-        else if(Double(parts[0]) == 20 && parts.count == 4){
-            //20 is geo location
-            setGeoLocation(loc_x: Double(parts[1])!,
-                           loc_y: Double(parts[2])!,
-                           loc_z: Double(parts[3])!)
+    func setFromXPlaneString(parts:[String]) {
+        if(parts.count == 4){
+            setGeoLocation(loc_x: Double(parts[0])!,
+                           loc_y: Double(parts[1])!,
+                           loc_z: Double(parts[2])!)
+            setHeading(heading: Double(parts[3])!)
         }
         else{
             print("Error: unknown input from XPlane")

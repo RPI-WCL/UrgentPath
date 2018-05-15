@@ -60,6 +60,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .medium
+        
 //        let startTime = Date()
         self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
 //        let endTime = Date()
@@ -67,12 +68,20 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
 //        print("Time elapsed for generating instruction:[\(elapsed)]")
         self.instructionLabel.lineBreakMode = .byWordWrapping
         
-        //update wind
+        //update location and heading text
+        let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
+        let loc_heading = DataUserManager.shared.getHeading()
+        planeLocXText.text = String(loc_lat)
+        planeLocYText.text = String(loc_lon)
+        planeLocZText.text = String(loc_z)
+        planeHeadingText.text = String(loc_heading)
+        
+        //update wind text
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
         self.windSpeedText.text = String(wind_speed)
         self.windHeadingText.text = String(wind_heading)
         
-        //update current target runway
+        //update current target runway text
         self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
     }
     
@@ -109,8 +118,13 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        planeHeadingText.text = String(newHeading.magneticHeading)
-        DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
+        if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
+            planeHeadingText.text = String(newHeading.magneticHeading)
+            DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
+        }
+        else{
+            planeHeadingText.text = String(DataUserManager.shared.getHeading())
+        }
     }
     
     func initText() {
@@ -126,8 +140,14 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
         let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
         if let byteArray = byteArray,
-        let tmpStr = String(data: Data(byteArray), encoding: .utf8) {
-            DataUserManager.shared.setFromXPlaneString(str: tmpStr)
+        let str = String(data: Data(byteArray), encoding: .utf8) {
+            //print("[\(str)]\n")
+            let parts = str.components(separatedBy: ",")
+            if(parts.count != 4){
+                server.close()
+                return
+            }
+            DataUserManager.shared.setFromXPlaneString(parts: parts)
         }
         server.close()
     }

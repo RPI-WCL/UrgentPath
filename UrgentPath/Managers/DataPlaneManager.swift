@@ -35,6 +35,10 @@ class DataPlaneManager {
         return data
     }
     
+    func getPlaneConfigWithIndex(index:Int) -> DataPlane {
+        return data[index]
+    }
+    
     func getChosenPlaneConfig() -> DataPlane {
         return data[currentPlaneIndex]
     }
