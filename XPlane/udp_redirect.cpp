@@ -78,52 +78,50 @@ int main(int argc, char *argv[]) {
             std::cerr << "Error receiving data" << std::endl;
             continue;
         }
-        int XPlanePacketType = buffer_input[5];
+	else if (n != 77) {
+	    std::cout << "Error: Only receive one set of data" << std::endl;
+	    continue;
+	}
+
+        int XPlanePacketType1 = buffer_input[5];
+        int XPlanePacketType2 = buffer_input[41];
+	if (XPlanePacketType1 != 18 || XPlanePacketType2 != 20) {
+	    std::cout<< "Error: need data from column 18 and 20" << std::endl;
+	    continue;
+	}
+
         std::string retStr;
-        
-        if(XPlanePacketType == 18) {
-            float h;
-            unsigned char buf[4];
-            buf[0] = buffer_input[9];
-            buf[1] = buffer_input[9+4*3+1];
-            buf[2] = buffer_input[9+4*3+2];
-            buf[3] = buffer_input[9+4*3+3];
-            memcpy(&h, &buf, sizeof(h));
-            
-            std::ostringstream retSS;
-            retSS << "18," << h;
-            retStr = retSS.str();
-        }
-        else if(XPlanePacketType == 20) {
-            float x,y,z;
-            unsigned char buf[4];
-            
-            buf[0] = buffer_input[9];
-            buf[1] = buffer_input[9+1];
-            buf[2] = buffer_input[9+2];
-            buf[3] = buffer_input[9+3];
-            memcpy(&x, &buf, sizeof(x));
-            
-            buf[0] = buffer_input[9+4*1];
-            buf[1] = buffer_input[9+4*1+1];
-            buf[2] = buffer_input[9+4*1+2];
-            buf[3] = buffer_input[9+4*1+3];
-            memcpy(&y, &buf, sizeof(y));
-            
-            buf[0] = buffer_input[9+4*3];
-            buf[1] = buffer_input[9+4*3+1];
-            buf[2] = buffer_input[9+4*3+2];
-            buf[3] = buffer_input[9+4*3+3];
-            memcpy(&z, &buf, sizeof(z));
-            
-            std::ostringstream retSS;
-            retSS << "20," << x << "," << y << "," << z;
-            retStr = retSS.str();
-        }
-        else{
-            continue;
-        }
-        
+        float h;
+        unsigned char buf[4];
+        buf[0] = buffer_input[9];
+        buf[1] = buffer_input[9+4*3+1];
+        buf[2] = buffer_input[9+4*3+2];
+        buf[3] = buffer_input[9+4*3+3];
+        memcpy(&h, &buf, sizeof(h));
+
+        float x,y,z;
+        buf[0] = buffer_input[45];
+        buf[1] = buffer_input[45+1];
+        buf[2] = buffer_input[45+2];
+        buf[3] = buffer_input[45+3];
+        memcpy(&x, &buf, sizeof(x));
+
+        buf[0] = buffer_input[45+4*1];
+        buf[1] = buffer_input[45+4*1+1];
+        buf[2] = buffer_input[45+4*1+2];
+        buf[3] = buffer_input[45+4*1+3];
+        memcpy(&y, &buf, sizeof(y));
+
+        buf[0] = buffer_input[45+4*2];
+        buf[1] = buffer_input[45+4*2+1];
+        buf[2] = buffer_input[45+4*2+2];
+        buf[3] = buffer_input[45+4*2+3];
+        memcpy(&z, &buf, sizeof(z));
+
+        std::ostringstream retSS;
+        retSS << x << "," << y << "," << z << "," << h;
+        retStr = retSS.str();
+
         std::cout << "[" << retStr << "]" << std::endl;
         if(sendto(send_socket,retStr.c_str(),retStr.size(),0,(struct sockaddr*)&udp_receiver,sizeOfSockaddr) < 0){
             std::cerr << "ERROR: sendto() failed" << std::endl;
