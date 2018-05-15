@@ -24,7 +24,7 @@ struct DataUser {
     var connectionType : Connection
     
     init(user_loc_x : Double = 42,
-         user_loc_y : Double = -70,
+         user_loc_y : Double = -73,
          user_loc_z : Double = 10000,
          user_heading : Double = 0,
          wind_speed : Double = 0,
