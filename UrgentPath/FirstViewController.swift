@@ -71,15 +71,15 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //update location and heading text
         let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
         let loc_heading = DataUserManager.shared.getHeading()
-        planeLocXText.text = String(loc_lat)
-        planeLocYText.text = String(loc_lon)
-        planeLocZText.text = String(loc_z)
-        planeHeadingText.text = String(loc_heading)
+        planeLocXText.text = formatText(loc_lat)
+        planeLocYText.text = formatText(loc_lon)
+        planeLocZText.text = formatText(loc_z)
+        planeHeadingText.text = formatText(loc_heading)
         
         //update wind text
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
-        self.windSpeedText.text = String(wind_speed)
-        self.windHeadingText.text = String(wind_heading)
+        self.windSpeedText.text = String(String(wind_speed).prefix(5))
+        self.windHeadingText.text = String(String(wind_heading).prefix(5))
         
         //update current target runway text
         self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
@@ -112,18 +112,18 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             print("Error: invalid connection type")
         }
         let (x,y,z) = DataUserManager.shared.getGeoLocation()
-        planeLocXText.text = String(x)
-        planeLocYText.text = String(y)
-        planeLocZText.text = String(z)
+        planeLocXText.text = formatText(x)
+        planeLocYText.text = formatText(y)
+        planeLocZText.text = formatText(z)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
-            planeHeadingText.text = String(newHeading.magneticHeading)
+            planeHeadingText.text = formatText(newHeading.magneticHeading)
             DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
         }
         else{
-            planeHeadingText.text = String(DataUserManager.shared.getHeading())
+            planeHeadingText.text = formatText(DataUserManager.shared.getHeading())
         }
     }
     
@@ -150,6 +150,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             DataUserManager.shared.setFromXPlaneString(parts: parts)
         }
         server.close()
+    }
+    
+    func formatText(_ input:Double) -> String {
+        return String(format: "%.3f", input)
     }
 }
 
