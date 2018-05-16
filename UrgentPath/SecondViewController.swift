@@ -57,12 +57,12 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
     //update info when select new row
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         DataPlaneManager.shared.setCurrentIndex(index: row)
-        let planeConfig = DataPlaneManager.shared.getChosenPlaneConfig()
-        planeTypeLabel.text = planeConfig.plane_type
-        updateIntervalLabel.text = String(planeConfig.update_interval)
-        bestGlidingSpeedLabel.text = String(planeConfig.best_gliding_airspeed)
-        bestGlidingRatioLabel.text = String(planeConfig.best_gliding_ratio)
-        dirtyGlidingRatioLabel.text = String(planeConfig.dirty_gliding_ratio)
+//        let planeConfig : DataPlane = DataPlaneManager.shared.getChosenPlaneConfig()
+//        planeTypeLabel.text = planeConfig.plane_type
+//        updateIntervalLabel.text = String(planeConfig.update_interval)
+//        bestGlidingSpeedLabel.text = String(planeConfig.best_gliding_airspeed)
+//        bestGlidingRatioLabel.text = String(planeConfig.best_gliding_ratio)
+//        dirtyGlidingRatioLabel.text = String(planeConfig.dirty_gliding_ratio)
     }
     
     @IBAction func connectionTypeSwitchChanged(switchConnection : UISwitch!) {
@@ -70,10 +70,10 @@ class SecondViewController: UIViewController, UIPickerViewDelegate, UIPickerView
         DataUserManager.shared.setHeading(heading: 0)
         DataUserManager.shared.setWind(wind_speed: 0, wind_heading: 0)
         if switchConnection.isOn {
-            DataUserManager.shared.setConnectionType(type: DataUser.Connection.Phone)
+            DataUserManager.shared.setConnectionType(type: DataUser.Connection.XPlane)
         }
         else {
-            DataUserManager.shared.setConnectionType(type: DataUser.Connection.XPlane)
+            DataUserManager.shared.setConnectionType(type: DataUser.Connection.Phone)
         }
     }
     

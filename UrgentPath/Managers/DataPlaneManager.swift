@@ -22,13 +22,13 @@ class DataPlaneManager {
                                           best_gliding_airspeed: 240.0,
                                           best_gliding_ratio: 17.25,
                                           dirty_gliding_ratio: 9.0)
-        let config_plane_cessna172 = DataPlane(plane_type: "Cessna 172",
-                                               update_interval: 0.0001,
-                                               best_gliding_airspeed: 240.0,
-                                               best_gliding_ratio: 17.25,
-                                               dirty_gliding_ratio: 9.0)
+//        let config_plane_cessna172 = DataPlane(plane_type: "Cessna 172",
+//                                               update_interval: 0.0001,
+//                                               best_gliding_airspeed: 240.0,
+//                                               best_gliding_ratio: 17.25,
+//                                               dirty_gliding_ratio: 9.0)
         data.append(config_plane_a320)
-        data.append(config_plane_cessna172)
+//        data.append(config_plane_cessna172)
     }
     
     func getPlaneConfigAll() -> [DataPlane] {

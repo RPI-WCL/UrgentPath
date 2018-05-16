@@ -46,11 +46,11 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @objc func updateRunway(){
         runwayQueue.async {
             let data = DataUserManager.shared.getGeoLocation()
-            let startTime = Date()
+//            let startTime = Date()
             DataRunwayManager.shared.sortRunway(lat_N: data.0, lon_E: data.1)//change direction of location,NE -> SW
-            let endTime = Date()
-            let elapsed = endTime.timeIntervalSince(startTime)
-            print("Time elapsed for sorting:[\(elapsed)]")
+//            let endTime = Date()
+//            let elapsed = endTime.timeIntervalSince(startTime)
+//            print("Time elapsed for sorting:[\(elapsed)]")
         }
     }
     
