@@ -52,10 +52,8 @@ class DataRunwayManager {
     //loc_lat_S range: -90->90
     //loc_lon_W range: -180->180
     //sort runway from close to far by current location
-    func sortRunway(lat_N loc_lat_S:Double, lon_E loc_lon_W:Double) {
-        let loc_lat_N = loc_lat_S*(-1)
-        let loc_lon_E = (loc_lon_W+180).truncatingRemainder(dividingBy: 180)
-        var aroundList = data.listRunwaysAround(lat: Int(loc_lat_S), lon: Int(loc_lon_W))
+    func sortRunway(lat_N loc_lat_N:Double, lon_E loc_lon_E:Double) {
+        var aroundList = data.listRunwaysAround(lat: Int(loc_lat_N), lon: Int(loc_lon_E))
         if(aroundList.count == 0) {
             aroundList = data.listRunwaysAll()
             print("sort ALL runways")
@@ -67,11 +65,10 @@ class DataRunwayManager {
                                                                loc_lon_E,
                                                                $0.runway_loc_lat,
                                                                $0.runway_loc_lon)
-                                            > getGeoDistance(loc_lat_N,
-                                                             loc_lon_E,
-                                                             $1.runway_loc_lat,
-                                                             $1.runway_loc_lon) })
-        
+                                                < getGeoDistance(loc_lat_N,
+                                                                 loc_lon_E,
+                                                                 $1.runway_loc_lat,
+                                                                 $1.runway_loc_lon) })
     }
     
     func getCloestRunway() -> DataRunway {
