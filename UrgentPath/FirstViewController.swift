@@ -35,6 +35,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         
         initText()
         startLocationUpdate()
+        Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateLocationHeading), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunway), userInfo: nil, repeats: true)
     }
@@ -55,6 +56,19 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     // update instruction shown on FirstView
+    @objc func updateLocationHeading() {
+        //update location and heading text
+        let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
+        let loc_heading = DataUserManager.shared.getHeading()
+        planeLocXText.text = formatText(loc_lat)
+        planeLocYText.text = formatText(loc_lon)
+        planeLocZText.text = formatText(loc_z)
+        planeHeadingText.text = formatText(loc_heading)
+        if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane){
+            handleXPlane()
+        }
+    }
+    
     @objc func updateView() {
         //update instruction
         let dateFormatter = DateFormatter()
@@ -67,14 +81,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
 //        let elapsed = endTime.timeIntervalSince(startTime)
 //        print("Time elapsed for generating instruction:[\(elapsed)]")
         self.instructionLabel.lineBreakMode = .byWordWrapping
-        
-        //update location and heading text
-        let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
-        let loc_heading = DataUserManager.shared.getHeading()
-        planeLocXText.text = formatText(loc_lat)
-        planeLocYText.text = formatText(loc_lon)
-        planeLocZText.text = formatText(loc_z)
-        planeHeadingText.text = formatText(loc_heading)
         
         //update wind text
         let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
@@ -103,27 +109,11 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             let userLoc:CLLocation = locations[0] as CLLocation
             DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
         }
-        else if (DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
-            udpQueue.async {
-                self.handleXPlane()
-            }
-        }
-        else{
-            print("Error: invalid connection type")
-        }
-        let (x,y,z) = DataUserManager.shared.getGeoLocation()
-        planeLocXText.text = formatText(x)
-        planeLocYText.text = formatText(y)
-        planeLocZText.text = formatText(z)
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
-            planeHeadingText.text = formatText(newHeading.magneticHeading)
             DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
-        }
-        else{
-            planeHeadingText.text = formatText(DataUserManager.shared.getHeading())
         }
     }
     
@@ -137,19 +127,21 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     func handleXPlane() {
-        let server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
-        let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
-        if let byteArray = byteArray,
-        let str = String(data: Data(byteArray), encoding: .utf8) {
-            //print("[\(str)]\n")
-            let parts = str.components(separatedBy: ",")
-            if(parts.count != 4){
-                server.close()
-                return
+        udpQueue.async {
+            let server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
+            let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
+            if let byteArray = byteArray,
+                let str = String(data: Data(byteArray), encoding: .utf8) {
+                //print("[\(str)]\n")
+                let parts = str.components(separatedBy: ",")
+                if(parts.count != 4){
+                    server.close()
+                    return
+                }
+                DataUserManager.shared.setFromXPlaneString(parts: parts)
             }
-            DataUserManager.shared.setFromXPlaneString(parts: parts)
+            server.close()
         }
-        server.close()
     }
     
     func formatText(_ input:Double) -> String {
