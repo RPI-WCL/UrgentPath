@@ -8,10 +8,6 @@
 
 import UIKit
 import CoreLocation
-import SwiftSocket
-
-let MAX_UDP_PACKET_SIZE : Int = 1024
-let UDP_PORT_LISTENING : Int32 = 60000
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -23,7 +19,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var windSpeedText: UITextField!
     @IBOutlet weak var windHeadingText: UITextField!
     @IBOutlet weak var runwayText: UITextField!
-    let udpQueue = DispatchQueue(label: "udp", qos: .utility)
     let runwayQueue = DispatchQueue(label: "runway", qos: .utility)
     
     let locationManager = CLLocationManager()
@@ -37,21 +32,17 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         startLocationUpdate()
         Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateLocationHeading), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateView), userInfo: nil, repeats: true)
-        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunway), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunwaySequence), userInfo: nil, repeats: true)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    @objc func updateRunway(){
+    @objc func updateRunwaySequence(){
         runwayQueue.async {
             let data = DataUserManager.shared.getGeoLocation()
-//            let startTime = Date()
             DataRunwayManager.shared.sortRunway(lat_N: data.0, lon_E: data.1)//change direction of location,NE -> SW
-//            let endTime = Date()
-//            let elapsed = endTime.timeIntervalSince(startTime)
-//            print("Time elapsed for sorting:[\(elapsed)]")
         }
     }
     
@@ -64,8 +55,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeLocYText.text = formatText(loc_lon)
         planeLocZText.text = formatText(loc_z)
         planeHeadingText.text = formatText(loc_heading)
-        if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane){
-            handleXPlane()
+        if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
+            DataUserManager.shared.handleXPlane()
         }
     }
     
@@ -100,7 +91,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.startUpdatingLocation()
             locationManager.startUpdatingHeading()
             locationManager.distanceFilter = 10
-            locationManager.headingFilter = 5
+            locationManager.headingFilter = 1
         }
     }
     
@@ -124,24 +115,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeHeadingText.text = "0"
         windSpeedText.text = "0"
         windHeadingText.text = "0"
-    }
-    
-    func handleXPlane() {
-        udpQueue.async {
-            let server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
-            let (byteArray,_,_) = server.recv(MAX_UDP_PACKET_SIZE)
-            if let byteArray = byteArray,
-                let str = String(data: Data(byteArray), encoding: .utf8) {
-                //print("[\(str)]\n")
-                let parts = str.components(separatedBy: ",")
-                if(parts.count != 4){
-                    server.close()
-                    return
-                }
-                DataUserManager.shared.setFromXPlaneString(parts: parts)
-            }
-            server.close()
-        }
     }
     
     func formatText(_ input:Double) -> String {

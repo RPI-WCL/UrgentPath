@@ -8,14 +8,23 @@
 
 import Foundation
 import CoreLocation
+import SwiftSocket
+
+let UDP_PORT_LISTENING : Int32 = 60000
+let MAX_UDP_PACKET_SIZE : Int = 1024
 
 class DataUserManager {
     static let shared = DataUserManager()//singleton
     
     private var data : DataUser
+
+    private let udpQueue : DispatchQueue
+    private var server : UDPServer
     
     private init() {
         data = DataUser()
+        udpQueue = DispatchQueue(label: "udp", qos: .utility)
+        server = UDPServer(address: "0.0.0.0", port:UDP_PORT_LISTENING)
     }
     
     //set plane location with given input data
@@ -44,8 +53,23 @@ class DataUserManager {
         data.connectionType = type
     }
     
+    func handleXPlane() {
+        udpQueue.async {
+            let (byteArray,_,_) = self.server.recv(MAX_UDP_PACKET_SIZE)
+            if let byteArray = byteArray,
+                let str = String(data: Data(byteArray), encoding: .utf8) {
+                //print("[\(str)]\n")
+                let parts = str.components(separatedBy: ",")
+                if(parts.count != 4){
+                    return
+                }
+                DataUserManager.shared.setFromXPlaneStringArray(parts: parts)
+            }
+        }
+    }
+    
     //set plane location from modified XPlane input
-    func setFromXPlaneString(parts:[String]) {
+    func setFromXPlaneStringArray(parts:[String]) {
         if(parts.count == 4){
             setGeoLocation(loc_x: Double(parts[0])!,
                            loc_y: Double(parts[1])!,
