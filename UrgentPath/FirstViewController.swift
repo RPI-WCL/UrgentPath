@@ -90,8 +90,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.requestAlwaysAuthorization()
             locationManager.startUpdatingLocation()
             locationManager.startUpdatingHeading()
-            locationManager.distanceFilter = 10
-            locationManager.headingFilter = 1
+            locationManager.distanceFilter = 10//not going to update if move less than 10 meters
+            locationManager.headingFilter = 1//not going to update if degree changes less than 1 degree
         }
     }
     
