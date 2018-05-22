@@ -26,7 +26,7 @@ class DataPlaneManager {
                                                 update_interval: 0.001,//TODO supposed to be 0.0001
                                                 best_gliding_airspeed: 68.0,
                                                 best_gliding_ratio: 9.0,
-                                                dirty_gliding_ratio: 5.0)//TODO guessed value
+                                                dirty_gliding_ratio: 7.0)
         data.append(config_plane_a320)
         data.append(config_plane_cessna172)
     }
