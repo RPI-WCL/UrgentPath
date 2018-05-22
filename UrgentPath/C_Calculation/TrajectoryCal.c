@@ -160,23 +160,23 @@ char* TrajectoryCal(double user_lat,
     
     //first curve
     double total_time1=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    sprintf(inst1,"30 degree bank for %d seconds",(int)(total_time1+0.5));
+    sprintf(inst1,"30 degree bank %d seconds -> %.1f°",(int)(total_time1+0.5),azmth(basic_trajectory.SLS[basic_trajectory.lensls-1][2]));
     
     //straight line
     double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
     double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
     double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
-    sprintf(inst2,"Straight line glide for %d seconds",(int)(time_shift2+0.5));
+    sprintf(inst2,"Straight line glide %d seconds",(int)(time_shift2+0.5));
     
     //second curve
     double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    sprintf(inst3,"30 degree bank for %d seconds",(int)(total_time3+0.5));
+    sprintf(inst3,"30 degree bank %d seconds -> %.1f°",(int)(total_time3+0.5),azmth(dat_30.p2[2]));
     
     //spiral for runway
     double total_time4 = 0;
     if(basic_trajectory.lenspiral>0) { //augmenting spiral
         total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
-        sprintf(inst4,"30 degree bank spiral for %d seconds",(int)(total_time4+0.5));
+        sprintf(inst4,"30 degree bank spiral %d seconds -> %.1f°",(int)(total_time4+0.5),azmth(dat_30.p2[2]));
     }
     
     //runway
@@ -194,7 +194,7 @@ char* TrajectoryCal(double user_lat,
         double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
         double original_distance= horizontal(dat_30.p2[0], dat_30.p2[1], original_start_x, original_start_y);
         time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
-        sprintf(inst5,"Dirty configuration straight glide for %d seconds",(int)(time_shift5+0.5));
+        sprintf(inst5,"Dirty configuration straight glide %d seconds",(int)(time_shift5+0.5));
     }
     
     if(total_time1 < 0 || time_shift2 < 0 || total_time3 < 0 || total_time4 < 0 || time_shift5 < 0){
