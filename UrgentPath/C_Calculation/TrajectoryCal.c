@@ -203,23 +203,24 @@ char* TrajectoryCal(double user_lat,
         return ret;
     }
     
-    if(total_time1 == total_time1 && total_time1 != 0 ){
+    //incase total_time1 is NaN or just doesn't exist
+    if(total_time1 == total_time1 && basic_trajectory.lenc1 > 0){
         strcat(ret,inst1);
         strcat(ret,"\n");
     }
-    if(time_shift2 == time_shift2 && time_shift2 != 0 ){
+    if(time_shift2 == time_shift2 && basic_trajectory.lensls > 0){
         strcat(ret,inst2);
         strcat(ret,"\n");
     }
-    if(total_time3 == total_time3 && total_time3 != 0 ){
+    if(total_time3 == total_time3 && basic_trajectory.lenc2 > 0){
         strcat(ret,inst3);
         strcat(ret,"\n");
     }
-    if(total_time4 == total_time4 && total_time4 != 0 ){
+    if(total_time4 == total_time4 && basic_trajectory.lenspiral > 0){
         strcat(ret,inst4);
         strcat(ret,"\n");
     }
-    if(time_shift5 == time_shift5 && time_shift5 != 0 ){
+    if(time_shift5 == time_shift5){
         strcat(ret,inst5);
     }
     
