@@ -115,6 +115,7 @@ char* TrajectoryCal(double user_lat,
     
     Seg basic_trajectory;
     memset(&basic_trajectory, 0, sizeof(Seg));
+    basic_trajectory.extended = false;//initalize extended
     basic_trajectory = basic_path(dat_30); //get first_dubins
     
     static char ret[1000*5];
@@ -181,7 +182,8 @@ char* TrajectoryCal(double user_lat,
     
     //runway
     double time_shift5 = 0;
-    if(basic_trajectory.extended) { //augmenting extended runway
+    //something strange here, when 'extended' is true -> if(extended) will not be executed;hence a '!' is added temporarily
+    if(!basic_trajectory.extended) { //augmenting extended runway
         double original_start_x,original_start_y;
         if(basic_trajectory.lenspiral>0){
             original_start_x= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
