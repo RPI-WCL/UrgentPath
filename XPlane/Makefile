@@ -1,6 +1,12 @@
-all: main
+all: clean xplane9 xplane11
 
 COMPILER = g++
 
-main: udp_redirect.cpp
-	$(COMPILER) udp_redirect.cpp -Wall -o udp_redirect.out
+clean:
+	rm -f *.out
+
+xplane9: udp_redirect_xplane9.cpp
+	$(COMPILER) udp_redirect_xplane9.cpp -Wall -o udp_redirect_xplane_9.out
+
+xplane11: udp_redirect_xplane11.cpp
+	$(COMPILER) udp_redirect_xplane11.cpp -Wall -o udp_redirect_xplane11.out
