@@ -88,14 +88,12 @@ class DataUserManager {
         let runwayData = DataRunwayManager.shared.getCloestRunway()
         print("Target runway: " + runwayData.runway_name)
         
-        let loc1 = CLLocation(latitude: data.user_loc_lat, longitude: data.user_loc_lon)
-        let loc2 = CLLocation(latitude: runwayData.runway_loc_lat, longitude: runwayData.runway_loc_lon)
-        let estimateDistance = loc1.distance(from: loc2)
+        let estimateDistance = getDistancePlaneToRunway()
         print("Estimate distance: " + String(estimateDistance/1000))
         
         // if the distance between plane and airport is larger than 100km, plane is not likely to reach runway
         // prevent runtime error in Trajectory generation code
-        if(estimateDistance/1000 > 100){
+        if(estimateDistance > 100){
             return "No route found - pre-calculation (>100km)"
         }
         
@@ -120,6 +118,16 @@ class DataUserManager {
         }
         let str = String(cString: c_str!)
         return str
+    }
+    
+    //return distance from plane to target runway
+    //unit in km
+    func getDistancePlaneToRunway() -> Double {
+        let runwayData = DataRunwayManager.shared.getCloestRunway()
+        let loc1 = CLLocation(latitude: data.user_loc_lat, longitude: data.user_loc_lon)
+        let loc2 = CLLocation(latitude: runwayData.runway_loc_lat, longitude: runwayData.runway_loc_lon)
+        let estimateDistance = loc1.distance(from: loc2)
+        return estimateDistance/1000
     }
     
     //return plane location
