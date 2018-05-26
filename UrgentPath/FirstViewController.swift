@@ -26,7 +26,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         let loc = DataUserManager.shared.getGeoLocation()
-        DataRunwayManager.shared.sortRunway(lat_N: loc.0, lon_E: loc.1)//change direction of location,NE -> SW
+        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)//change direction of location,NE -> SW
         
         initText()
         startLocationUpdate()
@@ -42,7 +42,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @objc func updateRunwaySequence(){
         runwayQueue.async {
             let data = DataUserManager.shared.getGeoLocation()
-            DataRunwayManager.shared.sortRunway(lat_N: data.0, lon_E: data.1)//change direction of location,NE -> SW
+            DataRunwayManager.shared.sortRunway(lat: data.0, lon: data.1)//change direction of location,NE -> SW
         }
     }
     

@@ -118,9 +118,12 @@ char* TrajectoryCal(double user_lat,
     basic_trajectory.extended = false;//initalize extended
     basic_trajectory = basic_path(dat_30); //get first_dubins
     
+    //initalize the string will be returned
     static char ret[1000*5];
     memset(ret, 0, 1000*5);
     
+    //incase too far from runway and plane will and halfway to airport
+    //detect anytime height is less than 0
     for(int i = 0; i < basic_trajectory.lenc1; ++i){
         if(basic_trajectory.C1[i][4] < 0){
             strcpy(ret,"No route can be found - calculation");
@@ -153,6 +156,7 @@ char* TrajectoryCal(double user_lat,
         }
     }
     
+    //initalize instructions display to users
     char inst1[1000] = {};
     char inst2[1000] = {};
     char inst3[1000] = {};
@@ -199,6 +203,7 @@ char* TrajectoryCal(double user_lat,
         sprintf(inst5,"Dirty configuration straight glide %d seconds",(int)(time_shift5+0.5));
     }
     
+    //in case calculation failure, output to user and log
     if(total_time1 < 0 || time_shift2 < 0 || total_time3 < 0 || total_time4 < 0 || time_shift5 < 0){
         strcpy(ret,"Calculation failure");
         printf("Calculation failure\n");
@@ -206,6 +211,7 @@ char* TrajectoryCal(double user_lat,
     }
     
     //incase total_time1 is NaN or just doesn't exist
+    //just don't return it
     if(total_time1 == total_time1 && basic_trajectory.lenc1 > 0){
         strcat(ret,inst1);
         strcat(ret,"\n");
@@ -225,13 +231,6 @@ char* TrajectoryCal(double user_lat,
     if(time_shift5 == time_shift5){
         strcat(ret,inst5);
     }
-    
-//    printf("===============================\n");
-//    printf("%s\n",inst1);
-//    printf("%s\n",inst2);
-//    printf("%s\n",inst3);
-//    printf("%s\n",inst4);
-//    printf("%s\n",inst5);
-//    printf("===============================\n");
+
     return ret;
 }

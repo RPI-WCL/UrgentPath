@@ -12,7 +12,6 @@ import CoreLocation
 class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
-    //private var data : [DataRunway]
     private var data : DataRunwayGlobal
     private var sortedRunways : [DataRunway]
     
@@ -49,11 +48,11 @@ class DataRunwayManager {
         print("Amount of runway read from csv file: " + String(data.size()))
     }
     
-    //loc_lat_S range: -90->90
-    //loc_lon_W range: -180->180
+    //lat range: -90->90 N
+    //lon range: -180->180 E
     //sort runway from close to far by current location
-    func sortRunway(lat_N loc_lat_N:Double, lon_E loc_lon_E:Double) {
-        var aroundList = data.listRunwaysAround(lat: Int(loc_lat_N), lon: Int(loc_lon_E))
+    func sortRunway(lat:Double, lon:Double) {
+        var aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
         if(aroundList.count == 0) {
             aroundList = data.listRunwaysAll()
             print("sort ALL runways")
@@ -61,12 +60,12 @@ class DataRunwayManager {
         else{
             print("sort partial runways")
         }
-        sortedRunways = aroundList.sorted(by: { getGeoDistance(loc_lat_N,
-                                                               loc_lon_E,
+        sortedRunways = aroundList.sorted(by: { getGeoDistance(lat,
+                                                               lon,
                                                                $0.runway_loc_lat,
                                                                $0.runway_loc_lon)
-                                                < getGeoDistance(loc_lat_N,
-                                                                 loc_lon_E,
+                                                < getGeoDistance(lat,
+                                                                 lon,
                                                                  $1.runway_loc_lat,
                                                                  $1.runway_loc_lon) })
     }
