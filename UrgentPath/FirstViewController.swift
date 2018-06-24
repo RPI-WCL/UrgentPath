@@ -7,11 +7,10 @@
 //
 
 import UIKit
-import MapKit
+import GoogleMaps
 import CoreLocation
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
-    @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocXText: UITextField!
     @IBOutlet weak var planeLocYText: UITextField!

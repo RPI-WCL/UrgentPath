@@ -1,16 +1,29 @@
 PODS:
+  - GoogleMaps (2.6.0):
+    - GoogleMaps/Maps (= 2.6.0)
+  - GoogleMaps/Base (2.6.0)
+  - GoogleMaps/Maps (2.6.0):
+    - GoogleMaps/Base
+  - GooglePlaces (2.6.0):
+    - GoogleMaps/Base (= 2.6.0)
   - SwiftSocket (2.0.2)
 
 DEPENDENCIES:
+  - GoogleMaps
+  - GooglePlaces
   - SwiftSocket
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - GoogleMaps
+    - GooglePlaces
     - SwiftSocket
 
 SPEC CHECKSUMS:
+  GoogleMaps: 42f91c68b7fa2f84d5c86597b18ceb99f5414c7f
+  GooglePlaces: f6ddf33b75cef69e888907d9947c57198ed845f3
   SwiftSocket: 6f4c9c63fbc5c1d61188936bb3c599fd546f40ae
 
-PODFILE CHECKSUM: 49c4138b9929b573afc711fd1a90927daed401d0
+PODFILE CHECKSUM: 6fee35465bf348e3e15ae164508276df5a561d14
 
 COCOAPODS: 1.5.0

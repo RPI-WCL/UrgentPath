@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,12 +18,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" showsUserLocation="YES" showsBuildings="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ysi-iG-U2V">
-                                <rect key="frame" x="0.0" y="0.0" width="777" height="975"/>
-                                <connections>
-                                    <outlet property="delegate" destination="9pv-A4-QxB" id="xO9-G6-Mdl"/>
-                                </connections>
-                            </mapView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="X:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uvU-hu-gG2">
                                 <rect key="frame" x="20" y="859" width="15" height="18"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -157,12 +150,7 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Ysi-iG-U2V" firstAttribute="bottom" secondItem="PQr-Ze-W5v" secondAttribute="bottom" id="AJG-kc-xJ7"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="Z9t-WW-EeU"/>
-                            <constraint firstItem="Ysi-iG-U2V" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="dsR-lf-FOE"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="Ysi-iG-U2V" secondAttribute="trailing" constant="-29" id="ffj-iY-dC8"/>
-                            <constraint firstItem="Ysi-iG-U2V" firstAttribute="leading" secondItem="53Z-Vc-f8N" secondAttribute="leading" id="iKK-LS-6sz"/>
-                            <constraint firstItem="Ysi-iG-U2V" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="oO0-5A-Ckv"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="trailing" secondItem="PQr-Ze-W5v" secondAttribute="trailing" id="vO2-Yj-7Hc"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="yew-GE-hBE"/>
                         </constraints>
@@ -171,7 +159,6 @@
                     <tabBarItem key="tabBarItem" title="First" image="first" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="instructionLabel" destination="53Z-Vc-f8N" id="iEk-Q9-z0d"/>
-                        <outlet property="mapView" destination="Ysi-iG-U2V" id="F2n-tM-CPu"/>
                         <outlet property="planeHeadingText" destination="HbP-kc-ra6" id="jci-jq-Qoc"/>
                         <outlet property="planeLocXText" destination="oRQ-0D-eUL" id="w2S-dn-ceE"/>
                         <outlet property="planeLocYText" destination="tbR-z3-tbf" id="Wye-3y-fxn"/>
