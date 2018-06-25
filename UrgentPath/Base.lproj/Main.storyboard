@@ -147,11 +147,19 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="EHT-Kv-5g2" customClass="GMSMapView">
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="975"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="EHT-Kv-5g2" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="KiN-t1-L1D"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="Z9t-WW-EeU"/>
+                            <constraint firstItem="EHT-Kv-5g2" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="eNb-00-uk5"/>
+                            <constraint firstItem="EHT-Kv-5g2" firstAttribute="trailing" secondItem="PQr-Ze-W5v" secondAttribute="trailing" id="fu6-4i-Id0"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="trailing" secondItem="PQr-Ze-W5v" secondAttribute="trailing" id="vO2-Yj-7Hc"/>
+                            <constraint firstItem="EHT-Kv-5g2" firstAttribute="bottom" secondItem="PQr-Ze-W5v" secondAttribute="bottom" id="w2D-kl-vCE"/>
                             <constraint firstItem="53Z-Vc-f8N" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="yew-GE-hBE"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
@@ -159,6 +167,7 @@
                     <tabBarItem key="tabBarItem" title="First" image="first" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="instructionLabel" destination="53Z-Vc-f8N" id="iEk-Q9-z0d"/>
+                        <outlet property="mapView" destination="EHT-Kv-5g2" id="8w9-uZ-JxV"/>
                         <outlet property="planeHeadingText" destination="HbP-kc-ra6" id="jci-jq-Qoc"/>
                         <outlet property="planeLocXText" destination="oRQ-0D-eUL" id="w2S-dn-ceE"/>
                         <outlet property="planeLocYText" destination="tbR-z3-tbf" id="Wye-3y-fxn"/>

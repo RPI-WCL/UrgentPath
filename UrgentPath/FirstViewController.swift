@@ -11,6 +11,7 @@ import GoogleMaps
 import CoreLocation
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
+    @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocXText: UITextField!
     @IBOutlet weak var planeLocYText: UITextField!
@@ -27,10 +28,12 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         let loc = DataUserManager.shared.getGeoLocation()
         DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)//change direction of location,NE -> SW
         
         initText()
+        initMap()
         startLocationUpdate()
         
         //start schedules
@@ -43,6 +46,23 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    private func initMap() {
+        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 10.0)//TODO
+        mapView.animate(to: camera)
+        mapView.setMinZoom(4, maxZoom: 12)
+        mapView.isMyLocationEnabled = true
+        do {
+            // Set the map style by passing the URL of the local file.
+            if let styleURL = Bundle.main.url(forResource: "GoogleMapStyle", withExtension: "json") {
+                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
+            } else {
+                NSLog("Unable to find style.json")
+            }
+        } catch {
+            NSLog("One or more of the map styles failed to load. \(error)")
+        }
     }
     
     //update current target runway text
