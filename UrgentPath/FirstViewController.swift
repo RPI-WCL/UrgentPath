@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Darwin
 import GoogleMaps
 import CoreLocation
 
@@ -49,19 +50,40 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func initMap() {
-        let camera = GMSCameraPosition.camera(withLatitude: -33.86, longitude: 151.20, zoom: 10.0)//TODO
+        // Implement GMSTileURLConstructor
+        // Returns a Tile based on the x,y,zoom coordinates, and the requested floor
+        let urls: GMSTileURLConstructor = {(x, y, zoom) in
+            let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
+            let url = "https://www.enjoybeta.com/maps/\(zoom)/\(new_y-1)/\(x).png"
+            return URL(string: url)
+        }
+        
+        // Create the GMSTileLayer
+        let layer = GMSURLTileLayer(urlConstructor: urls)
+        
+        // Display on the map at a specific zIndex
+        layer.zIndex = 100
+        layer.map = mapView
+        
+        //move camera to destinated location
+        let camera = GMSCameraPosition.camera(withLatitude: 39.8282, longitude: -98.5795, zoom: 4)//TODO
         mapView.animate(to: camera)
-        mapView.setMinZoom(4, maxZoom: 12)
+        
+        //limit the range to zoom, which is actually maxZoom+1
+        mapView.setMinZoom(1, maxZoom: 9)
+        //display the dot marking current location
         mapView.isMyLocationEnabled = true
+        
+        //setup the default style of google map
         do {
             // Set the map style by passing the URL of the local file.
             if let styleURL = Bundle.main.url(forResource: "GoogleMapStyle", withExtension: "json") {
                 mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
             } else {
-                NSLog("Unable to find style.json")
+                NSLog("Unable to find GoogleMapStyle.json")
             }
         } catch {
-            NSLog("One or more of the map styles failed to load. \(error)")
+            NSLog("Map style failed to load. \(error)")
         }
     }
     
