@@ -25,6 +25,7 @@
 		9CB83F2C20785DA400C372CD /* DataUserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F2B20785DA400C372CD /* DataUserManager.swift */; };
 		9CB83F2E20786F4D00C372CD /* DataRunway.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F2D20786F4D00C372CD /* DataRunway.swift */; };
 		9CBB94AF20DEF58200438042 /* GoogleMapStyle.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CBB94AE20DEF58100438042 /* GoogleMapStyle.json */; };
+		9CBB94B320EC07AE00438042 /* arrow-16.png in Resources */ = {isa = PBXBuildFile; fileRef = 9CBB94B220EC07AC00438042 /* arrow-16.png */; };
 		9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */; };
 		9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CECAAB820788370005E225E /* DataRunwayManager.swift */; };
 		9CF1DCBE20A7627E00660D6E /* DataRunwayGlobal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */; };
@@ -80,6 +81,7 @@
 		9CB83F2B20785DA400C372CD /* DataUserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataUserManager.swift; sourceTree = "<group>"; };
 		9CB83F2D20786F4D00C372CD /* DataRunway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRunway.swift; sourceTree = "<group>"; };
 		9CBB94AE20DEF58100438042 /* GoogleMapStyle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; name = GoogleMapStyle.json; path = Data/GoogleMapStyle.json; sourceTree = SOURCE_ROOT; };
+		9CBB94B220EC07AC00438042 /* arrow-16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-16.png"; path = "Data/arrow-16.png"; sourceTree = SOURCE_ROOT; };
 		9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UrgentPath-Bridging-Header.h"; sourceTree = "<group>"; };
 		9CC73FC72073FA3E003FBC2C /* TrajectoryCal.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = TrajectoryCal.c; sourceTree = "<group>"; };
 		9CC73FC82073FA3E003FBC2C /* TrajectoryCal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TrajectoryCal.h; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				9C18403420735AC9003F7325 /* Info.plist */,
 				9CBB94AE20DEF58100438042 /* GoogleMapStyle.json */,
 				9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */,
+				9CBB94B220EC07AC00438042 /* arrow-16.png */,
 			);
 			path = UrgentPath;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 			files = (
 				9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */,
 				9CBB94AF20DEF58200438042 /* GoogleMapStyle.json in Resources */,
+				9CBB94B320EC07AE00438042 /* arrow-16.png in Resources */,
 				9C050D1C2099040E00E1B90F /* runways_with_mag_heading.csv in Resources */,
 				9C18403020735AC9003F7325 /* Assets.xcassets in Resources */,
 				9C18402E20735AC5003F7325 /* Main.storyboard in Resources */,
@@ -624,7 +628,10 @@
 				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPath/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Wl,-stack_size",
@@ -651,7 +658,10 @@
 				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPath/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-Wl,-stack_size",
@@ -674,7 +684,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8533345P3C;
 				INFOPLIST_FILE = UrgentPathTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -691,7 +705,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 8533345P3C;
 				INFOPLIST_FILE = UrgentPathTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPathTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -707,7 +725,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPathUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPathUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -723,7 +745,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 85R9P7GJNL;
 				INFOPLIST_FILE = UrgentPathUITests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = WCL.UrgentPathUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

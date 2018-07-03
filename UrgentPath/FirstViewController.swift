@@ -26,12 +26,13 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     let runwayQueue = DispatchQueue(label: "runway", qos: .utility)
     
     let locationManager = CLLocationManager()
+    var currentLocationMarker: GMSMarker?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let loc = DataUserManager.shared.getGeoLocation()
-        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)//change direction of location,NE -> SW
+        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)
         
         initText()
         initMap()
@@ -50,18 +51,17 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func initMap() {
-        // Implement GMSTileURLConstructor
-        // Returns a Tile based on the x,y,zoom coordinates, and the requested floor
+        //obtrain url for correct tile
         let urls: GMSTileURLConstructor = {(x, y, zoom) in
             let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
             let url = "https://www.enjoybeta.com/maps/\(zoom)/\(new_y-1)/\(x).png"
             return URL(string: url)
         }
         
-        // Create the GMSTileLayer
+        //create a layer for vfr
         let layer = GMSURLTileLayer(urlConstructor: urls)
         
-        // Display on the map at a specific zIndex
+        // Display on the map at certain priority
         layer.zIndex = 100
         layer.map = mapView
         
@@ -72,7 +72,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //limit the range to zoom, which is actually maxZoom+1
         mapView.setMinZoom(1, maxZoom: 9)
         //display the dot marking current location
-        mapView.isMyLocationEnabled = true
+        mapView.isMyLocationEnabled = false
+        mapView.settings.myLocationButton = false
+        mapView.settings.compassButton = true
+        mapView.settings.tiltGestures = false
         
         //setup the default style of google map
         do {
@@ -85,6 +88,21 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         } catch {
             NSLog("Map style failed to load. \(error)")
         }
+        
+        //setup current location marker
+        currentLocationMarker = nil
+        if let location = locationManager.location {
+            currentLocationMarker = GMSMarker(position: location.coordinate)
+            currentLocationMarker?.icon = UIImage(named: "arrow-16.png")
+            currentLocationMarker?.rotation = locationManager.location?.course ?? 0
+            currentLocationMarker?.isFlat = true
+            currentLocationMarker?.groundAnchor = CGPoint(x: 0.5, y: 0.5)
+            currentLocationMarker?.map = mapView
+        }
+        
+        //TODO remove
+        //KALB
+        markRunway(startLat:42.7372,startLon:-73.8043,endLat:42.7569,endLon:-73.8051)
     }
     
     //update current target runway text
@@ -109,6 +127,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeLocYText.text = formatText(loc_lon)
         planeLocZText.text = formatText(loc_z) + " feet"
         planeHeadingText.text = formatText(loc_heading)
+//        let camera = GMSCameraPosition.camera(withLatitude: loc_lat, longitude: loc_lon, zoom: 9)
+//        mapView.animate(to: camera)
+        currentLocationMarker?.position = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
+        currentLocationMarker?.rotation = loc_heading
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             DataUserManager.shared.handleXPlane()
         }
@@ -168,6 +190,18 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeHeadingText.text = "0"
         windSpeedText.text = "0"
         windHeadingText.text = "0"
+    }
+    
+    private func markRunway(startLat:Double,startLon:Double,endLat:Double,endLon:Double) {
+        //add a runway
+        let path = GMSMutablePath()
+        path.add(CLLocationCoordinate2D(latitude: startLat, longitude: startLon))
+        path.add(CLLocationCoordinate2D(latitude: endLat, longitude: endLon))
+        let poly = GMSPolyline(path: path)
+        poly.zIndex = 200
+        poly.strokeWidth = 4
+        poly.strokeColor = .orange
+        poly.map = mapView
     }
     
     private func formatText(_ input:Double) -> String {
