@@ -61,6 +61,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //create a layer for vfr
         let layer = GMSURLTileLayer(urlConstructor: urls)
         
+        //allow larger tile display, less definition but higher zoom performance
+        layer.tileSize = 1024
+        
         // Display on the map at certain priority
         layer.zIndex = 100
         layer.map = mapView
@@ -70,7 +73,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         mapView.animate(to: camera)
         
         //limit the range to zoom, which is actually maxZoom+1
-        mapView.setMinZoom(1, maxZoom: 9)
+        mapView.setMinZoom(4, maxZoom: 10.99)
         //display the dot marking current location
         mapView.isMyLocationEnabled = false
         mapView.settings.myLocationButton = false
