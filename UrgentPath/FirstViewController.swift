@@ -14,12 +14,8 @@ import CoreLocation
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: GMSMapView!
     @IBOutlet weak var instructionLabel: UILabel!
-    @IBOutlet weak var planeLocXText: UITextField!
-    @IBOutlet weak var planeLocYText: UITextField!
     @IBOutlet weak var planeLocZText: UITextField!
     @IBOutlet weak var planeHeadingText: UITextField!
-    @IBOutlet weak var windSpeedText: UITextField!
-    @IBOutlet weak var windHeadingText: UITextField!
     @IBOutlet weak var runwayText: UITextField!
     @IBOutlet weak var runwayDistanceText: UITextField!
     
@@ -42,7 +38,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateLocationHeading), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateRunwayText), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateInstruction), userInfo: nil, repeats: true)
-        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateWind), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunwayList), userInfo: nil, repeats: true)
     }
     
@@ -126,24 +121,13 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //update location and heading text
         let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
         let loc_heading = DataUserManager.shared.getHeading()
-        planeLocXText.text = formatText(loc_lat)
-        planeLocYText.text = formatText(loc_lon)
         planeLocZText.text = formatText(loc_z) + " feet"
         planeHeadingText.text = formatText(loc_heading)
-//        let camera = GMSCameraPosition.camera(withLatitude: loc_lat, longitude: loc_lon, zoom: 9)
-//        mapView.animate(to: camera)
         currentLocationMarker?.position = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
         currentLocationMarker?.rotation = loc_heading
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             DataUserManager.shared.handleXPlane()
         }
-    }
-    
-    @objc func updateWind() {
-        //update wind text
-        let (wind_speed,wind_heading) = DataUserManager.shared.getWind()
-        self.windSpeedText.text = String(String(wind_speed).prefix(5))
-        self.windHeadingText.text = String(String(wind_heading).prefix(5))
     }
     
     //update instruction
@@ -176,6 +160,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
             let userLoc:CLLocation = locations[0] as CLLocation
             DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
+            //TODO
+            let camera = GMSCameraPosition.camera(withLatitude: userLoc.coordinate.latitude, longitude: userLoc.coordinate.longitude, zoom: 10.99)
+            mapView.animate(to: camera)
         }
     }
     
@@ -187,12 +174,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func initText() {
-        planeLocXText.text = "0"
-        planeLocYText.text = "0"
         planeLocZText.text = "0"
         planeHeadingText.text = "0"
-        windSpeedText.text = "0"
-        windHeadingText.text = "0"
     }
     
     private func markRunway(startLat:Double,startLon:Double,endLat:Double,endLon:Double) {
