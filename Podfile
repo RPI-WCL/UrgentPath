@@ -5,4 +5,5 @@ target 'UrgentPath' do
 	pod "SwiftSocket"
 	pod "GoogleMaps"
 	pod "GooglePlaces"
+	pod 'Charts'
 end
