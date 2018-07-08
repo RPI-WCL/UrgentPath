@@ -12,8 +12,15 @@ import GoogleMaps
 import CoreLocation
 import Charts
 
+let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/20180524/"
+
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: GMSMapView!
+    @IBOutlet weak var locationBtn: UIButton!
+    @IBAction func tapLocationBtn(_ sender: UIButton) {
+        let (lat,lon,_) = DataUserManager.shared.getGeoLocation()
+        mapView.animate(toLocation: CLLocationCoordinate2D(latitude: lat, longitude: lon))
+    }
     @IBOutlet weak var lineChartView: LineChartView!
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocZText: UITextField!
@@ -58,7 +65,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //obtrain url for correct tile
         let urls: GMSTileURLConstructor = {(x, y, zoom) in
             let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
-            let url = "https://www.enjoybeta.com/maps/\(zoom)/\(new_y-1)/\(x).png"
+            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).png"
             return URL(string: url)
         }
         
@@ -71,10 +78,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         // Display on the map at certain priority
         layer.zIndex = 100
         layer.map = mapView
-        
-        //move camera to destinated location
-        let camera = GMSCameraPosition.camera(withLatitude: 39.8282, longitude: -98.5795, zoom: 4)//TODO
-        mapView.animate(to: camera)
         
         //limit the range to zoom, which is actually maxZoom+1
         mapView.setMinZoom(1, maxZoom: 10.99)
@@ -106,6 +109,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             currentLocationMarker?.groundAnchor = CGPoint(x: 0.5, y: 0.5)
             currentLocationMarker?.map = mapView
         }
+        
+        locationBtn.layer.cornerRadius = 0.5 * locationBtn.frame.width
+        locationBtn.setImage(UIImage(named: "location-64.png"), for: .normal)
+        mapView.bringSubview(toFront: locationBtn)
         
         //TODO remove
         //KALB
