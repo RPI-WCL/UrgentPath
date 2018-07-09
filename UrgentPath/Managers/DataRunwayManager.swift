@@ -95,12 +95,10 @@ class DataRunwayManager {
         }
         sortedRunways = aroundList.sorted(by: { getGeoDistance(lat,
                                                                lon,
-                                                               $0.runway_loc_lat,
-                                                               $0.runway_loc_lon)
+                                                               $0)
                                                 < getGeoDistance(lat,
                                                                  lon,
-                                                                 $1.runway_loc_lat,
-                                                                 $1.runway_loc_lon) })
+                                                                 $1) })
     }
     
     func getCloestRunway() -> DataRunway {
@@ -110,18 +108,14 @@ class DataRunwayManager {
     //return distance between given 2 points in [meters]
     private func getGeoDistance(_ loc_lat_1:Double,
                                 _ loc_lon_1:Double,
-                                _ loc_lat_2:Double,
-                                _ loc_lon_2:Double) -> Double {
+                                _ runway:DataRunway) -> Double {
         let loc1 = CLLocation(latitude: loc_lat_1, longitude: loc_lon_1)
-        let loc2 = CLLocation(latitude: loc_lat_2, longitude: loc_lon_2)
+        let loc2 = CLLocation(latitude: runway.runway_loc_lat, longitude: runway.runway_loc_lon)
         return loc1.distance(from: loc2)
     }
     
-    //TODO remove ""
     private func surfaceQualityToDouble(surface_str: String) -> Double {
-//        let str = surface_str.replacingOccurrences(of: "\"", with: "", options: NSString.CompareOptions.literal, range:nil)
         let str = surface_str.uppercased()
-        
         if (str.range(of:"ASPH") != nil
             || str.range(of:"ASP") != nil
             || str.range(of:"CONC") != nil
