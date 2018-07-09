@@ -14,19 +14,25 @@ struct DataRunway {
     var runway_loc_lon : Double
     var runway_loc_z : Double
     var runway_heading : Double
-    var runway_rank : Int = 0
+    var runway_length : Int = 0
+    var runway_width : Int = 0
+    var runway_surface_quality : Double = 0.1
     
     init(runway_name: String,
          runway_loc_x : Double,
          runway_loc_y : Double,
          runway_loc_z : Double,
          runway_heading : Double,
-         runway_rank : Int = 0) {
+         runway_length : Int,
+         runway_width : Int,
+         runway_surface_quality : Double = 0.1) {
         self.runway_name = runway_name
         self.runway_loc_lat = runway_loc_x
         self.runway_loc_lon = runway_loc_y
         self.runway_loc_z = runway_loc_z
         self.runway_heading = runway_heading
-        self.runway_rank = runway_rank
+        self.runway_length = runway_length
+        self.runway_width = runway_width
+        self.runway_surface_quality = runway_surface_quality
     }
 }
