@@ -113,10 +113,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         locationBtn.layer.cornerRadius = 0.5 * locationBtn.frame.width
         locationBtn.setImage(UIImage(named: "location-64.png"), for: .normal)
         mapView.bringSubview(toFront: locationBtn)
-        
-        //TODO remove
-        //KALB
-        markRunway(startLat:42.7372,startLon:-73.8043,endLat:42.7569,endLon:-73.8051)
     }
     
     private func initLineChart() {
@@ -183,8 +179,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .medium
+        dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         
-        self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
+        self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date()) + " UTC"
         self.instructionLabel.lineBreakMode = .byWordWrapping
     }
     
