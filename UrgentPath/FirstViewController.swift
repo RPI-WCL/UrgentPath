@@ -37,7 +37,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         
         let loc = DataUserManager.shared.getGeoLocation()
-        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)
+        let heading = DataUserManager.shared.getHeading()
+        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1, heading: heading)
         
         initText()
         initMap()
@@ -190,8 +191,9 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     @objc func updateRunwayList(){
         runwayQueue.async {
-            let data = DataUserManager.shared.getGeoLocation()
-            DataRunwayManager.shared.sortRunway(lat: data.0, lon: data.1)
+            let location_data = DataUserManager.shared.getGeoLocation()
+            let heading = DataUserManager.shared.getHeading()
+            DataRunwayManager.shared.sortRunway(lat: location_data.0, lon: location_data.1, heading: heading)
         }
     }
     

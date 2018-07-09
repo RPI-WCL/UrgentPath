@@ -9,6 +9,16 @@
 import Foundation
 import CoreLocation
 
+//weight to prioritize runways
+let C1 = 0.1//runway length
+let C2 = 0.1//runway width
+let C3 = 0.0//instrument quality
+let C4 = 1.0//distance to runway
+let C5 = 0.0//headwind
+let C6 = 0.0//crosswind
+let C7 = 0.1//runway surface
+let C8 = 0.0//facility
+
 class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
@@ -84,33 +94,79 @@ class DataRunwayManager {
     //lat range: -90->90 N
     //lon range: -180->180 E
     //sort runway from close to far by current location
-    func sortRunway(lat:Double, lon:Double) {
+    func sortRunway(lat:Double, lon:Double, heading:Double) {
         var aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
         if(aroundList.count == 0) {
-            aroundList = data.listRunwaysAll()
             print("sort ALL runways")
+            aroundList = data.listRunwaysAll()
+            sortedRunways = aroundList.sorted(by: { getGeoDistance(lat,
+                                                                   lon,
+                                                                   $0.runway_loc_lat,
+                                                                   $0.runway_loc_lon)
+                                                    < getGeoDistance(lat,
+                                                                     lon,
+                                                                     $1.runway_loc_lat,
+                                                                     $1.runway_loc_lon) })
         }
         else{
             print("sort partial runways")
+            let runway_length_max = aroundList.map{$0.runway_length}.max()!
+            let runway_width_max = aroundList.map{$0.runway_width}.max()!
+            let runway_max_dis = (aroundList.map{getGeoDistance($0.runway_loc_lat, $0.runway_loc_lon, lat, lon)}.max()!)/1000
+            let runwayPriorityUtility = RunwayPriorityUtility(  runway_length_max: runway_length_max,
+                                                                runway_width_max: runway_width_max,
+                                                                runway_max_distance: runway_max_dis,//TODO ?
+                                                                headwind_max: 1,//TODO
+                                                                crosswind_max: 1,
+                                                                crosswind_min: 0)
+            
+            sortedRunways = aroundList.sorted(by: { getRunwayRating(lat,
+                                                                    lon,
+                                                                    heading,
+                                                                    $0,
+                                                                    runwayPriorityUtility)
+                                                    > getRunwayRating(lat,
+                                                                      lon,
+                                                                      heading,
+                                                                      $1,
+                                                                      runwayPriorityUtility) })
         }
-        sortedRunways = aroundList.sorted(by: { getGeoDistance(lat,
-                                                               lon,
-                                                               $0)
-                                                < getGeoDistance(lat,
-                                                                 lon,
-                                                                 $1) })
     }
     
     func getCloestRunway() -> DataRunway {
         return sortedRunways[0]
     }
     
+    //return rating for runway regarding current situation
+    private func getRunwayRating(_ loc_lat_1:Double,
+                                _ loc_lon_1:Double,
+                                _ heading:Double,
+                                _ runway:DataRunway,
+                                _ utility:RunwayPriorityUtility) -> Double {
+        let loc1 = CLLocation(latitude: loc_lat_1, longitude: loc_lon_1)
+        let loc2 = CLLocation(latitude: runway.runway_loc_lat, longitude: runway.runway_loc_lon)
+        let dis = loc1.distance(from: loc2)/1000
+        
+        let rating_runway_length = C1 * Double(runway.runway_length) / Double(utility.runway_length_max)
+        let rating_runway_width = C2 * Double(runway.runway_width) / Double(utility.runway_width_max)
+        let rating_instrument_quality = C3 * 0
+        let rating_distance = C4 * ((utility.runway_max_distance - dis) / utility.runway_max_distance)// TODO
+        let rating_headwind = C5 * 0 / utility.headwind_max
+        let rating_crosswind = C6 * (utility.crosswind_max - 0)/(utility.crosswind_max - utility.crosswind_min)
+        let rating_surface = C7 * runway.runway_surface_quality
+        let rating_facility = C8 * 0
+        let rating = rating_runway_length + rating_runway_width + rating_instrument_quality
+                    + rating_distance + rating_headwind + rating_crosswind + rating_surface + rating_facility
+        return rating
+    }
+    
     //return distance between given 2 points in [meters]
     private func getGeoDistance(_ loc_lat_1:Double,
                                 _ loc_lon_1:Double,
-                                _ runway:DataRunway) -> Double {
+                                _ loc_lat_2:Double,
+                                _ loc_lon_2:Double) -> Double {
         let loc1 = CLLocation(latitude: loc_lat_1, longitude: loc_lon_1)
-        let loc2 = CLLocation(latitude: runway.runway_loc_lat, longitude: runway.runway_loc_lon)
+        let loc2 = CLLocation(latitude: loc_lat_2, longitude: loc_lon_2)
         return loc1.distance(from: loc2)
     }
     

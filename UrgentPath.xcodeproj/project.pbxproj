@@ -13,6 +13,7 @@
 		9C050D1C2099040E00E1B90F /* runways_with_mag_heading.csv in Resources */ = {isa = PBXBuildFile; fileRef = 9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */; };
 		9C0ABDAF20EFC5A600183664 /* arrow-48.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDAE20EFC5A500183664 /* arrow-48.png */; };
 		9C0ABDB320F1B14500183664 /* location-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB220F1B14500183664 /* location-64.png */; };
+		9C0ABDB520F3B7D900183664 /* RunwayPriorityUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */; };
 		9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402620735AC5003F7325 /* AppDelegate.swift */; };
 		9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402820735AC5003F7325 /* FirstViewController.swift */; };
 		9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402A20735AC5003F7325 /* SecondViewController.swift */; };
@@ -63,6 +64,7 @@
 		9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runways_with_mag_heading.csv; path = Data/runways_with_mag_heading.csv; sourceTree = SOURCE_ROOT; };
 		9C0ABDAE20EFC5A500183664 /* arrow-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-48.png"; path = "Data/arrow-48.png"; sourceTree = SOURCE_ROOT; };
 		9C0ABDB220F1B14500183664 /* location-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "location-64.png"; path = "Data/location-64.png"; sourceTree = SOURCE_ROOT; };
+		9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunwayPriorityUtility.swift; sourceTree = "<group>"; };
 		9C18402320735AC5003F7325 /* UrgentPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrgentPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18402620735AC5003F7325 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C18402820735AC5003F7325 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -221,6 +223,7 @@
 				9CB83F252077FE0400C372CD /* DataUser.swift */,
 				9CB83F2D20786F4D00C372CD /* DataRunway.swift */,
 				9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */,
+				9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -452,6 +455,7 @@
 				9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */,
 				9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */,
 				9CB83F262077FE0400C372CD /* DataUser.swift in Sources */,
+				9C0ABDB520F3B7D900183664 /* RunwayPriorityUtility.swift in Sources */,
 				9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */,
 				9C03C81320922ACE00967F6A /* helper.c in Sources */,
 			);
