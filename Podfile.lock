@@ -2,34 +2,25 @@ PODS:
   - Charts (3.1.1):
     - Charts/Core (= 3.1.1)
   - Charts/Core (3.1.1)
-  - GoogleMaps (2.7.0):
-    - GoogleMaps/Maps (= 2.7.0)
-  - GoogleMaps/Base (2.7.0)
-  - GoogleMaps/Maps (2.7.0):
-    - GoogleMaps/Base
-  - GooglePlaces (2.7.0):
-    - GoogleMaps/Base (= 2.7.0)
+  - Mapbox-iOS-SDK (4.1.1)
   - SwiftSocket (2.0.2)
 
 DEPENDENCIES:
   - Charts
-  - GoogleMaps
-  - GooglePlaces
+  - Mapbox-iOS-SDK
   - SwiftSocket
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Charts
-    - GoogleMaps
-    - GooglePlaces
+    - Mapbox-iOS-SDK
     - SwiftSocket
 
 SPEC CHECKSUMS:
   Charts: 90a4d61da0f6e06684c591e3bcab11940fe61736
-  GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
-  GooglePlaces: 3d06e6c99654545b4738ce49648745779c25f2ef
+  Mapbox-iOS-SDK: 78e66fad4085433d04fccb9364df4be08042fb82
   SwiftSocket: 6f4c9c63fbc5c1d61188936bb3c599fd546f40ae
 
-PODFILE CHECKSUM: c5c575a72ec7d25a553416d43d18a2dac4be9b8b
+PODFILE CHECKSUM: 046d844b9c125090de7f3c2253ff3ea83278bea5
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

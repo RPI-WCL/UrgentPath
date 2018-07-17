@@ -3,7 +3,6 @@ use_frameworks!
 
 target 'UrgentPath' do
 	pod "SwiftSocket"
-	pod "GoogleMaps"
-	pod "GooglePlaces"
-	pod 'Charts'
+	pod "Charts"
+	pod "Mapbox-iOS-SDK"
 end

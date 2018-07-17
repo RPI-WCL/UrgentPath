@@ -8,30 +8,23 @@
 
 import UIKit
 import Darwin
-import GoogleMaps
+import Mapbox
 import CoreLocation
 import Charts
 
-let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/20180524/"
-
-class FirstViewController: UIViewController, CLLocationManagerDelegate {
-    @IBOutlet weak var mapView: GMSMapView!
-    @IBOutlet weak var locationBtn: UIButton!
-    @IBAction func tapLocationBtn(_ sender: UIButton) {
-        let (lat,lon,_) = DataUserManager.shared.getGeoLocation()
-        mapView.animate(toLocation: CLLocationCoordinate2D(latitude: lat, longitude: lon))
-    }
+class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapViewDelegate {
+    @IBOutlet weak var mapviewUI: UIView!
     @IBOutlet weak var lineChartView: LineChartView!
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocZText: UITextField!
     @IBOutlet weak var planeHeadingText: UITextField!
     @IBOutlet weak var runwayText: UITextField!
     @IBOutlet weak var runwayDistanceText: UITextField!
+    var sectionalLayer: MGLRasterStyleLayer?
     
     let runwayQueue = DispatchQueue(label: "runway", qos: .utility)
     
     let locationManager = CLLocationManager()
-    var currentLocationMarker: GMSMarker?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,58 +54,27 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         planeHeadingText.text = "0"
     }
     
+    func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
+        let source = MGLRasterTileSource(identifier: "contours", tileURLTemplates: ["https://wcl.cs.rpi.edu/pilots/data/maptiles/jpg/{z}/{y}/{x}.jpg"], options: [ .tileSize: 256,
+                                                                                                                                                                   .tileCoordinateSystem: 1,
+                                                                                                                                                                   .minimumZoomLevel: 1,
+                                                                                                                                                                   .maximumZoomLevel: 10])
+        let layer = MGLRasterStyleLayer(identifier: "contours", source: source)
+        style.addSource(source)
+        style.addLayer(layer)
+        self.sectionalLayer = layer
+    }
+    
     private func initMap() {
-        //obtrain url for correct tile
-        let urls: GMSTileURLConstructor = {(x, y, zoom) in
-            let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
-            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).png"
-            return URL(string: url)
-        }
-        
-        //create a layer for vfr
-        let layer = GMSURLTileLayer(urlConstructor: urls)
-        
-        //allow larger tile display, less definition but higher zoom performance
-        layer.tileSize = 1024
-        
-        // Display on the map at certain priority
-        layer.zIndex = 100
-        layer.map = mapView
-        
-        //limit the range to zoom, which is actually maxZoom+1
-        mapView.setMinZoom(1, maxZoom: 10.99)
-        //display the dot marking current location
-        mapView.isMyLocationEnabled = false
-        mapView.settings.myLocationButton = false
-        mapView.settings.compassButton = true
-        mapView.settings.tiltGestures = false
-        
-        //setup the default style of google map
-        do {
-            // Set the map style by passing the URL of the local file.
-            if let styleURL = Bundle.main.url(forResource: "GoogleMapStyle", withExtension: "json") {
-                mapView.mapStyle = try GMSMapStyle(contentsOfFileURL: styleURL)
-            } else {
-                NSLog("Unable to find GoogleMapStyle.json")
-            }
-        } catch {
-            NSLog("Map style failed to load. \(error)")
-        }
-        
-        //setup current location marker
-        currentLocationMarker = nil
-        if let location = locationManager.location {
-            currentLocationMarker = GMSMarker(position: location.coordinate)
-            currentLocationMarker?.icon = UIImage(named: "arrow-48.png")
-            currentLocationMarker?.rotation = locationManager.location?.course ?? 0
-            currentLocationMarker?.isFlat = true
-            currentLocationMarker?.groundAnchor = CGPoint(x: 0.5, y: 0.5)
-            currentLocationMarker?.map = mapView
-        }
-        
-        locationBtn.layer.cornerRadius = 0.5 * locationBtn.frame.width
-        locationBtn.setImage(UIImage(named: "location-64.png"), for: .normal)
-        mapView.bringSubview(toFront: locationBtn)
+        let styleURL = URL(string: "mapbox://styles/enjoybeta/cjjnu1oam3f8g2snavk9t5r96")
+        let mapview = MGLMapView(frame: view.bounds, styleURL: styleURL)
+        mapview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        mapviewUI.addSubview(mapview)
+    
+        mapview.setCenter(CLLocationCoordinate2D(latitude: 40.7, longitude: -73.9), zoomLevel:9, animated: false)
+        mapview.showsUserLocation = true
+        mapview.maximumZoomLevel = 10
+        mapview.delegate = self
     }
     
     private func initLineChart() {
@@ -160,15 +122,15 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let loc_heading = DataUserManager.shared.getHeading()
         planeLocZText.text = formatText(loc_z) + " feet"
         planeHeadingText.text = formatText(loc_heading)
-        currentLocationMarker?.position = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
-        currentLocationMarker?.rotation = loc_heading
+//        currentLocationMarker?.position = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
+//        currentLocationMarker?.rotation = loc_heading
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             DataUserManager.shared.handleXPlane()
         }
     }
     
     //update current target runway text
-    @objc func updateRunwayText(){
+    @objc func updateRunwayText() {
         self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
         self.runwayDistanceText.text = formatText(DataUserManager.shared.getDistancePlaneToRunway()) + " km"
     }
@@ -192,7 +154,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    @objc func updateVerticalIndicator(){
+    @objc func updateVerticalIndicator() {
         //the data will be put into line chart
         let current_time = Double(Date().timeIntervalSince1970)
         let (_,_,loc_z) = DataUserManager.shared.getGeoLocation()
@@ -213,14 +175,11 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         lineChartView.notifyDataSetChanged()
     }
     
-    //location update from GPS on phone
+    //Geolocation update from GPS on phone
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
             let userLoc:CLLocation = locations[0] as CLLocation
             DataUserManager.shared.setGeoLocation(loc_x: userLoc.coordinate.latitude, loc_y: userLoc.coordinate.longitude, loc_z: userLoc.altitude)
-            //TODO
-            let camera = GMSCameraPosition.camera(withLatitude: userLoc.coordinate.latitude, longitude: userLoc.coordinate.longitude, zoom: 10.99)
-            mapView.animate(to: camera)
         }
     }
     
@@ -232,15 +191,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     private func markRunway(startLat:Double,startLon:Double,endLat:Double,endLon:Double) {
-        //add a runway
-        let path = GMSMutablePath()
-        path.add(CLLocationCoordinate2D(latitude: startLat, longitude: startLon))
-        path.add(CLLocationCoordinate2D(latitude: endLat, longitude: endLon))
-        let poly = GMSPolyline(path: path)
-        poly.zIndex = 200
-        poly.strokeWidth = 4
-        poly.strokeColor = .orange
-        poly.map = mapView
+        
     }
     
     private func formatText(_ input:Double) -> String {
