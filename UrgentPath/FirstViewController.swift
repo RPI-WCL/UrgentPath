@@ -13,7 +13,7 @@ import CoreLocation
 import Charts
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapViewDelegate {
-    @IBOutlet weak var mapviewUI: UIView!
+    @IBOutlet weak var mapview: MGLMapView!
     @IBOutlet weak var lineChartView: LineChartView!
     @IBOutlet weak var instructionLabel: UILabel!
     @IBOutlet weak var planeLocZText: UITextField!
@@ -21,6 +21,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
     @IBOutlet weak var runwayText: UITextField!
     @IBOutlet weak var runwayDistanceText: UITextField!
     var sectionalLayer: MGLRasterStyleLayer?
+//    let userLocMarker: MGLPointFeature = MGLPointFeature()
     
     let runwayQueue = DispatchQueue(label: "runway", qos: .utility)
     
@@ -42,7 +43,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateRunwayText), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateInstruction), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunwayList), userInfo: nil, repeats: true)
-        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateVerticalIndicator), userInfo: nil, repeats: true)//TODO 1 -> 5
+        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateVerticalIndicator), userInfo: nil, repeats: true)//TODO: 1 -> 5
     }
     
     override func didReceiveMemoryWarning() {
@@ -55,10 +56,22 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
     }
     
     func mapView(_ mapView: MGLMapView, didFinishLoading style: MGLStyle) {
-        let source = MGLRasterTileSource(identifier: "contours", tileURLTemplates: ["https://wcl.cs.rpi.edu/pilots/data/maptiles/jpg/{z}/{y}/{x}.jpg"], options: [ .tileSize: 256,
-                                                                                                                                                                   .tileCoordinateSystem: 1,
-                                                                                                                                                                   .minimumZoomLevel: 1,
-                                                                                                                                                                   .maximumZoomLevel: 10])
+//        userLocMarker.coordinate = CLLocationCoordinate2D(latitude: 40.7326808, longitude: -73.9843407)
+//        mapview.addAnnotation(userLocMarker)
+        
+//        let markerSource = MGLShapeSource(identifier: "marker-source", shape: userLocMarker, options: nil)
+//        style.addSource(markerSource)
+//        let markerStyleLayer = MGLSymbolStyleLayer(identifier: "marker-layer", source: markerSource)
+//        style.setImage(UIImage(named: "arrow-48.png")!, forName: "custom_marker")
+//        markerStyleLayer.iconImageName = NSExpression(forConstantValue: "custom_marker")
+//        style.addLayer(markerStyleLayer)
+        
+        let source = MGLRasterTileSource(identifier: "sectional",
+                                         tileURLTemplates: ["https://wcl.cs.rpi.edu/pilots/data/maptiles/jpg/{z}/{y}/{x}.jpg"],
+                                         options: [ .tileSize: 256,
+                                                    .tileCoordinateSystem: 1,
+                                                    .minimumZoomLevel: 1,
+                                                    .maximumZoomLevel: 10])
         let layer = MGLRasterStyleLayer(identifier: "contours", source: source)
         style.addSource(source)
         style.addLayer(layer)
@@ -66,14 +79,13 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
     }
     
     private func initMap() {
-        let styleURL = URL(string: "mapbox://styles/enjoybeta/cjjnu1oam3f8g2snavk9t5r96")
-        let mapview = MGLMapView(frame: view.bounds, styleURL: styleURL)
         mapview.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-        mapviewUI.addSubview(mapview)
-    
-        mapview.setCenter(CLLocationCoordinate2D(latitude: 40.7, longitude: -73.9), zoomLevel:9, animated: false)
-        mapview.showsUserLocation = true
+        //initial center on US center point
+        mapview.setCenter(CLLocationCoordinate2D(latitude: 39.5, longitude: -98.35), zoomLevel:3, animated: false)
+        mapview.showsUserLocation = true//TODO:
+        mapview.minimumZoomLevel = 1
         mapview.maximumZoomLevel = 10
+        mapview.isPitchEnabled = false
         mapview.delegate = self
     }
     
@@ -120,10 +132,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
         //update location and heading text
         let (loc_lat,loc_lon,loc_z) = DataUserManager.shared.getGeoLocation()
         let loc_heading = DataUserManager.shared.getHeading()
+        mapview.setCenter(CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon), zoomLevel:10, animated: true)//TODO:
         planeLocZText.text = formatText(loc_z) + " feet"
         planeHeadingText.text = formatText(loc_heading)
-//        currentLocationMarker?.position = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
-//        currentLocationMarker?.rotation = loc_heading
+//        userLocMarker.coordinate = CLLocationCoordinate2D(latitude: loc_lat, longitude: loc_lon)
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.XPlane) {
             DataUserManager.shared.handleXPlane()
         }
@@ -142,7 +154,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .medium
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
-        
         self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date()) + " UTC"
         self.instructionLabel.lineBreakMode = .byWordWrapping
     }
@@ -168,7 +179,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
         
         //only allowing viewing the latest data
         lineChartView.setVisibleXRangeMaximum(100)
-        lineChartView.moveViewToX(current_time)//TODO clean dataset when too much data occupies memory
+        lineChartView.moveViewToX(current_time)//TODO: clean dataset when too much data occupies memory
         
         //update the lineChartView
         lineChartView.data?.notifyDataChanged()
@@ -188,10 +199,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate, MGLMapVi
         if(DataUserManager.shared.getConnectionType() == DataUser.Connection.Phone) {
             DataUserManager.shared.setHeading(heading: newHeading.magneticHeading)
         }
-    }
-    
-    private func markRunway(startLat:Double,startLon:Double,endLat:Double,endLon:Double) {
-        
     }
     
     private func formatText(_ input:Double) -> String {
