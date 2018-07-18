@@ -12,7 +12,7 @@ import GoogleMaps
 import CoreLocation
 import Charts
 
-let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/20180524/"
+let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/jpg/"
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: GMSMapView!
@@ -66,7 +66,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //obtrain url for correct tile
         let urls: GMSTileURLConstructor = {(x, y, zoom) in
             let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
-            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).png"
+            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).jpg"
             return URL(string: url)
         }
         
