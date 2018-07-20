@@ -23,11 +23,11 @@ class DataRunwayManager {
     static let shared = DataRunwayManager()//singleton
     
     private var data : DataRunwayGlobal
-    private var sortedRunways : [DataRunway]
+    private var closebyRunways : [DataRunway]
     
     private init() {
         data = DataRunwayGlobal()
-        sortedRunways = [DataRunway]()
+        closebyRunways = [DataRunway]()
         readRunwayCSV()
     }
     
@@ -91,8 +91,8 @@ class DataRunwayManager {
         print("Amount of runway read from csv file: " + String(data.size()))
     }
     
-    //lat range: -90->90 N
-    //lon range: -180->180 E
+    //lat range: [-90,90) N
+    //lon range: [-180,180) E
     //sort runway from close to far by current location
     func sortRunway(lat:Double, lon:Double, heading:Double) {
         var aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
@@ -108,7 +108,7 @@ class DataRunwayManager {
         if(aroundList.count == 0) {
             print("sort ALL runways")
             aroundList = data.listRunwaysAll()
-            sortedRunways = aroundList.sorted(by: { getGeoDistance(lat,
+            closebyRunways = aroundList.sorted(by: { getGeoDistance(lat,
                                                                    lon,
                                                                    $0.runway_loc_lat,
                                                                    $0.runway_loc_lon)
@@ -134,7 +134,7 @@ class DataRunwayManager {
                                                             headwind_max: 1,//TODO
                                                             crosswind_max: 1,
                                                             crosswind_min: 0)
-        sortedRunways = filteredList.sorted(by: { getRunwayRating(lat,
+        closebyRunways = filteredList.sorted(by: { getRunwayRating(lat,
                                                                   lon,
                                                                   heading,
                                                                   $0,
@@ -147,7 +147,7 @@ class DataRunwayManager {
     }
     
     func getCloestRunway() -> DataRunway {
-        return sortedRunways[0]
+        return closebyRunways[0]
     }
     
     //filter out runways not possible with airplane current altitude and heading
