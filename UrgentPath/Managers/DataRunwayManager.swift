@@ -46,7 +46,7 @@ class DataRunwayManager {
                 continue
             }
             else if (columns[8] == "H1" || columns[8] == "H2") {
-                continue
+                continue//ignore heli pads
             }
             else if (columns[3] == "") {
                 continue
@@ -96,6 +96,15 @@ class DataRunwayManager {
     //sort runway from close to far by current location
     func sortRunway(lat:Double, lon:Double, heading:Double) {
         var aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
+        let (_,_,alt) = DataUserManager.shared.getGeoLocation()
+        let planeConfig = DataPlaneManager.shared.getChosenPlaneConfig()
+        var filteredList = filterPossibleRunway(runways: aroundList,
+                                          usr_lat: lat,
+                                          usr_lon: lon,
+                                          heading: heading,
+                                          altitude: alt,
+                                          glide_ratio: planeConfig.best_gliding_ratio,
+                                          glide_speed: planeConfig.best_gliding_airspeed)
         if(aroundList.count == 0) {
             print("sort ALL runways")
             aroundList = data.listRunwaysAll()
@@ -107,34 +116,51 @@ class DataRunwayManager {
                                                                      lon,
                                                                      $1.runway_loc_lat,
                                                                      $1.runway_loc_lon) })
+            return
+        }
+        else if (filteredList.count == 0) {
+            print("sort runways in grid")
+            filteredList = aroundList
         }
         else{
-            print("sort partial runways")
-            let runway_length_max = aroundList.map{$0.runway_length}.max()!
-            let runway_width_max = aroundList.map{$0.runway_width}.max()!
-            let runway_max_dis = (aroundList.map{getGeoDistance($0.runway_loc_lat, $0.runway_loc_lon, lat, lon)}.max()!)/1000
-            let runwayPriorityUtility = RunwayPriorityUtility(  runway_length_max: runway_length_max,
-                                                                runway_width_max: runway_width_max,
-                                                                runway_max_distance: runway_max_dis,//TODO ?
-                                                                headwind_max: 1,//TODO
-                                                                crosswind_max: 1,
-                                                                crosswind_min: 0)
-            
-            sortedRunways = aroundList.sorted(by: { getRunwayRating(lat,
-                                                                    lon,
-                                                                    heading,
-                                                                    $0,
-                                                                    runwayPriorityUtility)
-                                                    > getRunwayRating(lat,
-                                                                      lon,
-                                                                      heading,
-                                                                      $1,
-                                                                      runwayPriorityUtility) })
+            print("sort filtered runways")
         }
+        let runway_length_max = filteredList.map{$0.runway_length}.max()!
+        let runway_width_max = filteredList.map{$0.runway_width}.max()!
+        let runway_max_dis = (filteredList.map{getGeoDistance($0.runway_loc_lat, $0.runway_loc_lon, lat, lon)}.max()!)/1000
+        let runwayPriorityUtility = RunwayPriorityUtility(  runway_length_max: runway_length_max,
+                                                            runway_width_max: runway_width_max,
+                                                            runway_max_distance: runway_max_dis,//TODO ?
+                                                            headwind_max: 1,//TODO
+                                                            crosswind_max: 1,
+                                                            crosswind_min: 0)
+        sortedRunways = filteredList.sorted(by: { getRunwayRating(lat,
+                                                                  lon,
+                                                                  heading,
+                                                                  $0,
+                                                                  runwayPriorityUtility)
+                                                > getRunwayRating(lat,
+                                                                  lon,
+                                                                  heading,
+                                                                  $1,
+                                                                  runwayPriorityUtility) })
     }
     
     func getCloestRunway() -> DataRunway {
         return sortedRunways[0]
+    }
+    
+    //filter out runways not possible with airplane current altitude and heading
+    private func filterPossibleRunway(runways: [DataRunway],
+                                      usr_lat:Double,
+                                      usr_lon:Double,
+                                      heading:Double,
+                                      altitude:Double,
+                                      glide_ratio:Double,
+                                      glide_speed:Double) -> [DataRunway] {
+        let dis = altitude * glide_ratio / 3.28 // unit is meter
+        let filtered = runways.filter{ getGeoDistance($0.runway_loc_lat, $0.runway_loc_lon, usr_lat, usr_lon) < dis }
+        return filtered
     }
     
     //return rating for runway regarding current situation

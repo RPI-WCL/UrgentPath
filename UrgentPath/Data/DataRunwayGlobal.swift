@@ -43,6 +43,7 @@ class DataRunwayGlobal {
     
     //lat range: -90->90
     //lon range: -180->180
+    //list all runways inside the 3*3 grid where plane is centered in the center block
     func listRunwaysAround(lat:Int, lon:Int) -> [DataRunway] {
         var ret = [DataRunway]()
         
