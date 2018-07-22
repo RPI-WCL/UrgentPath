@@ -89,9 +89,9 @@ class DataUserManager {
         print("Target runway: " + runwayData.runway_name)
         
         let estimateDistance = getDistancePlaneToRunway()
-        print("Estimate distance: " + String(estimateDistance/1000))
+        print("Estimate distance: " + String(format: "%.2f",(estimateDistance/1000)) + "km")
         
-        // if the distance between plane and airport is larger than 100km, plane is not likely to reach runway
+        // if the distance between plane and airport is larger than 100km, plane will not able to reach runway
         // prevent runtime error in Trajectory generation code
         if(estimateDistance > 100){
             return "No route found - pre-calculation (>100km)"
