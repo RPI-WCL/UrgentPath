@@ -24,6 +24,18 @@
 #define TRUE  (1==1)
 #define FALSE (!TRUE)
 
+extern struct TrajectoryData {
+    double time_curveFirst;
+    double time_straight;
+    double time_curveSecond;
+    double time_spiral;
+    double time_extend;
+    int error_code;
+    double degree_curveFirst;
+    double degree_curveSecond;
+    double degree_spiral;
+};
+
 //degrees to radians
 double degToRad(double deg);
 
@@ -34,18 +46,19 @@ double CompassRadToMathRad(double rad);
 Seg basic_path(Packet data);
 Seg2 model_wind(Seg path_with_spiral, Packet data);
 
-extern char* TrajectoryCal(double user_x,
-                           double user_y,
-                           double user_z,
-                           double user_heading,
-                           double runway_x,
-                           double runway_y,
-                           double runway_z,
-                           double runway_heading,
-                           double interval,
-                           double best_gliding_speed,
-                           double best_gliding_ratio,
-                           double dirty_gliding_ratio,
-                           double wind_speed,
-                           double wind_heading,
-                           int catch_runway);
+extern void TrajectoryCal(  struct TrajectoryData* ptr,
+                             double user_x,
+                             double user_y,
+                             double user_z,
+                             double user_heading,
+                             double runway_x,
+                             double runway_y,
+                             double runway_z,
+                             double runway_heading,
+                             double interval,
+                             double best_gliding_speed,
+                             double best_gliding_ratio,
+                             double dirty_gliding_ratio,
+                             double wind_speed,
+                             double wind_heading,
+                             int catch_runway);

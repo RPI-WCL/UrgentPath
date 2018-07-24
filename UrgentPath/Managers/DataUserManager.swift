@@ -84,48 +84,33 @@ class DataUserManager {
     //generate guidance to pilots
     func getInstruction() -> String {
         print("======================================================")
-        let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
-        let runwayData = DataRunwayManager.shared.getCloestRunway()
-        print("Target runway: " + runwayData.runway_name)
-        
-        let estimateDistance = getDistancePlaneToRunway()
-        print("Estimate distance: " + String(format: "%.2f",(estimateDistance/1000)) + "km")
-        
-        // if the distance between plane and airport is larger than 100km, plane will not able to reach runway
-        // prevent runtime error in Trajectory generation code
-        if(estimateDistance > 100){
-            return "No route found - pre-calculation (>100km)"
+        let runwayDataList = DataRunwayManager.shared.getCloestRunways()
+        if (runwayDataList.count == 0) {
+            return "No route found - (farther than approximate footprint)"
         }
+        let start = DispatchTime.now()
+        let listOfTrajectory : [DataTrajectory] = listTrajectory(runways: runwayDataList)
+        let end = DispatchTime.now()
+        let timeInterval: Double = Double(end.uptimeNanoseconds - start.uptimeNanoseconds)/1000000000
+        print(String(timeInterval) + " [" + String(runwayDataList.count) + "]")
         
-        let c_str: UnsafeMutablePointer<Int8>? = TrajectoryCal( data.user_loc_lat,//user_x
-                                                                data.user_loc_lon,//user_y
-                                                                data.user_loc_z,//user_z
-                                                                data.user_heading,//user_heading
-                                                                runwayData.runway_loc_lat,//runway_x
-                                                                runwayData.runway_loc_lon,//runway_y
-                                                                runwayData.runway_loc_z,//runway_z
-                                                                runwayData.runway_heading,//runway_heading
-                                                                planeData.update_interval,//interval
-                                                                planeData.best_gliding_airspeed,//best_gliding_speed
-                                                                planeData.best_gliding_ratio,//best_gliding_ratio
-                                                                planeData.dirty_gliding_ratio,//dirty_gliding_ratio
-                                                                data.wind_speed,//wind_speed
-                                                                data.wind_heading,//wind_heading
-                                                                1)//catch_runway
-        if(c_str == nil) {
-            NSLog("calculation failed\n")
-            return "calculation failed"
+        if(listOfTrajectory.count == 0) {
+            return "No route found - (no trajectory found)"
         }
-        let str = String(cString: c_str!)
+        let rankedTrajectory = rankTrajectory(trajectories: listOfTrajectory)
+        var str = "30 degree bank " + formatText(text: rankedTrajectory.time_curveFirst, digit:0) + " seconds -> " + formatText(text: rankedTrajectory.degree_curveFirst, digit:1) + "°\n"
+        str += "Straight line glide " + formatText(text: rankedTrajectory.time_straight, digit:0)  + " seconds\n"
+        str += "30 degree bank " + formatText(text: rankedTrajectory.time_curveSecond, digit:0) + " seconds -> " + formatText(text: rankedTrajectory.degree_curveSecond, digit:1) + "°\n"
+        str += "30 degree bank spiral " + formatText(text: rankedTrajectory.time_spiral, digit:0) + "  seconds -> " + formatText(text: rankedTrajectory.degree_spiral) + "°\n"
+        str += "Dirty configuration straight glide " + formatText(text: rankedTrajectory.time_extend, digit:0) + "  seconds"
         return str
     }
     
     //return distance from plane to target runway
     //unit in km
-    func getDistancePlaneToRunway() -> Double {
-        let runwayData = DataRunwayManager.shared.getCloestRunway()
+    func getDistancePlaneToRunway(runway_lat:Double, runway_lon:Double) -> Double {
         let loc1 = CLLocation(latitude: data.user_loc_lat, longitude: data.user_loc_lon)
-        let loc2 = CLLocation(latitude: runwayData.runway_loc_lat, longitude: runwayData.runway_loc_lon)
+        let loc2 = CLLocation(latitude: runway_lat, longitude: runway_lon)
         let estimateDistance = loc1.distance(from: loc2)
         return estimateDistance/1000
     }
@@ -148,5 +133,66 @@ class DataUserManager {
     //get type of data use for guidance
     func getConnectionType() -> DataUser.Connection {
         return data.connectionType
+    }
+    
+    //list all trajectories from given runways
+    private func listTrajectory(runways:[DataRunway]) -> [DataTrajectory] {
+        let planeData = DataPlaneManager.shared.getChosenPlaneConfig()
+        var ret = [DataTrajectory]()
+        let trajPtr = UnsafeMutablePointer<TrajectoryData>.allocate(capacity: 1)
+        for runwayData in runways {
+            TrajectoryCal(  trajPtr,
+                            data.user_loc_lat,//user_x //TODO:
+                            data.user_loc_lon,//user_y
+                            data.user_loc_z,//user_z
+                            data.user_heading,//user_heading
+                            runwayData.runway_loc_lat,//runway_x
+                            runwayData.runway_loc_lon,//runway_y
+                            runwayData.runway_loc_z,//runway_z
+                            runwayData.runway_heading,//runway_heading
+                            planeData.update_interval,//interval
+                            planeData.best_gliding_airspeed,//best_gliding_speed
+                            planeData.best_gliding_ratio,//best_gliding_ratio
+                            planeData.dirty_gliding_ratio,//dirty_gliding_ratio
+                            data.wind_speed,//wind_speed
+                            data.wind_heading,//wind_heading
+                            1)//catch_runway
+            let error_code = Int(trajPtr.pointee.error_code)
+            if(error_code != 0) {
+                continue
+            }
+            let tmp = DataTrajectory(time_curveFirst: trajPtr.pointee.time_curveFirst,
+                                     time_straight: trajPtr.pointee.time_straight,
+                                     time_curveSecond: trajPtr.pointee.time_curveSecond,
+                                     time_spiral: trajPtr.pointee.time_spiral,
+                                     time_extend: trajPtr.pointee.time_extend,
+                                     degree_curveFirst: trajPtr.pointee.degree_curveFirst,
+                                     degree_curveSecond: trajPtr.pointee.degree_curveSecond,
+                                     degree_spiral: trajPtr.pointee.degree_spiral,
+                                     error_code: Int(trajPtr.pointee.error_code),
+                                     runway_name: runwayData.runway_name)
+            ret.append(tmp)
+        }
+        trajPtr.deinitialize(count: 1)
+        return ret
+    }
+    
+    //TODO: sort the trajectories with utility function
+    private func rankTrajectory(trajectories:[DataTrajectory]) -> DataTrajectory {
+        
+        
+        return trajectories.first!
+    }
+    
+    private func formatText(text:Double, digit:Int = 2) -> String {
+        if (digit == 0) {
+            return String(format: "%d", Int(text+0.5))
+        }
+        else if (digit == 1) {
+            return String(format: "%.1f", text)
+        }
+        else {
+            return String(format: "%.2f", text)
+        }
     }
 }

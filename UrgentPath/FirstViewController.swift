@@ -48,7 +48,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //start schedules
         Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateLocationHeading), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateRunwayText), userInfo: nil, repeats: true)
-        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateInstruction), userInfo: nil, repeats: true)
+        Timer.scheduledTimer(timeInterval: 2, target: self, selector: #selector(self.updateInstruction), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunwayList), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateVerticalIndicator), userInfo: nil, repeats: true)//TODO 1 -> 5
     }
@@ -174,8 +174,10 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     //update current target runway text
     @objc func updateRunwayText(){
-        self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
-        self.runwayDistanceText.text = formatText(DataUserManager.shared.getDistancePlaneToRunway()) + " km"
+//        let runwayData = DataRunwayManager.shared.getCloestRunway()
+//        self.runwayText.text = runwayData.runway_name
+//        self.runwayDistanceText.text = formatText(DataUserManager.shared.getDistancePlaneToRunway(runway_lat: runwayData.runway_loc_lat,
+//                                                                                                  runway_lon: runwayData.runway_loc_lat)) + " km"
     }
     
     //update instruction

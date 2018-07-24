@@ -22,6 +22,7 @@
 		9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C18403120735AC9003F7325 /* LaunchScreen.storyboard */; };
 		9C18403E20735AC9003F7325 /* UrgentPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18403D20735AC9003F7325 /* UrgentPathTests.swift */; };
 		9C18404920735AC9003F7325 /* UrgentPathUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18404820735AC9003F7325 /* UrgentPathUITests.swift */; };
+		9C6ED28721064AAC00C0F344 /* DataTrajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */; };
 		9CB83F242077FDE600C372CD /* DataPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F232077FDE600C372CD /* DataPlane.swift */; };
 		9CB83F262077FE0400C372CD /* DataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F252077FE0400C372CD /* DataUser.swift */; };
 		9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F272078076700C372CD /* DataPlaneManager.swift */; };
@@ -79,6 +80,7 @@
 		9C18404420735AC9003F7325 /* UrgentPathUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UrgentPathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18404820735AC9003F7325 /* UrgentPathUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrgentPathUITests.swift; sourceTree = "<group>"; };
 		9C18404A20735AC9003F7325 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTrajectory.swift; sourceTree = "<group>"; };
 		9CB83F232077FDE600C372CD /* DataPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPlane.swift; sourceTree = "<group>"; };
 		9CB83F252077FE0400C372CD /* DataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataUser.swift; sourceTree = "<group>"; };
 		9CB83F272078076700C372CD /* DataPlaneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPlaneManager.swift; sourceTree = "<group>"; };
@@ -224,6 +226,7 @@
 				9CB83F2D20786F4D00C372CD /* DataRunway.swift */,
 				9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */,
 				9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */,
+				9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -443,6 +446,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C6ED28721064AAC00C0F344 /* DataTrajectory.swift in Sources */,
 				9CF1DCBE20A7627E00660D6E /* DataRunwayGlobal.swift in Sources */,
 				9C03C81220922ACE00967F6A /* demo.c in Sources */,
 				9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */,
