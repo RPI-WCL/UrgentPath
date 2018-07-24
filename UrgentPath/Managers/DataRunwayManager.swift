@@ -95,10 +95,10 @@ class DataRunwayManager {
     //lon range: [-180,180) E
     //sort runway from close to far by current location
     func sortRunway(lat:Double, lon:Double, heading:Double) {
-        var aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
+        let aroundList = data.listRunwaysAround(lat: Int(lat), lon: Int(lon))
         let (_,_,alt) = DataUserManager.shared.getGeoLocation()//TODO:
         let planeConfig = DataPlaneManager.shared.getChosenPlaneConfig()
-        var filteredList = filterPossibleRunway(runways: aroundList,
+        let filteredList = filterPossibleRunway(runways: aroundList,
                                           usr_lat: lat,
                                           usr_lon: lon,
                                           heading: heading,
@@ -109,7 +109,7 @@ class DataRunwayManager {
             print("sort - too far")
             closebyRunways = [DataRunway]()
         }
-        else{
+        else {
             print("sort - filtered runways")
             let runway_length_max = filteredList.map{$0.runway_length}.max()!
             let runway_width_max = filteredList.map{$0.runway_width}.max()!

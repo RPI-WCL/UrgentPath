@@ -82,11 +82,11 @@ class DataUserManager {
     }
     
     //generate guidance to pilots
-    func getInstruction() -> String {
+    func getTrajectory() -> DataTrajectory? {
         print("======================================================")
         let runwayDataList = DataRunwayManager.shared.getCloestRunways()
         if (runwayDataList.count == 0) {
-            return "No route found - (farther than approximate footprint)"
+            return nil//"No route found - (farther than approximate footprint)"
         }
         let start = DispatchTime.now()
         let listOfTrajectory : [DataTrajectory] = listTrajectory(runways: runwayDataList)
@@ -95,15 +95,10 @@ class DataUserManager {
         print(String(timeInterval) + " [" + String(runwayDataList.count) + "]")
         
         if(listOfTrajectory.count == 0) {
-            return "No route found - (no trajectory found)"
+            return nil//"No route found - (no trajectory found)"
         }
         let rankedTrajectory = rankTrajectory(trajectories: listOfTrajectory)
-        var str = "30 degree bank " + formatText(text: rankedTrajectory.time_curveFirst, digit:0) + " seconds -> " + formatText(text: rankedTrajectory.degree_curveFirst, digit:1) + "°\n"
-        str += "Straight line glide " + formatText(text: rankedTrajectory.time_straight, digit:0)  + " seconds\n"
-        str += "30 degree bank " + formatText(text: rankedTrajectory.time_curveSecond, digit:0) + " seconds -> " + formatText(text: rankedTrajectory.degree_curveSecond, digit:1) + "°\n"
-        str += "30 degree bank spiral " + formatText(text: rankedTrajectory.time_spiral, digit:0) + "  seconds -> " + formatText(text: rankedTrajectory.degree_spiral) + "°\n"
-        str += "Dirty configuration straight glide " + formatText(text: rankedTrajectory.time_extend, digit:0) + "  seconds"
-        return str
+        return rankedTrajectory
     }
     
     //return distance from plane to target runway
@@ -184,15 +179,4 @@ class DataUserManager {
         return trajectories.first!
     }
     
-    private func formatText(text:Double, digit:Int = 2) -> String {
-        if (digit == 0) {
-            return String(format: "%d", Int(text+0.5))
-        }
-        else if (digit == 1) {
-            return String(format: "%.1f", text)
-        }
-        else {
-            return String(format: "%.2f", text)
-        }
-    }
 }

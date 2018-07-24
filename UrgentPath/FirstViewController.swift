@@ -186,8 +186,19 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .none
         dateFormatter.timeStyle = .medium
-        
-        self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date())
+        let traj = DataUserManager.shared.getTrajectory()
+        if (traj == nil) {
+            self.instructionLabel.text = "no route found" + "\n" + dateFormatter.string(from: Date())
+        }
+        else {
+            var trajStr = "30 degree bank " + formatText(traj!.time_curveFirst,0) + " seconds -> " + formatText(traj!.degree_curveFirst,1) + "°\n"
+            trajStr += "Straight line glide " + formatText(traj!.time_straight,0)  + " seconds\n"
+            trajStr += "30 degree bank " + formatText(traj!.time_curveSecond,0) + " seconds -> " + formatText(traj!.degree_curveSecond,1) + "°\n"
+            trajStr += "30 degree bank spiral " + formatText(traj!.time_spiral,0) + "  seconds -> " + formatText(traj!.degree_spiral,1) + "°\n"
+            trajStr += "Dirty configuration straight glide " + formatText(traj!.time_extend,0) + "  seconds"
+            self.instructionLabel.text = trajStr + "\n" + dateFormatter.string(from: Date())
+            self.runwayText.text = traj!.runway_name
+        }
         self.instructionLabel.lineBreakMode = .byWordWrapping
     }
     
@@ -250,7 +261,15 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         poly.map = mapView
     }
     
-    private func formatText(_ input:Double) -> String {
-        return String(format: "%.3f", input)
+    private func formatText(_ text:Double, _ digit:Int = 2) -> String {
+        if (digit == 0) {
+            return String(format: "%d", Int(text+0.5))
+        }
+        else if (digit == 1) {
+            return String(format: "%.1f", text)
+        }
+        else {
+            return String(format: "%.2f", text)
+        }
     }
 }

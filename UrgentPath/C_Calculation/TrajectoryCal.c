@@ -81,6 +81,8 @@ void TrajectoryCal(struct TrajectoryData* ptr,
                     double wind_speed, // in knots
                     double wind_heading, // in degree
                     int catch_runway){
+    memset(ptr, 0, sizeof(struct TrajectoryData));
+    
     int filename=0;
     char alphabet='h';
     Packet dat; //creating a packet with constants
