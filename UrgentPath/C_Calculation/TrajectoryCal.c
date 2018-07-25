@@ -125,8 +125,6 @@ void TrajectoryCal(struct TrajectoryData* ptr,
     //detect anytime height is less than 0
     for(int i = 0; i < basic_trajectory.lenc1; ++i){
         if(basic_trajectory.C1[i][4] < 0){
-//            strcpy(ret,"No route can be found - calculation");
-//            printf("No route: C1\n");
             ptr->error_code = 1;
             return;
         }
@@ -134,8 +132,6 @@ void TrajectoryCal(struct TrajectoryData* ptr,
     
     for(int i = 0; i < basic_trajectory.lenc2; ++i){
         if(basic_trajectory.C2[i][4] < 0){
-//            strcpy(ret,"No route can be found - calculation");
-//            printf("No route: C2\n");
             ptr->error_code = 3;
             return;
         }
@@ -143,8 +139,6 @@ void TrajectoryCal(struct TrajectoryData* ptr,
     
     for(int i = 0; i < basic_trajectory.lensls; ++i){
         if(basic_trajectory.SLS[i][4] < 0){
-//            strcpy(ret,"No route can be found - calculation");
-//            printf("No route: SLS\n");
             ptr->error_code = 2;
             return;
         }
@@ -152,8 +146,6 @@ void TrajectoryCal(struct TrajectoryData* ptr,
     
     for(int i = 0; i < basic_trajectory.lenspiral; ++i){
         if(basic_trajectory.Spiral[i][4] < 0){
-//            strcpy(ret,"No route can be found - calculation");
-//            printf("No route: Spiral\n");
             ptr->error_code = 4;
             return;
         }

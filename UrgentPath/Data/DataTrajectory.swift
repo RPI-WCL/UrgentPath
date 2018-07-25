@@ -17,7 +17,13 @@ struct DataTrajectory {
     var degree_curveFirst : Double;
     var degree_curveSecond : Double;
     var degree_spiral : Double;
-    var error_code : Int;
+    var error_code : Int;           // code -1: general calculation failure
+                                    // code 0: no error
+                                    // code 1: crash during first curve
+                                    // code 2: crash during straight
+                                    // code 3: crash during second curve
+                                    // code 4: crash during spiral
+                                    // code 5: reserved
     var runway_name : String;
     
     init(time_curveFirst: Double = 0,
