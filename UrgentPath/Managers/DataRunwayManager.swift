@@ -137,9 +137,9 @@ class DataRunwayManager {
         return closebyRunways.first
     }
     
-    //return a list of DataRunway, no more than 10 elements
+    //return a list of DataRunway, no more than 5 elements
     func getCloestRunways() -> [DataRunway] {
-        return Array(closebyRunways.prefix(10))
+        return Array(closebyRunways.prefix(5))
     }
     
     //filter out runways not possible with airplane current altitude and heading
