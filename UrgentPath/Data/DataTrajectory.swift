@@ -25,26 +25,17 @@ struct DataTrajectory {
                                     // code 4: crash during spiral
                                     // code 5: reserved
     var runway_name : String;
+    var runway_lat : Double;
+    var runway_lon : Double;
     
-    init(time_curveFirst: Double = 0,
-         time_straight: Double = 0,
-         time_curveSecond: Double = 0,
-         time_spiral: Double = 0,
-         time_extend: Double = 0,
-         degree_curveFirst: Double = 0.0,
-         degree_curveSecond: Double = 0.0,
-         degree_spiral: Double = 0.0,
-         error_code: Int = 0,
-         runway_name: String = "") {
-        self.time_curveFirst = time_curveFirst
-        self.time_straight = time_straight
-        self.time_curveSecond = time_curveSecond
-        self.time_spiral = time_spiral
-        self.time_extend = time_extend
-        self.degree_curveFirst = degree_curveFirst
-        self.degree_curveSecond = degree_curveSecond
-        self.degree_spiral = degree_spiral
-        self.error_code = error_code
-        self.runway_name = runway_name
-    }
+    var firstCurveStart_lat : Double;
+    var firstCurveStart_lon : Double;
+    var straightStart_lat : Double;
+    var straightStart_lon : Double;
+    var secondCurveStart_lat : Double;
+    var secondCurveStart_lon : Double;
+    var spiralStart_lat : Double;
+    var spiralStart_lon : Double;
+    var extendedStart_lat : Double;
+    var extendedStart_lon : Double;
 }

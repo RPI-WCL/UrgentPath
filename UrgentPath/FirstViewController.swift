@@ -187,6 +187,18 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             trajStr += "Dirty configuration straight glide " + formatText(traj!.time_extend,0) + "  seconds"
             self.instructionLabel.text = trajStr + "\n" + dateFormatter.string(from: Date()) + " UTC"
             self.runwayText.text = traj!.runway_name
+            drawTrajectory(firstCurve_lat: traj!.firstCurveStart_lat,
+                           firstCurve_lon: traj!.firstCurveStart_lon,
+                           straight_lat: traj!.straightStart_lat,
+                           straight_lon: traj!.straightStart_lon,
+                           secondCurve_lat: traj!.secondCurveStart_lat,
+                           secondCurve_lon: traj!.secondCurveStart_lon,
+                           spiral_lat: traj!.spiralStart_lat,
+                           spiral_lon: traj!.spiralStart_lon,
+                           extended_lat: traj!.extendedStart_lat,
+                           extended_lon: traj!.extendedStart_lon,
+                           runway_lat: traj!.runway_lat,
+                           runway_lon: traj!.runway_lon)
         }
         self.instructionLabel.lineBreakMode = .byWordWrapping
     }
@@ -248,6 +260,21 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         poly.strokeWidth = 4
         poly.strokeColor = .orange
         poly.map = mapView
+    }
+    
+    private func drawTrajectory(firstCurve_lat: Double,
+                                firstCurve_lon: Double,
+                                straight_lat: Double,
+                                straight_lon: Double,
+                                secondCurve_lat: Double,
+                                secondCurve_lon: Double,
+                                spiral_lat: Double,
+                                spiral_lon: Double,
+                                extended_lat: Double,
+                                extended_lon: Double,
+                                runway_lat: Double,
+                                runway_lon: Double) {
+        
     }
     
     private func formatText(_ text:Double, _ digit:Int = 2) -> String {

@@ -165,7 +165,19 @@ class DataUserManager {
                                      degree_curveSecond: trajPtr.pointee.degree_curveSecond,
                                      degree_spiral: trajPtr.pointee.degree_spiral,
                                      error_code: Int(trajPtr.pointee.error_code),
-                                     runway_name: runwayData.runway_name)
+                                     runway_name: runwayData.runway_name,
+                                     runway_lat: runwayData.runway_loc_lat,
+                                     runway_lon: runwayData.runway_loc_lon,
+                                     firstCurveStart_lat: trajPtr.pointee.firstCurveStart_lat,
+                                     firstCurveStart_lon: trajPtr.pointee.firstCurveStart_lon,
+                                     straightStart_lat: trajPtr.pointee.straightStart_lat,
+                                     straightStart_lon: trajPtr.pointee.straightStart_lon,
+                                     secondCurveStart_lat: trajPtr.pointee.secondCurveStart_lat,
+                                     secondCurveStart_lon: trajPtr.pointee.secondCurveStart_lon,
+                                     spiralStart_lat: trajPtr.pointee.spiralStart_lat,
+                                     spiralStart_lon: trajPtr.pointee.spiralStart_lon,
+                                     extendedStart_lat: trajPtr.pointee.extendedStart_lat,
+                                     extendedStart_lon: trajPtr.pointee.extendedStart_lon)
             ret.append(tmp)
         }
         trajPtr.deinitialize(count: 1)
