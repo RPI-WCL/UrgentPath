@@ -18,7 +18,7 @@ DEPENDENCIES:
   - SwiftSocket
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
+  https://github.com/cocoapods/specs.git:
     - Charts
     - GoogleMaps
     - GooglePlaces
@@ -32,4 +32,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: c5c575a72ec7d25a553416d43d18a2dac4be9b8b
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

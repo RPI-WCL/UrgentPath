@@ -13,6 +13,7 @@
 		9C050D1C2099040E00E1B90F /* runways_with_mag_heading.csv in Resources */ = {isa = PBXBuildFile; fileRef = 9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */; };
 		9C0ABDAF20EFC5A600183664 /* arrow-48.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDAE20EFC5A500183664 /* arrow-48.png */; };
 		9C0ABDB320F1B14500183664 /* location-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB220F1B14500183664 /* location-64.png */; };
+		9C0ABDB520F3B7D900183664 /* RunwayPriorityUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */; };
 		9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402620735AC5003F7325 /* AppDelegate.swift */; };
 		9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402820735AC5003F7325 /* FirstViewController.swift */; };
 		9C18402B20735AC5003F7325 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402A20735AC5003F7325 /* SecondViewController.swift */; };
@@ -21,6 +22,7 @@
 		9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C18403120735AC9003F7325 /* LaunchScreen.storyboard */; };
 		9C18403E20735AC9003F7325 /* UrgentPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18403D20735AC9003F7325 /* UrgentPathTests.swift */; };
 		9C18404920735AC9003F7325 /* UrgentPathUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18404820735AC9003F7325 /* UrgentPathUITests.swift */; };
+		9C6ED28721064AAC00C0F344 /* DataTrajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */; };
 		9CB83F242077FDE600C372CD /* DataPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F232077FDE600C372CD /* DataPlane.swift */; };
 		9CB83F262077FE0400C372CD /* DataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F252077FE0400C372CD /* DataUser.swift */; };
 		9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F272078076700C372CD /* DataPlaneManager.swift */; };
@@ -63,6 +65,7 @@
 		9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runways_with_mag_heading.csv; path = Data/runways_with_mag_heading.csv; sourceTree = SOURCE_ROOT; };
 		9C0ABDAE20EFC5A500183664 /* arrow-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-48.png"; path = "Data/arrow-48.png"; sourceTree = SOURCE_ROOT; };
 		9C0ABDB220F1B14500183664 /* location-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "location-64.png"; path = "Data/location-64.png"; sourceTree = SOURCE_ROOT; };
+		9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunwayPriorityUtility.swift; sourceTree = "<group>"; };
 		9C18402320735AC5003F7325 /* UrgentPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrgentPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18402620735AC5003F7325 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9C18402820735AC5003F7325 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -77,6 +80,7 @@
 		9C18404420735AC9003F7325 /* UrgentPathUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UrgentPathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18404820735AC9003F7325 /* UrgentPathUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrgentPathUITests.swift; sourceTree = "<group>"; };
 		9C18404A20735AC9003F7325 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTrajectory.swift; sourceTree = "<group>"; };
 		9CB83F232077FDE600C372CD /* DataPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPlane.swift; sourceTree = "<group>"; };
 		9CB83F252077FE0400C372CD /* DataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataUser.swift; sourceTree = "<group>"; };
 		9CB83F272078076700C372CD /* DataPlaneManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPlaneManager.swift; sourceTree = "<group>"; };
@@ -221,6 +225,8 @@
 				9CB83F252077FE0400C372CD /* DataUser.swift */,
 				9CB83F2D20786F4D00C372CD /* DataRunway.swift */,
 				9CF1DCBD20A7627E00660D6E /* DataRunwayGlobal.swift */,
+				9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */,
+				9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -440,6 +446,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C6ED28721064AAC00C0F344 /* DataTrajectory.swift in Sources */,
 				9CF1DCBE20A7627E00660D6E /* DataRunwayGlobal.swift in Sources */,
 				9C03C81220922ACE00967F6A /* demo.c in Sources */,
 				9CB83F282078076700C372CD /* DataPlaneManager.swift in Sources */,
@@ -452,6 +459,7 @@
 				9CECAAB920788370005E225E /* DataRunwayManager.swift in Sources */,
 				9C18402920735AC5003F7325 /* FirstViewController.swift in Sources */,
 				9CB83F262077FE0400C372CD /* DataUser.swift in Sources */,
+				9C0ABDB520F3B7D900183664 /* RunwayPriorityUtility.swift in Sources */,
 				9CC73FC92073FA3E003FBC2C /* TrajectoryCal.c in Sources */,
 				9C03C81320922ACE00967F6A /* helper.c in Sources */,
 			);

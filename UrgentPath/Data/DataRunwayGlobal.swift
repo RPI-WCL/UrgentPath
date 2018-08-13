@@ -9,20 +9,30 @@
 import Foundation
 
 class DataRunwayGlobal {
-    var data : [[Array<DataRunway>]]
-    var data_size : Int
+    private var data : [[Array<DataRunway>]]
+    private var data_size : Int
     
     init() {
         data = Array(repeating: Array(repeating: Array(), count: 360), count: 180)
         data_size = 0
     }
     
-    func addRunway(runway_name:String, loc_lat:Double, loc_lon:Double, loc_z:Double, heading:Double) {
+    func addRunway(runway_name:String,
+                   loc_lat:Double,
+                   loc_lon:Double,
+                   loc_z:Double,
+                   heading:Double,
+                   length:Int,
+                   width:Int,
+                   surface:Double) {
         let tmpRunway = DataRunway(runway_name: runway_name,
                                    runway_loc_x: loc_lat,
                                    runway_loc_y: loc_lon,
                                    runway_loc_z: loc_z,
-                                   runway_heading: heading)
+                                   runway_heading: heading,
+                                   runway_length:length,
+                                   runway_width:width,
+                                   runway_surface_quality:surface)
         data[Int(loc_lat)+90][Int(loc_lon)+180].append(tmpRunway)
         data_size += 1
     }
@@ -31,8 +41,9 @@ class DataRunwayGlobal {
         return data_size
     }
     
-    //lat range: -90->90
-    //lon range: -180->180
+    //lat range: [-90,90)
+    //lon range: [-180,180)
+    //list all runways inside the 3*3 grid where plane is centered in the center block
     func listRunwaysAround(lat:Int, lon:Int) -> [DataRunway] {
         var ret = [DataRunway]()
         
@@ -100,8 +111,8 @@ class DataRunwayGlobal {
         return ret
     }
     
-    //lat range: -90->90
-    //lon range: -180->180
+    //lat range: [-90,90)
+    //lon range: [-180,180)
     func listRunwaysOnGrid(lat:Int, lon:Int) -> [DataRunway] {
         return data[lat+90][lon+180]
     }

@@ -12,7 +12,7 @@ import GoogleMaps
 import CoreLocation
 import Charts
 
-let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/20180524/"
+let MAPTILESERVERADDRESS = "https://wcl.cs.rpi.edu/pilots/data/maptiles/jpg/"
 
 class FirstViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var mapView: GMSMapView!
@@ -37,7 +37,8 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         super.viewDidLoad()
         
         let loc = DataUserManager.shared.getGeoLocation()
-        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1)
+        let heading = DataUserManager.shared.getHeading()
+        DataRunwayManager.shared.sortRunway(lat: loc.0, lon: loc.1, heading: heading)
         
         initText()
         initMap()
@@ -46,7 +47,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         
         //start schedules
         Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(self.updateLocationHeading), userInfo: nil, repeats: true)
-        Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateRunwayText), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateInstruction), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.updateRunwayList), userInfo: nil, repeats: true)
         Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.updateVerticalIndicator), userInfo: nil, repeats: true)//TODO 1 -> 5
@@ -65,7 +65,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         //obtrain url for correct tile
         let urls: GMSTileURLConstructor = {(x, y, zoom) in
             let new_y = Int(pow(Double(2),Double(zoom)))-Int(y)
-            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).png"
+            let url = MAPTILESERVERADDRESS + "\(zoom)/\(new_y-1)/\(x).jpg"
             return URL(string: url)
         }
         
@@ -167,12 +167,6 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         }
     }
     
-    //update current target runway text
-    @objc func updateRunwayText(){
-        self.runwayText.text = DataRunwayManager.shared.getCloestRunway().runway_name
-        self.runwayDistanceText.text = formatText(DataUserManager.shared.getDistancePlaneToRunway()) + " km"
-    }
-    
     //update instruction
     @objc func updateInstruction() {
         //format for time attached behind instruction
@@ -181,14 +175,27 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         dateFormatter.timeStyle = .medium
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC")
         
-        self.instructionLabel.text = DataUserManager.shared.getInstruction() + "\n" + dateFormatter.string(from: Date()) + " UTC"
+        let traj = DataUserManager.shared.getTrajectory()
+        if (traj == nil) {
+            self.instructionLabel.text = "no route found" + "\n" + dateFormatter.string(from: Date()) + " UTC"
+        }
+        else {
+            var trajStr = "30 degree bank " + formatText(traj!.time_curveFirst,0) + " seconds -> " + formatText(traj!.degree_curveFirst,1) + "°\n"
+            trajStr += "Straight line glide " + formatText(traj!.time_straight,0)  + " seconds\n"
+            trajStr += "30 degree bank " + formatText(traj!.time_curveSecond,0) + " seconds -> " + formatText(traj!.degree_curveSecond,1) + "°\n"
+            trajStr += "30 degree bank spiral " + formatText(traj!.time_spiral,0) + "  seconds -> " + formatText(traj!.degree_spiral,1) + "°\n"
+            trajStr += "Dirty configuration straight glide " + formatText(traj!.time_extend,0) + "  seconds"
+            self.instructionLabel.text = trajStr + "\n" + dateFormatter.string(from: Date()) + " UTC"
+            self.runwayText.text = traj!.runway_name
+        }
         self.instructionLabel.lineBreakMode = .byWordWrapping
     }
     
     @objc func updateRunwayList(){
         runwayQueue.async {
-            let data = DataUserManager.shared.getGeoLocation()
-            DataRunwayManager.shared.sortRunway(lat: data.0, lon: data.1)
+            let location_data = DataUserManager.shared.getGeoLocation()
+            let heading = DataUserManager.shared.getHeading()
+            DataRunwayManager.shared.sortRunway(lat: location_data.0, lon: location_data.1, heading: heading)
         }
     }
     
@@ -243,7 +250,15 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         poly.map = mapView
     }
     
-    private func formatText(_ input:Double) -> String {
-        return String(format: "%.3f", input)
+    private func formatText(_ text:Double, _ digit:Int = 2) -> String {
+        if (digit == 0) {
+            return String(format: "%d", Int(text+0.5))
+        }
+        else if (digit == 1) {
+            return String(format: "%.1f", text)
+        }
+        else {
+            return String(format: "%.2f", text)
+        }
     }
 }

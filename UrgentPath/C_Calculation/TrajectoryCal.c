@@ -65,7 +65,8 @@ Seg basic_path(Packet data)
     return path_with_spiral;
 }
 
-char* TrajectoryCal(double user_lat,
+void TrajectoryCal(struct TrajectoryData* ptr,
+                   double user_lat,
                     double user_lon,
                     double user_z, // in feet
                     double user_heading,// in degree
@@ -80,6 +81,8 @@ char* TrajectoryCal(double user_lat,
                     double wind_speed, // in knots
                     double wind_heading, // in degree
                     int catch_runway){
+    memset(ptr, 0, sizeof(struct TrajectoryData));
+    
     int filename=0;
     char alphabet='h';
     Packet dat; //creating a packet with constants
@@ -118,70 +121,58 @@ char* TrajectoryCal(double user_lat,
     basic_trajectory.extended = false;//initalize extended
     basic_trajectory = basic_path(dat_30); //get first_dubins
     
-    //initalize the string will be returned
-    static char ret[1000*5];
-    memset(ret, 0, 1000*5);
-    
     //incase too far from runway and plane will and halfway to airport
     //detect anytime height is less than 0
     for(int i = 0; i < basic_trajectory.lenc1; ++i){
         if(basic_trajectory.C1[i][4] < 0){
-            strcpy(ret,"No route can be found - calculation");
-            printf("No route: C1\n");
-            return ret;
+            ptr->error_code = 1;
+            return;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lenc2; ++i){
         if(basic_trajectory.C2[i][4] < 0){
-            strcpy(ret,"No route can be found - calculation");
-            printf("No route: C2\n");
-            return ret;
+            ptr->error_code = 3;
+            return;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lensls; ++i){
         if(basic_trajectory.SLS[i][4] < 0){
-            strcpy(ret,"No route can be found - calculation");
-            printf("No route: SLS\n");
-            return ret;
+            ptr->error_code = 2;
+            return;
         }
     }
     
     for(int i = 0; i < basic_trajectory.lenspiral; ++i){
         if(basic_trajectory.Spiral[i][4] < 0){
-            strcpy(ret,"No route can be found - calculation");
-            printf("No route: Spiral\n");
-            return ret;
+            ptr->error_code = 4;
+            return;
         }
     }
     
-    //initalize instructions display to users
-    char inst1[1000] = {};
-    char inst2[1000] = {};
-    char inst3[1000] = {};
-    char inst4[1000] = {};
-    char inst5[1000] = {};
-    
     //first curve
     double total_time1=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    sprintf(inst1,"30 degree bank %d seconds -> %.1f°",(int)(total_time1+0.5),azmth(basic_trajectory.SLS[basic_trajectory.lensls-1][2]));
+    ptr->time_curveFirst = (total_time1);
+    ptr->degree_curveFirst = azmth(basic_trajectory.SLS[basic_trajectory.lensls-1][2]);
     
     //straight line
     double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
     double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
     double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
-    sprintf(inst2,"Straight line glide %d seconds",(int)(time_shift2+0.5));
+    ptr->time_straight = (time_shift2);
     
     //second curve
     double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    sprintf(inst3,"30 degree bank %d seconds -> %.1f°",(int)(total_time3+0.5),azmth(dat_30.p2[2]));
+    ptr->time_curveSecond = (total_time3);
+    ptr->degree_curveSecond = azmth(dat_30.p2[2]);
     
     //spiral for runway
     double total_time4 = 0;
     if(basic_trajectory.lenspiral>0) { //augmenting spiral
         total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
-        sprintf(inst4,"30 degree bank spiral %d seconds -> %.1f°",(int)(total_time4+0.5),azmth(dat_30.p2[2]));
+        ptr->time_spiral = (total_time4);
+        ptr->degree_spiral = azmth(dat_30.p2[2]);
     }
     
     //runway
@@ -200,37 +191,32 @@ char* TrajectoryCal(double user_lat,
         double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
         double original_distance= horizontal(dat_30.p2[0], dat_30.p2[1], original_start_x, original_start_y);
         time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
-        sprintf(inst5,"Dirty configuration straight glide %d seconds",(int)(time_shift5+0.5));
+        ptr->time_extend = (time_shift5);
     }
     
     //in case calculation failure, output to user and log
     if(total_time1 < 0 || time_shift2 < 0 || total_time3 < 0 || total_time4 < 0 || time_shift5 < 0){
-        strcpy(ret,"Calculation failure");
         printf("Calculation failure\n");
-        return ret;
+        ptr->error_code = -1;
+        return;
     }
     
     //incase total_time1 is NaN or just doesn't exist
-    //just don't return it
-    if(total_time1 == total_time1 && basic_trajectory.lenc1 > 0){
-        strcat(ret,inst1);
-        strcat(ret,"\n");
+    //just return 0
+    if(total_time1 != total_time1 || basic_trajectory.lenc1 < 0){
+        ptr->time_curveFirst = 0;
     }
-    if(time_shift2 == time_shift2 && basic_trajectory.lensls > 0){
-        strcat(ret,inst2);
-        strcat(ret,"\n");
+    if(time_shift2 != time_shift2 || basic_trajectory.lensls < 0){
+        ptr->time_straight = 0;
     }
-    if(total_time3 == total_time3 && basic_trajectory.lenc2 > 0){
-        strcat(ret,inst3);
-        strcat(ret,"\n");
+    if(total_time3 != total_time3 || basic_trajectory.lenc2 < 0){
+        ptr->time_curveSecond = 0;
     }
-    if(total_time4 == total_time4 && basic_trajectory.lenspiral > 0){
-        strcat(ret,inst4);
-        strcat(ret,"\n");
+    if(total_time4 != total_time4 && basic_trajectory.lenspiral < 0){
+        ptr->time_spiral = 0;
     }
-    if(time_shift5 == time_shift5){
-        strcat(ret,inst5);
+    if(time_shift5 != time_shift5){
+        ptr->time_extend = 0;
     }
-
-    return ret;
+    return;
 }
