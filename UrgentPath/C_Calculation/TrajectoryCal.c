@@ -152,56 +152,68 @@ void TrajectoryCal(struct TrajectoryData* ptr,
     }
     
     //first curve
-    double total_time1=c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    ptr->time_curveFirst = (total_time1);
-    ptr->degree_curveFirst = azmth(basic_trajectory.SLS[basic_trajectory.lensls-1][2]);
-    ptr->firstCurveStart_lat = basic_trajectory.C1[0][0];
-    ptr->firstCurveStart_lon = basic_trajectory.C1[0][1];
+    double total_time1 = 0;
+    if (basic_trajectory.lenc1 > 0) {
+        total_time1 = c1_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
+        ptr->time_curveFirst = total_time1;
+        ptr->degree_curveFirst = azmth(basic_trajectory.SLS[basic_trajectory.lensls-1][2]);
+        ptr->firstCurveStart_lat = basic_trajectory.C1[0][1];
+        ptr->firstCurveStart_lon = basic_trajectory.C1[0][0];
+        ptr->firstCurveHalf_lat = basic_trajectory.C1[basic_trajectory.lenc1/2][1];
+        ptr->firstCurveHalf_lon = basic_trajectory.C1[basic_trajectory.lenc1/2][0];
+    }
     
     //straight line
-    double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
-    double original_distance= horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
-    double time_shift2=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
-    ptr->time_straight = (time_shift2);
-    ptr->straightStart_lat = basic_trajectory.SLS[0][0];
-    ptr->straightStart_lon = basic_trajectory.SLS[0][1];
+    double time_shift2 = 0;
+    if (basic_trajectory.lensls > 0) {
+        double alpha = fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
+        double original_distance = horizontal(basic_trajectory.SLS[0][0], basic_trajectory.SLS[0][1], basic_trajectory.SLS[basic_trajectory.lensls-1][0], basic_trajectory.SLS[basic_trajectory.lensls-1][1]);
+        time_shift2 = fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
+        ptr->time_straight = (time_shift2);
+        ptr->straightStart_lat = basic_trajectory.SLS[0][1];
+        ptr->straightStart_lon = basic_trajectory.SLS[0][0];
+    }
     
     //second curve
-    double total_time3=c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
-    ptr->time_curveSecond = (total_time3);
-    ptr->degree_curveSecond = azmth(dat_30.p2[2]);
-    ptr->secondCurveStart_lat = basic_trajectory.C2[0][0];
-    ptr->secondCurveStart_lon = basic_trajectory.C2[0][1];
-    
+    double total_time3 = 0;
+    if (basic_trajectory.lenc2 > 0) {
+        total_time3 = c2_time(basic_trajectory,dat_30.airspeed,dat_30.min_rad);
+        ptr->time_curveSecond = total_time3;
+        ptr->degree_curveSecond = azmth(dat_30.p2[2]);
+        ptr->secondCurveStart_lat = basic_trajectory.C2[0][1];
+        ptr->secondCurveStart_lon = basic_trajectory.C2[0][0];
+        ptr->secondCurveHalf_lat = basic_trajectory.C2[basic_trajectory.lenc2/2][1];
+        ptr->secondCurveHalf_lon = basic_trajectory.C2[basic_trajectory.lenc2/2][0];
+    }
     //spiral for runway
     double total_time4 = 0;
-    if(basic_trajectory.lenspiral>0) { //augmenting spiral
+    if(basic_trajectory.lenspiral > 0) { //augmenting spiral
         total_time4 = basic_trajectory.lenspiral*(((2*PI*dat_30.min_rad)/dat_30.airspeed)/50);
-        ptr->time_spiral = (total_time4);
+        ptr->time_spiral = total_time4;
         ptr->degree_spiral = azmth(dat_30.p2[2]);
-        ptr->spiralStart_lat = basic_trajectory.Spiral[0][0];
-        ptr->spiralStart_lon = basic_trajectory.Spiral[0][1];
+        ptr->spiralStart_lat = basic_trajectory.Spiral[0][1];
+        ptr->spiralStart_lon = basic_trajectory.Spiral[0][0];
     }
     
     //runway
     double time_shift5 = 0;
-    //something strange here, when 'extended' is true -> if(extended) will not be executed;hence a '!' is added temporarily
+    //TODO: something strange here, when 'extended' is true -> if(extended) will not be executed;hence a '!' is added temporarily
     if(!basic_trajectory.extended) { //augmenting extended runway
         double original_start_x,original_start_y;
         if(basic_trajectory.lenspiral>0){
-            original_start_x= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
-            original_start_y= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][1];
+            original_start_x= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][1];
+            original_start_y= basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
         }
         else{
-            original_start_x= basic_trajectory.C2[basic_trajectory.lenc2-1][0];
-            original_start_y= basic_trajectory.C2[basic_trajectory.lenc2-1][1];
+            original_start_x= basic_trajectory.C2[basic_trajectory.lenc2-1][1];
+            original_start_y= basic_trajectory.C2[basic_trajectory.lenc2-1][0];
         }
         double alpha= fabs(basic_trajectory.SLS[2][2]-dat_30.wind_heading);
         double original_distance= horizontal(dat_30.p2[0], dat_30.p2[1], original_start_x, original_start_y);
         time_shift5=fabs(original_distance/ (dat_30.airspeed + ((dat_30.windspeed) * cos(alpha))));
         ptr->time_extend = (time_shift5);
-        ptr->extendedStart_lat = basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
-        ptr->extendedStart_lon = basic_trajectory.Spiral[basic_trajectory.lenspiral-1][1];
+        ptr->extendedStart_lat = basic_trajectory.Spiral[basic_trajectory.lenspiral-1][1];
+        ptr->extendedStart_lon = basic_trajectory.Spiral[basic_trajectory.lenspiral-1][0];
     }
     
     //in case calculation failure, output to user and log

@@ -32,6 +32,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     let locationManager = CLLocationManager()
     var currentLocationMarker: GMSMarker?
+    let trajPolyline = GMSPolyline()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -76,7 +77,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         layer.tileSize = 1024
         
         // Display on the map at certain priority
-        layer.zIndex = 100
+        layer.zIndex = 1
         layer.map = mapView
         
         //limit the range to zoom, which is actually maxZoom+1
@@ -189,10 +190,14 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
             self.runwayText.text = traj!.runway_name
             drawTrajectory(firstCurve_lat: traj!.firstCurveStart_lat,
                            firstCurve_lon: traj!.firstCurveStart_lon,
+                           firstCurveHalf_lat: traj!.firstCurveHalf_lat,
+                           firstCurveHalf_lon: traj!.firstCurveHalf_lon,
                            straight_lat: traj!.straightStart_lat,
                            straight_lon: traj!.straightStart_lon,
                            secondCurve_lat: traj!.secondCurveStart_lat,
                            secondCurve_lon: traj!.secondCurveStart_lon,
+                           secondCurveHalf_lat: traj!.secondCurveHalf_lat,
+                           secondCurveHalf_lon: traj!.secondCurveHalf_lon,
                            spiral_lat: traj!.spiralStart_lat,
                            spiral_lon: traj!.spiralStart_lon,
                            extended_lat: traj!.extendedStart_lat,
@@ -256,7 +261,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         path.add(CLLocationCoordinate2D(latitude: startLat, longitude: startLon))
         path.add(CLLocationCoordinate2D(latitude: endLat, longitude: endLon))
         let poly = GMSPolyline(path: path)
-        poly.zIndex = 200
+        poly.zIndex = 100
         poly.strokeWidth = 4
         poly.strokeColor = .orange
         poly.map = mapView
@@ -264,17 +269,49 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
     
     private func drawTrajectory(firstCurve_lat: Double,
                                 firstCurve_lon: Double,
+                                firstCurveHalf_lat: Double,
+                                firstCurveHalf_lon: Double,
                                 straight_lat: Double,
                                 straight_lon: Double,
                                 secondCurve_lat: Double,
                                 secondCurve_lon: Double,
+                                secondCurveHalf_lat: Double,
+                                secondCurveHalf_lon: Double,
                                 spiral_lat: Double,
                                 spiral_lon: Double,
                                 extended_lat: Double,
                                 extended_lon: Double,
                                 runway_lat: Double,
                                 runway_lon: Double) {
+        let path = GMSMutablePath()
+        path.add(CLLocationCoordinate2D(latitude: firstCurve_lat, longitude: firstCurve_lon))
+        if (firstCurveHalf_lat != 0 && firstCurveHalf_lon != 0) {
+            path.add(CLLocationCoordinate2D(latitude: firstCurveHalf_lat, longitude: firstCurveHalf_lon))
+        }
+        if (straight_lat != 0 && straight_lon != 0) {
+            path.add(CLLocationCoordinate2D(latitude: straight_lat, longitude: straight_lon))
+        }
+        if (secondCurve_lat != 0 && secondCurve_lon != 0) {
+            path.add(CLLocationCoordinate2D(latitude: secondCurve_lat, longitude: secondCurve_lon))
+        }
+        if (secondCurveHalf_lat != 0 && secondCurveHalf_lon != 0) {
+            path.add(CLLocationCoordinate2D(latitude: secondCurve_lat, longitude: secondCurve_lon))
+        }
+        if ((spiral_lat != 0 && spiral_lon != 0) && spiral_lat == spiral_lat && spiral_lon == spiral_lon) {
+            path.add(CLLocationCoordinate2D(latitude: spiral_lat, longitude: spiral_lon))
+        }
+        if ((extended_lat != 0 && extended_lon != 0) && extended_lat == extended_lat && extended_lon == extended_lon) {
+            path.add(CLLocationCoordinate2D(latitude: extended_lat, longitude: extended_lon))
+        }
+        path.add(CLLocationCoordinate2D(latitude: runway_lat, longitude: runway_lon))
         
+        trajPolyline.path = path
+        trajPolyline.map = mapView
+        trajPolyline.strokeWidth = 10
+        trajPolyline.zIndex = 100
+        
+        let redYellow = GMSStrokeStyle.gradient(from: .red, to: .yellow)
+        trajPolyline.spans = [GMSStyleSpan(style: redYellow)]
     }
     
     private func formatText(_ text:Double, _ digit:Int = 2) -> String {

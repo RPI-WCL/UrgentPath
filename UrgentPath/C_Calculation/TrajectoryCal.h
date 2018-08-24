@@ -37,10 +37,14 @@ extern struct TrajectoryData {
     
     double firstCurveStart_lat;
     double firstCurveStart_lon;
+    double firstCurveHalf_lat;
+    double firstCurveHalf_lon;
     double straightStart_lat;
     double straightStart_lon;
     double secondCurveStart_lat;
     double secondCurveStart_lon;
+    double secondCurveHalf_lat;
+    double secondCurveHalf_lon;
     double spiralStart_lat;
     double spiralStart_lon;
     double extendedStart_lat;

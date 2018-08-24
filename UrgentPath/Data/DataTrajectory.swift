@@ -30,10 +30,14 @@ struct DataTrajectory {
     
     var firstCurveStart_lat : Double;
     var firstCurveStart_lon : Double;
+    var firstCurveHalf_lat : Double;
+    var firstCurveHalf_lon : Double;
     var straightStart_lat : Double;
     var straightStart_lon : Double;
     var secondCurveStart_lat : Double;
     var secondCurveStart_lon : Double;
+    var secondCurveHalf_lat : Double;
+    var secondCurveHalf_lon : Double;
     var spiralStart_lat : Double;
     var spiralStart_lon : Double;
     var extendedStart_lat : Double;
