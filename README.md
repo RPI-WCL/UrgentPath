@@ -1,8 +1,8 @@
 # UrgentPath
 An IOS application designed to provide navigation guidance to pilots when the plane experienced all-engine failure.
 The application used code from [Aircraft_Trajectory_Generation](https://github.com/enjoybeta/Aircraft_Trajectory_Generation) to generate trajectories for emergency situations.
-![demoImage1](https://github.com/enjoybeta/UrgentPath/blob/master/Data/demo1.jpg "Example image 1")
-![demoImage2](https://github.com/enjoybeta/UrgentPath/blob/master/Data/demo2.jpg "Example image 2")
+---
+<img src="https://github.com/enjoybeta/UrgentPath/blob/master/Data/demo1.jpg" alt="demoImage1" width="400"/> <img src="https://github.com/enjoybeta/UrgentPath/blob/master/Data/demo2.jpg" alt="demoImage2" width="400"/>
 
 ## Build Prerequisite
 Name | Version
@@ -25,8 +25,8 @@ Please install other modules referenced to ***"Podfile"*** in the root directory
 6. All set
 
 ### 2.How to properly run the executable file?
-***Example***: Execute the command **"./udp_redirect_xplane9.out 192.168.1.3"**
-**"udp_redirect_xplane9.out"** is executable file based on X-Plane 9, "udp_redirect_xplane1.out" is for X-Plane 11
+***Example***: Execute the command **"./udp_redirect_xplane9.out 192.168.1.3"** <br/>
+**"udp_redirect_xplane9.out"** is executable file based on X-Plane 9, "udp_redirect_xplane1.out" is for X-Plane 11 <br/>
 **"192.168.1.3"** is the ip address of the IOS device inside LAN, change accordingly
 
 ### 3. How the connection works?
