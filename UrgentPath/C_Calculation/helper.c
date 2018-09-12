@@ -994,10 +994,10 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, doub
 		double distance= horizontal(last_x,last_y,path.Spiral[i][0],path.Spiral[i][1]);
 		path.Spiral[i][4]=heightBC(last_altitude, distance, angle, Rg_straight);
 
-		//DELETING NOT INTEGRAL PART		
+		//DELETING NOT INTEGRAL PART
 		if(path.Spiral[i][4]<=runway_altitude)
 		{
-			path.lenspiral=last_integral_i;
+			path.lenspiral=last_integral_i+1;
 			break;
 		}				
 
@@ -1010,7 +1010,7 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, doub
 		last_x=path.Spiral[i][0];
 		last_y=path.Spiral[i][1];
 		last_altitude=path.Spiral[i][4];
-		path.lenspiral=path.lenspiral+1;
+//        path.lenspiral=path.lenspiral+1;
 	}
 	path.spiral_centre= centre;
 	path.spiral_start_angle= start_theta;
