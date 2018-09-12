@@ -71,10 +71,26 @@ class DataUserManager {
     //set plane location from modified XPlane input
     func setFromXPlaneStringArray(parts:[String]) {
         if(parts.count == 4){
-            setGeoLocation(loc_x: Double(parts[0])!,
-                           loc_y: Double(parts[1])!,
-                           loc_z: Double(parts[2])!)
-            setHeading(heading: Double(parts[3])!)
+            guard let loc_x = Double(parts[0]) else {
+                print("Error: unknown loc_x from XPlane")
+                return
+            }
+            guard let loc_y = Double(parts[1]) else {
+                print("Error: unknown loc_y from XPlane")
+                return
+            }
+            guard let loc_z = Double(parts[2]) else {
+                print("Error: unknown loc_z from XPlane")
+                return
+            }
+            guard let loc_heading = Double(parts[3]) else {
+                print("Error: unknown loc_heading from XPlane")
+                return
+            }
+            setGeoLocation(loc_x: loc_x,
+                           loc_y: loc_y,
+                           loc_z: loc_z)
+            setHeading(heading: loc_heading)
         }
         else{
             print("Error: unknown input from XPlane")
