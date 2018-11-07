@@ -11,7 +11,6 @@
 		9C03C81220922ACE00967F6A /* demo.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80B20922ACC00967F6A /* demo.c */; };
 		9C03C81320922ACE00967F6A /* helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 9C03C80C20922ACC00967F6A /* helper.c */; };
 		9C050D1C2099040E00E1B90F /* runways_with_mag_heading.csv in Resources */ = {isa = PBXBuildFile; fileRef = 9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */; };
-		9C0ABDAF20EFC5A600183664 /* arrow-48.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDAE20EFC5A500183664 /* arrow-48.png */; };
 		9C0ABDB320F1B14500183664 /* location-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB220F1B14500183664 /* location-64.png */; };
 		9C0ABDB520F3B7D900183664 /* RunwayPriorityUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */; };
 		9C18402720735AC5003F7325 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18402620735AC5003F7325 /* AppDelegate.swift */; };
@@ -22,6 +21,7 @@
 		9C18403320735AC9003F7325 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C18403120735AC9003F7325 /* LaunchScreen.storyboard */; };
 		9C18403E20735AC9003F7325 /* UrgentPathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18403D20735AC9003F7325 /* UrgentPathTests.swift */; };
 		9C18404920735AC9003F7325 /* UrgentPathUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C18404820735AC9003F7325 /* UrgentPathUITests.swift */; };
+		9C6A1BBA21939A37000B4281 /* plane-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C6A1BB921939A37000B4281 /* plane-64.png */; };
 		9C6ED28721064AAC00C0F344 /* DataTrajectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */; };
 		9CB83F242077FDE600C372CD /* DataPlane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F232077FDE600C372CD /* DataPlane.swift */; };
 		9CB83F262077FE0400C372CD /* DataUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CB83F252077FE0400C372CD /* DataUser.swift */; };
@@ -63,7 +63,6 @@
 		9C03C80E20922ACE00967F6A /* demo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = demo.h; sourceTree = "<group>"; };
 		9C03C80F20922ACE00967F6A /* dubins.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dubins.h; sourceTree = "<group>"; };
 		9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = runways_with_mag_heading.csv; path = Data/runways_with_mag_heading.csv; sourceTree = SOURCE_ROOT; };
-		9C0ABDAE20EFC5A500183664 /* arrow-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "arrow-48.png"; path = "Data/arrow-48.png"; sourceTree = SOURCE_ROOT; };
 		9C0ABDB220F1B14500183664 /* location-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "location-64.png"; path = "Data/location-64.png"; sourceTree = SOURCE_ROOT; };
 		9C0ABDB420F3B7D900183664 /* RunwayPriorityUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunwayPriorityUtility.swift; sourceTree = "<group>"; };
 		9C18402320735AC5003F7325 /* UrgentPath.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UrgentPath.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -80,6 +79,7 @@
 		9C18404420735AC9003F7325 /* UrgentPathUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UrgentPathUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C18404820735AC9003F7325 /* UrgentPathUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UrgentPathUITests.swift; sourceTree = "<group>"; };
 		9C18404A20735AC9003F7325 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9C6A1BB921939A37000B4281 /* plane-64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "plane-64.png"; path = "Data/plane-64.png"; sourceTree = SOURCE_ROOT; };
 		9C6ED28621064AAB00C0F344 /* DataTrajectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTrajectory.swift; sourceTree = "<group>"; };
 		9CB83F232077FDE600C372CD /* DataPlane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataPlane.swift; sourceTree = "<group>"; };
 		9CB83F252077FE0400C372CD /* DataUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataUser.swift; sourceTree = "<group>"; };
@@ -186,8 +186,8 @@
 				9CC73FC62073FA3D003FBC2C /* UrgentPath-Bridging-Header.h */,
 				9C18403420735AC9003F7325 /* Info.plist */,
 				9CBB94AE20DEF58100438042 /* GoogleMapStyle.json */,
+				9C6A1BB921939A37000B4281 /* plane-64.png */,
 				9C050D1B2099040E00E1B90F /* runways_with_mag_heading.csv */,
-				9C0ABDAE20EFC5A500183664 /* arrow-48.png */,
 				9C0ABDB220F1B14500183664 /* location-64.png */,
 			);
 			path = UrgentPath;
@@ -359,7 +359,7 @@
 				9CBB94AF20DEF58200438042 /* GoogleMapStyle.json in Resources */,
 				9C050D1C2099040E00E1B90F /* runways_with_mag_heading.csv in Resources */,
 				9C18403020735AC9003F7325 /* Assets.xcassets in Resources */,
-				9C0ABDAF20EFC5A600183664 /* arrow-48.png in Resources */,
+				9C6A1BBA21939A37000B4281 /* plane-64.png in Resources */,
 				9C18402E20735AC5003F7325 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

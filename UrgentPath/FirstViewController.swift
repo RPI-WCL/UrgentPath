@@ -104,7 +104,7 @@ class FirstViewController: UIViewController, CLLocationManagerDelegate {
         currentLocationMarker = nil
         if let location = locationManager.location {
             currentLocationMarker = GMSMarker(position: location.coordinate)
-            currentLocationMarker?.icon = UIImage(named: "arrow-48.png")
+            currentLocationMarker?.icon = UIImage(named: "plane-64.png")
             currentLocationMarker?.rotation = locationManager.location?.course ?? 0
             currentLocationMarker?.isFlat = true
             currentLocationMarker?.groundAnchor = CGPoint(x: 0.5, y: 0.5)
