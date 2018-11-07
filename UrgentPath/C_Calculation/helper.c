@@ -964,11 +964,11 @@ void print_trajectory(Seg path, int angle, double rnwy_x, double rnwy_y, double 
 	fclose(output_file);
 }
 
-
-//generates circles for spiral
+//generates circles forstea spiral
 Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, double runway_altitude)
 {
 	path.lenspiral=0;// initializing
+    path.num_spirals=0;
 	//printf("initialized\n");
 
 	double step= 2*PI/50; //50 points per spiral circle
@@ -978,13 +978,14 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, doub
 	double last_altitude= path.C2[path.lenc2-1][4];
 	Pair centre= find_centre(path.C2[path.lenc2-1][0], path.C2[path.lenc2-1][1], path.C2[path.lenc2-2][0], path.C2[path.lenc2-2][1], path.C2[path.lenc2-3][0], path.C2[path.lenc2-3][1]);//centre of turn
 
-	double start_theta= acos((last_x-centre.x)/radius); //angle of starting point wrt centre 
+	double start_theta= acos((last_x-centre.x)/radius); //angle of starting point wrt centre
+    double sign= orientation(path.C2[0][0], path.C2[0][1], path.C2[path.lenc2/2][0], path.C2[path.lenc2/2][1],path.C2[path.lenc2-1][0], path.C2[path.lenc2-1][1]);
 
 	//generate circles
 	int i, integral_turns=0, last_integral_i=0;
-	step=-step; //for clockwise turn, make positive for anti clockwise turns	
+	step = step * sign; //for clockwise turn, make positive for anti clockwise turns
 	
-	for(i=0;i<300;i++)
+	for(i=0;i<300;i++) //might need to change 300 to allow more than 300/50 = 6 spirals
 	{
 		path.Spiral[i][0]=centre.x+(radius*cos((i*step)-start_theta)); //check - start or + start
 		path.Spiral[i][1]=centre.y+(radius*sin((i*step)-start_theta));	
@@ -1003,7 +1004,10 @@ Seg generate_spiral(Seg path, double radius, int angle, double Rg_straight, doub
 
 		if((i) % 51 == 0) //integral turns
 		{
-
+            if(i!=0)
+            {
+                path.num_spirals=path.num_spirals+1;
+            }
 			last_integral_i=i;
 		}		
 

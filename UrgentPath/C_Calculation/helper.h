@@ -121,6 +121,7 @@ typedef struct Seg //to store segments of a dubins path
     int lenspiral;
     Pair spiral_centre;
     double spiral_start_angle;
+    int num_spirals;
     
     bool extended;
 }Seg;
