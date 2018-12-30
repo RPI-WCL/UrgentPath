@@ -16,18 +16,17 @@ Please install other modules referenced to ***"Podfile"*** in the root directory
 
 ## X-Plane related
 ### 1.How to test the app with X-Plane simulator?
-0. Make sure both IOS device and machine running X-Plane are on the same LAN
-1. Run the *"Makefile"* under XPlane/ (reference to GNU make for tutorial)
-2. Run the generated "*.out" file (details check out #2)
-3. Run the X-Plane application
-4. Open the IOS application
-5. Switch the button *"Override with X-Plane data"* on the second tab of IOS application
+1. Make sure both IOS device and machine running X-Plane are on a same LAN
+2. Exexcute "make" to run the *"Makefile"* under XPlane/ (using GNU make)
+3. Exexcute "./udp_redirect_xplane11.out 192.168.1.3" to redirect UDP packets(details check out #2)
+4. Start the X-Plane application and the IOS application
+5. Switch the button *"Override with X-Plane data"* to ON at the second tab of IOS application
 6. All set
 
 ### 2.How to properly run the executable file?
 ***Example***: Execute the command **"./udp_redirect_xplane9.out 192.168.1.3"** <br/>
-**"udp_redirect_xplane9.out"** is executable file based on X-Plane 9, "udp_redirect_xplane1.out" is for X-Plane 11 <br/>
-**"192.168.1.3"** is the ip address of the IOS device inside LAN, change accordingly
+**"udp_redirect_xplane9.out"** is executable file based on X-Plane 9, **"udp_redirect_xplane11.out"** is for X-Plane 11 <br/>
+**"192.168.1.3"** is the ip address of the IOS device inside the LAN, change accordingly
 
 ### 3. How the connection works?
  UDP protocol is used throughout the communication.
